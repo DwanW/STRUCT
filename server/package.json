@@ -13,6 +13,7 @@
   "license": "ISC",
   "dependencies": {
     "apollo-server-express": "^2.22.2",
+    "argon2": "^0.27.2",
     "chalk": "^4.1.0",
     "class-validator": "^0.13.1",
     "dotenv-safe": "^8.2.0",

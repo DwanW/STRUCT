@@ -1,5 +1,6 @@
 import {
   Entity,
+  BaseEntity,
   PrimaryGeneratedColumn,
   Column,
   UpdateDateColumn,
@@ -10,7 +11,7 @@ import { Field, ObjectType } from "type-graphql";
 
 @ObjectType({ description: "The user model" })
 @Entity()
-export class User {
+export class User extends BaseEntity {
   @Field()
   @PrimaryGeneratedColumn()
   id!: number;
@@ -37,11 +38,11 @@ export class User {
   @Column("int", { default: 0 })
   endorsed: number;
 
-  @Field()
+  @Field(() => String)
   @CreateDateColumn({ type: "date" })
-  createdAt: Date;
+  createdAt: Date = new Date();
 
-  @Field()
+  @Field(() => String)
   @UpdateDateColumn({ type: "date" })
-  updatedAt: Date;
+  updatedAt: Date = new Date();
 }
