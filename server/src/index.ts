@@ -9,6 +9,15 @@ import { ApolloServer } from "apollo-server-express";
 import { buildSchema } from "type-graphql";
 import { HelloResolver } from "./resolvers/hello";
 import { UserResolver } from "./resolvers/user";
+import session from "express-session";
+import { __prod__ } from "./constants";
+
+// session custom variable type merging
+declare module "express-session" {
+  export interface Session {
+    userId?: number;
+  }
+}
 
 const main = async () => {
   const connection = await createConnection({
@@ -24,6 +33,21 @@ const main = async () => {
 
   //express server
   const app = express();
+
+  app.use(
+    session({
+      name: "struct-cookie",
+      cookie: {
+        maxAge: 1000 * 3600,
+        httpOnly: true,
+        sameSite: "lax",
+        secure: __prod__,
+      },
+      saveUninitialized: false,
+      secret: "123ewq",
+      resave: false,
+    })
+  );
 
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
