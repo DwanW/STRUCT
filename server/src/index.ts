@@ -11,6 +11,8 @@ import { HelloResolver } from "./resolvers/hello";
 import { UserResolver } from "./resolvers/user";
 import session from "express-session";
 import { __prod__ } from "./constants";
+import Redis from "ioredis";
+import connectRedis from "connect-redis";
 
 // session custom variable type merging
 declare module "express-session" {
@@ -34,9 +36,24 @@ const main = async () => {
   //express server
   const app = express();
 
+  const RedisStore = connectRedis(session);
+  const redis = new Redis(process.env.REDIS_URL);
+  // app.set("trust proxy", 1);
+  // app.use(
+  //   cors({
+  //     origin: process.env.CORS_ORIGIN,
+  //     credentials: true,
+  //   })
+  // );
+
   app.use(
     session({
       name: "struct-cookie",
+      store: new RedisStore({
+        client: redis,
+        disableTouch: true,
+        disableTTL: true,
+      }),
       cookie: {
         maxAge: 1000 * 3600,
         httpOnly: true,
@@ -44,7 +61,7 @@ const main = async () => {
         secure: __prod__,
       },
       saveUninitialized: false,
-      secret: "123ewq",
+      secret: process.env.SESSION_SECRET,
       resave: false,
     })
   );
