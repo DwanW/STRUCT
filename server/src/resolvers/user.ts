@@ -7,11 +7,13 @@ import {
   Field,
   Arg,
   Int,
+  Ctx,
 } from "type-graphql";
 // import { MyContext } from "../types";
 import { RegisterInput } from "../utils/RegisterInput";
 import { validate, ValidationError } from "class-validator";
 import argon from "argon2";
+import { MyContext } from "src/types";
 
 @ObjectType()
 class AuthResponse {
@@ -26,6 +28,15 @@ class AuthResponse {
 @Resolver()
 export class UserResolver {
   @Query(() => User, { nullable: true })
+  me(@Ctx() { req }: MyContext) {
+    if (!req.session.userId) {
+      return null;
+    }
+
+    return User.findOne(req.session.userId);
+  }
+
+  @Query(() => User, { nullable: true })
   async user(@Arg("id", () => Int) id: number): Promise<User | null> {
     //find user by id
     const user = await User.findOne(id);
@@ -38,7 +49,8 @@ export class UserResolver {
 
   @Mutation(() => AuthResponse)
   async register(
-    @Arg("options", () => RegisterInput) options: RegisterInput
+    @Arg("options", () => RegisterInput) options: RegisterInput,
+    @Ctx() { req }: MyContext
   ): Promise<AuthResponse> {
     //create user
     const errorMessage = await validate(options);
@@ -64,6 +76,8 @@ export class UserResolver {
     } catch (err) {
       console.log("createUser error: ", err);
     }
+
+    req.session.userId = user?.id;
 
     return {
       user,
