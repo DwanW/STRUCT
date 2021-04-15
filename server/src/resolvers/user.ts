@@ -11,14 +11,15 @@ import {
 } from "type-graphql";
 // import { MyContext } from "../types";
 import { RegisterInput } from "../utils/RegisterInput";
-import { validate, ValidationError } from "class-validator";
+import { validate } from "class-validator";
 import argon from "argon2";
-import { MyContext } from "src/types";
+import { MyContext } from "../types";
+import { COOKIE_NAME } from "../constants";
 
 @ObjectType()
 class AuthResponse {
   @Field(() => String, { nullable: true })
-  error?: ValidationError[];
+  error?: string;
 
   @Field(() => User, { nullable: true })
   user?: User;
@@ -57,7 +58,7 @@ export class UserResolver {
     // console.log("errorMessage", errorMessage);
     if (errorMessage.length > 0) {
       return {
-        error: errorMessage,
+        error: errorMessage.toString(),
       };
     }
 
@@ -84,6 +85,31 @@ export class UserResolver {
     };
   }
 
+  @Mutation(() => AuthResponse)
+  async login(
+    @Arg("email") email: string,
+    @Arg("password") password: string,
+    @Ctx() { req }: MyContext
+  ): Promise<AuthResponse> {
+    const user = await User.findOne({ where: { email: email } });
+    if (!user) {
+      return {
+        error: "User does not exist",
+      };
+    }
+    const valid = await argon.verify(user.password, password);
+    if (!valid) {
+      return {
+        error: "username or password is incorrect",
+      };
+    }
+
+    req.session.userId = user.id;
+    return {
+      user,
+    };
+  }
+
   @Mutation(() => User, { nullable: true })
   async updateUser(
     @Arg("about", () => String) about: string,
@@ -96,6 +122,20 @@ export class UserResolver {
     user.about = about;
     const result = await user.save();
     return result;
+  }
+
+  @Mutation(() => Boolean)
+  logout(@Ctx() { req, res }: MyContext) {
+    return new Promise((resolve) =>
+      req.session.destroy((err) => {
+        res.clearCookie(COOKIE_NAME);
+        if (err) {
+          console.log(err);
+          resolve(false);
+        }
+        resolve(true);
+      })
+    );
   }
 
   @Mutation(() => Boolean)
