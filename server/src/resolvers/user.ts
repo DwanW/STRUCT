@@ -14,7 +14,9 @@ import { RegisterInput } from "../utils/RegisterInput";
 import { validate } from "class-validator";
 import argon from "argon2";
 import { MyContext } from "../types";
-import { COOKIE_NAME } from "../constants";
+import { COOKIE_NAME, FORGET_PASSWORD_PREFIX } from "../constants";
+import { sendEmail } from "../utils/sendEmail";
+import { v4 } from "uuid";
 
 @ObjectType()
 class AuthResponse {
@@ -108,6 +110,34 @@ export class UserResolver {
     return {
       user,
     };
+  }
+
+  @Mutation(() => Boolean)
+  async forgotPassword(
+    @Arg("email") email: string,
+    @Ctx() { redis }: MyContext
+  ) {
+    const user = await User.findOne({ where: { email } });
+    if (!user) {
+      // the email is not in the db
+      return true;
+    }
+
+    const token = v4();
+    console.log({ token });
+
+    await redis.set(
+      FORGET_PASSWORD_PREFIX + token,
+      user.id,
+      "ex",
+      1000 * 3600
+    );
+
+    await sendEmail(
+      email,
+      `<a href="${process.env.CORS_ORIGIN}/change-password/${token}">reset password</a>`
+    );
+    return true;
   }
 
   @Mutation(() => User, { nullable: true })

@@ -73,6 +73,7 @@ const main = async () => {
     context: ({ req, res }) => ({
       req,
       res,
+      redis,
     }),
   });
   app.get("/", (_, res) => {
