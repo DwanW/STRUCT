@@ -11,12 +11,12 @@ import {
 } from "type-graphql";
 // import { MyContext } from "../types";
 import { RegisterInput } from "../utils/RegisterInput";
-import { validate } from "class-validator";
 import argon from "argon2";
 import { MyContext } from "../types";
 import { COOKIE_NAME, FORGET_PASSWORD_PREFIX } from "../constants";
 import { sendEmail } from "../utils/sendEmail";
 import { v4 } from "uuid";
+import { ChangePasswordInput } from "../utils/ChangePasswordInput";
 
 @ObjectType()
 class AuthResponse {
@@ -55,15 +55,6 @@ export class UserResolver {
     @Arg("options", () => RegisterInput) options: RegisterInput,
     @Ctx() { req }: MyContext
   ): Promise<AuthResponse> {
-    //create user
-    const errorMessage = await validate(options);
-    // console.log("errorMessage", errorMessage);
-    if (errorMessage.length > 0) {
-      return {
-        error: errorMessage.toString(),
-      };
-    }
-
     const hashedPassword = await argon.hash(options.password);
     let user;
 
@@ -112,6 +103,43 @@ export class UserResolver {
     };
   }
 
+  @Mutation(() => AuthResponse)
+  async changePassword(
+    @Arg("token") token: string,
+    @Arg("input", () => ChangePasswordInput)
+    input: ChangePasswordInput,
+    @Ctx() { redis, req }: MyContext
+  ) {
+    const forgetPasswordKey = FORGET_PASSWORD_PREFIX + token;
+    const userId = await redis.get(forgetPasswordKey);
+
+    if (!userId) {
+      return {
+        error: "token expired",
+      };
+    }
+
+    const userIdNum = parseInt(userId);
+    const user = await User.findOne(userIdNum);
+
+    if (!user) {
+      return {
+        error: "user no longer exist",
+      };
+    }
+
+    await User.update(
+      { id: userIdNum },
+      { password: await argon.hash(input.password) }
+    );
+
+    await redis.del(forgetPasswordKey);
+
+    req.session.userId = user.id;
+
+    return { user };
+  }
+
   @Mutation(() => Boolean)
   async forgotPassword(
     @Arg("email") email: string,
@@ -126,12 +154,7 @@ export class UserResolver {
     const token = v4();
     console.log({ token });
 
-    await redis.set(
-      FORGET_PASSWORD_PREFIX + token,
-      user.id,
-      "ex",
-      1000 * 3600
-    );
+    await redis.set(FORGET_PASSWORD_PREFIX + token, user.id, "ex", 1000 * 3600);
 
     await sendEmail(
       email,

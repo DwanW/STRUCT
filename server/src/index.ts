@@ -13,6 +13,7 @@ import session from "express-session";
 import { COOKIE_NAME, __prod__ } from "./constants";
 import Redis from "ioredis";
 import connectRedis from "connect-redis";
+import { error } from "node:console";
 
 // session custom variable type merging
 declare module "express-session" {
@@ -75,6 +76,13 @@ const main = async () => {
       res,
       redis,
     }),
+    formatError: (err) => {
+      console.log(err.message);
+      if (err.message === "Argument Validation Error") {
+        return new Error("validation failed");
+      }
+      return err;
+    },
   });
   app.get("/", (_, res) => {
     res.send("hello world");
