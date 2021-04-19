@@ -6,8 +6,9 @@ import {
   ObjectType,
   Field,
   Arg,
-  Int,
   Ctx,
+  FieldResolver,
+  Root,
 } from "type-graphql";
 // import { MyContext } from "../types";
 import { RegisterInput } from "../utils/RegisterInput";
@@ -16,7 +17,6 @@ import { MyContext } from "../types";
 import { COOKIE_NAME, FORGET_PASSWORD_PREFIX } from "../constants";
 import { sendEmail } from "../utils/sendEmail";
 import { v4 } from "uuid";
-import { ChangePasswordInput } from "../utils/ChangePasswordInput";
 
 @ObjectType()
 class AuthResponse {
@@ -28,8 +28,18 @@ class AuthResponse {
 }
 
 // resolvers for apollo graphql server
-@Resolver()
+@Resolver(User)
 export class UserResolver {
+  @FieldResolver(() => String)
+  email(@Root() user: User, @Ctx() { req }: MyContext) {
+    // hide email to users other than the owner
+    if (req.session.userId === user.id) {
+      return user.email;
+    }
+
+    return "";
+  }
+
   @Query(() => User, { nullable: true })
   me(@Ctx() { req }: MyContext) {
     if (!req.session.userId) {
@@ -39,16 +49,16 @@ export class UserResolver {
     return User.findOne(req.session.userId);
   }
 
-  @Query(() => User, { nullable: true })
-  async user(@Arg("id", () => Int) id: number): Promise<User | null> {
-    //find user by id
-    const user = await User.findOne(id);
-    if (!user) {
-      return null;
-    }
+  // @Query(() => User, { nullable: true })
+  // async user(@Arg("id", () => Int) id: number): Promise<User | null> {
+  //   //find user by id
+  //   const user = await User.findOne(id);
+  //   if (!user) {
+  //     return null;
+  //   }
 
-    return user;
-  }
+  //   return user;
+  // }
 
   @Mutation(() => AuthResponse)
   async register(
@@ -106,8 +116,8 @@ export class UserResolver {
   @Mutation(() => AuthResponse)
   async changePassword(
     @Arg("token") token: string,
-    @Arg("input", () => ChangePasswordInput)
-    input: ChangePasswordInput,
+    @Arg("newPassword", () => String)
+    newPassword: string,
     @Ctx() { redis, req }: MyContext
   ) {
     const forgetPasswordKey = FORGET_PASSWORD_PREFIX + token;
@@ -130,7 +140,7 @@ export class UserResolver {
 
     await User.update(
       { id: userIdNum },
-      { password: await argon.hash(input.password) }
+      { password: await argon.hash(newPassword) }
     );
 
     await redis.del(forgetPasswordKey);
@@ -164,11 +174,15 @@ export class UserResolver {
   }
 
   @Mutation(() => User, { nullable: true })
-  async updateUser(
+  async updateUserAbout(
     @Arg("about", () => String) about: string,
-    @Arg("id", () => Int) id: number
+    @Ctx() { req }: MyContext
   ): Promise<User | null> {
-    const user = await User.findOne(id);
+    if (!req.session.userId) {
+      return null;
+    }
+
+    const user = await User.findOne(req.session.userId);
     if (!user) {
       return null;
     }
@@ -192,13 +206,16 @@ export class UserResolver {
   }
 
   @Mutation(() => Boolean)
-  async deleteUserById(@Arg("id", () => Int) id: number): Promise<boolean> {
-    const userToDelete = await User.findOne(id);
+  async deleteAccount(@Ctx() { req }: MyContext): Promise<boolean> {
+    if (!req.session.userId) {
+      return false;
+    }
+    const userToDelete = await User.findOne(req.session.userId);
     if (!userToDelete) {
       return false;
     }
 
-    await User.delete(id);
+    await User.delete({ id: req.session.userId });
     return true;
   }
 }

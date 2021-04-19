@@ -13,7 +13,6 @@ import session from "express-session";
 import { COOKIE_NAME, __prod__ } from "./constants";
 import Redis from "ioredis";
 import connectRedis from "connect-redis";
-import { error } from "node:console";
 
 // session custom variable type merging
 declare module "express-session" {
