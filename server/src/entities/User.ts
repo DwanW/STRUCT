@@ -6,7 +6,7 @@ import {
   UpdateDateColumn,
   CreateDateColumn,
 } from "typeorm";
-import { IsEmail, Length } from "class-validator";
+import { IsEmail, IsUrl, Length } from "class-validator";
 import { Field, ObjectType } from "type-graphql";
 
 @ObjectType({ description: "The user model" })
@@ -37,6 +37,11 @@ export class User extends BaseEntity {
   @Field()
   @Column("int", { default: 0 })
   endorsed: number;
+
+  @Field({ nullable: true })
+  @Column()
+  @IsUrl()
+  avatar_url: string;
 
   @Field(() => String)
   @CreateDateColumn({ type: "date" })

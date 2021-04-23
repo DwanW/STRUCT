@@ -90,7 +90,6 @@ const main = async () => {
   apolloServer.applyMiddleware({ app });
 
   app.listen(parseInt(process.env.PORT), () => {
-    console.log(process.env)
     console.log(
       chalk.green.bold(
         `✔ express server started on port http://localhost:${process.env.PORT}`

@@ -14,9 +14,17 @@ import {
 import { RegisterInput } from "../utils/RegisterInput";
 import argon from "argon2";
 import { MyContext } from "../types";
-import { COOKIE_NAME, FORGET_PASSWORD_PREFIX } from "../constants";
+import {
+  COOKIE_NAME,
+  FORGET_PASSWORD_PREFIX,
+  S3BUCKET_NAME,
+  S3SIGN_EXPIRE_TIME,
+} from "../constants";
 import { sendEmail } from "../utils/sendEmail";
 import { v4 } from "uuid";
+import { PutObjectCommand } from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import { s3 } from "../s3";
 
 @ObjectType()
 class AuthResponse {
@@ -25,6 +33,18 @@ class AuthResponse {
 
   @Field(() => User, { nullable: true })
   user?: User;
+}
+
+@ObjectType()
+class S3SignResponse {
+  @Field(() => String, { nullable: true })
+  error?: string;
+
+  @Field(() => String, { nullable: true })
+  signedS3url?: string;
+
+  @Field(() => String, { nullable: true })
+  obj_url?: string;
 }
 
 // resolvers for apollo graphql server
@@ -217,5 +237,62 @@ export class UserResolver {
 
     await User.delete({ id: req.session.userId });
     return true;
+  }
+
+  @Mutation(() => S3SignResponse)
+  async signS3(
+    @Arg("filename", () => String) filename: string,
+    @Arg("filetype", () => String) filetype: string,
+    @Ctx() { req }: MyContext
+  ) {
+    if (!req.session.userId) {
+      return {
+        error: "please login again",
+      };
+    }
+
+    const user = await User.findOne(req.session.userId);
+    if (!user) {
+      return {
+        error: "user no longer exist",
+      };
+    }
+
+    const s3Params = {
+      Bucket: S3BUCKET_NAME,
+      Key: `avatar/${filename}`,
+      ContentType: filetype,
+      ACL: "public-read",
+    };
+
+    const signedS3url = await getSignedUrl(s3, new PutObjectCommand(s3Params), {
+      expiresIn: S3SIGN_EXPIRE_TIME,
+    });
+
+    const object_url = `https//${S3BUCKET_NAME}.s3.amazonaws.com/avatar/${filename}`;
+
+    return {
+      error: null,
+      signedS3url: signedS3url,
+      obj_url: object_url,
+    };
+  }
+
+  @Mutation(() => User, { nullable: true })
+  async updateUserAvatar(
+    @Arg("avatar_url", () => String) avatar_url: string,
+    @Ctx() { req }: MyContext
+  ): Promise<User | null> {
+    if (!req.session.userId) {
+      return null;
+    }
+
+    const user = await User.findOne(req.session.userId);
+    if (!user) {
+      return null;
+    }
+    user.avatar_url = avatar_url;
+    const result = await user.save();
+    return result;
   }
 }
