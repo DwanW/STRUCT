@@ -5,9 +5,12 @@ import {
   Column,
   UpdateDateColumn,
   CreateDateColumn,
+  OneToMany,
 } from "typeorm";
 import { IsEmail, IsUrl, Length } from "class-validator";
 import { Field, ObjectType } from "type-graphql";
+import { Story } from "./Story";
+import { Vote } from "./Vote";
 
 @ObjectType({ description: "The user model" })
 @Entity()
@@ -50,4 +53,11 @@ export class User extends BaseEntity {
   @Field(() => String)
   @UpdateDateColumn({ type: "date" })
   updatedAt: Date = new Date();
+
+  //relationship
+  @OneToMany(() => Story, (story) => story.creator)
+  story: Story[];
+
+  @OneToMany(() => Vote, (vote) => vote.user)
+  votes: Vote[];
 }
