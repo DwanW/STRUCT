@@ -9,6 +9,7 @@ import {
   Ctx,
   FieldResolver,
   Root,
+  UseMiddleware,
 } from "type-graphql";
 // import { MyContext } from "../types";
 import { RegisterInput } from "../utils/RegisterInput";
@@ -25,6 +26,7 @@ import { v4 } from "uuid";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { s3 } from "../s3";
+import { isAuth } from "../middleware/isAuth";
 
 @ObjectType()
 class AuthResponse {
@@ -240,24 +242,11 @@ export class UserResolver {
   }
 
   @Mutation(() => S3SignResponse)
+  @UseMiddleware(isAuth)
   async signS3(
     @Arg("filename", () => String) filename: string,
-    @Arg("filetype", () => String) filetype: string,
-    @Ctx() { req }: MyContext
+    @Arg("filetype", () => String) filetype: string
   ) {
-    if (!req.session.userId) {
-      return {
-        error: "please login again",
-      };
-    }
-
-    const user = await User.findOne(req.session.userId);
-    if (!user) {
-      return {
-        error: "user no longer exist",
-      };
-    }
-
     const s3Params = {
       Bucket: S3BUCKET_NAME,
       Key: `avatar/${filename}`,

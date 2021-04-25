@@ -42,7 +42,7 @@ export class User extends BaseEntity {
   endorsed: number;
 
   @Field({ nullable: true })
-  @Column()
+  @Column({ nullable: true })
   @IsUrl()
   avatar_url: string;
 
@@ -56,7 +56,7 @@ export class User extends BaseEntity {
 
   //relationship
   @OneToMany(() => Story, (story) => story.creator)
-  story: Story[];
+  stories: Story[];
 
   @OneToMany(() => Vote, (vote) => vote.user)
   votes: Vote[];
