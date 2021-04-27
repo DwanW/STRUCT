@@ -27,6 +27,7 @@ import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { s3 } from "../s3";
 import { isAuth } from "../middleware/isAuth";
+import { S3SignResponse } from "../utils/sharedTypes";
 
 @ObjectType()
 class AuthResponse {
@@ -35,18 +36,6 @@ class AuthResponse {
 
   @Field(() => User, { nullable: true })
   user?: User;
-}
-
-@ObjectType()
-class S3SignResponse {
-  @Field(() => String, { nullable: true })
-  error?: string;
-
-  @Field(() => String, { nullable: true })
-  signedS3url?: string;
-
-  @Field(() => String, { nullable: true })
-  obj_url?: string;
 }
 
 // resolvers for apollo graphql server
@@ -243,7 +232,7 @@ export class UserResolver {
 
   @Mutation(() => S3SignResponse)
   @UseMiddleware(isAuth)
-  async signS3(
+  async signS3UserAvatar(
     @Arg("filename", () => String) filename: string,
     @Arg("filetype", () => String) filetype: string
   ) {
