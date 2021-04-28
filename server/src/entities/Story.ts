@@ -10,6 +10,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
+import { SubStory } from "./SubStory";
 import { User } from "./User";
 import { Vote } from "./Vote";
 
@@ -64,4 +65,7 @@ export class Story extends BaseEntity {
 
   @OneToMany(() => Vote, (vote) => vote.story)
   votes: Vote[];
+
+  @OneToMany(() => SubStory, (substory) => substory.story)
+  substories: SubStory[];
 }
