@@ -26,8 +26,8 @@ export class SubStory extends BaseEntity {
   text!: string;
 
   @Field()
-  @Column("int")
-  order_index: number;
+  @Column("numeric")
+  order_index!: number;
 
   @Field()
   @Column()
@@ -43,6 +43,6 @@ export class SubStory extends BaseEntity {
 
   //relationship
   @Field(() => Story)
-  @ManyToOne(() => Story, (story) => story.substories)
+  @ManyToOne(() => Story, (story) => story.substories, {onDelete: "CASCADE"}) 
   story: Story;
 }

@@ -8,3 +8,13 @@ export class CreateStoryInput {
   @Field()
   overview?: string;
 }
+
+
+@InputType()
+export class CreateSubStoryInput {
+  @Field()
+  title: string;
+
+  @Field()
+  text: string;
+}

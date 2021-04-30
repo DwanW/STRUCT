@@ -13,7 +13,7 @@ import {
   Root,
   UseMiddleware,
 } from "type-graphql";
-import { CreateStoryInput } from "../utils/CreateStoryInput";
+import { CreateStoryInput } from "../utils/inputTypes";
 import { MyContext } from "../types";
 import { isAuth } from "../middleware/isAuth";
 import { User } from "../entities/User";
@@ -23,6 +23,7 @@ import { S3BUCKET_NAME, S3SIGN_EXPIRE_TIME } from "../constants";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { s3 } from "../s3";
+import { Vote } from "../entities/Vote";
 
 @ObjectType()
 class PaginatedStory {
@@ -170,6 +171,81 @@ export class StoryResolver {
     return result.raw[0];
   }
 
+  @Mutation(() => Boolean)
+  @UseMiddleware(isAuth)
+  async vote(
+    @Arg("storyId", () => Int) storyId: number,
+    @Arg("value", () => Int) value: number,
+    @Ctx() { req }: MyContext
+  ) {
+    const { userId } = req.session;
+    const voteValue = value > 0 ? 1 : value < 0 ? -1 : 0;
+    const upvote = value > 0 ? 1 : 0;
+    const downvote = value < 0 ? 1 : 0;
+
+    const currentVote = await Vote.findOne({ where: { storyId, userId } }); // (+1 , -1 or 0) or undefined
+
+    if (
+      currentVote !== undefined &&
+      currentVote.value !== voteValue &&
+      voteValue !== 0
+    ) {
+      //changing vote
+      await getConnection().transaction(async (transManager) => {
+        await transManager.query(`
+        update vote
+        set value = ${voteValue}
+        where "storyId" = ${storyId} and "userId" = ${userId}
+        `);
+
+        await transManager.query(`
+        update story
+        set up_vote = up_vote + ${
+          currentVote.value === 0 ? upvote : voteValue
+        }, down_vote = down_vote + ${
+          currentVote.value === 0 ? downvote : -voteValue
+        }
+        where id = ${storyId}
+        `);
+      });
+    } else if (
+      currentVote !== undefined &&
+      currentVote.value !== voteValue &&
+      voteValue === 0
+    ) {
+      //unvote
+      await getConnection().transaction(async (transManager) => {
+        await transManager.query(`
+        update vote
+        set value = ${voteValue}
+        where "storyId" = ${storyId} and "userId" = ${userId}
+        `);
+
+        await transManager.query(`
+        update story
+        set up_vote = up_vote + ${
+          currentVote.value > 0 ? -1 : 0
+        }, down_vote = down_vote + ${currentVote.value < 0 ? -1 : 0}
+        where id = ${storyId}
+        `);
+      });
+    } else if (currentVote === undefined && voteValue !== 0) {
+      //has never voted, creating new vote
+      await getConnection().transaction(async (transManager) => {
+        await transManager.query(`
+        insert into vote ("userId", "storyId", "value")
+        values (${userId}, ${storyId}, ${voteValue})
+        `);
+        await transManager.query(`
+        update story
+        set up_vote = up_vote + ${upvote}, down_vote = down_vote + ${downvote}
+        where id = ${storyId}
+        `);
+      });
+    }
+    return true;
+  }
+
   @Mutation(() => S3SignResponse)
   @UseMiddleware(isAuth)
   async signS3StoryCover(
@@ -210,5 +286,25 @@ export class StoryResolver {
     }
     await Story.delete({ id, creatorId: req.session.userId });
     return true;
+  }
+
+  @Mutation(() => Story, { nullable: true })
+  @UseMiddleware(isAuth)
+  async updateStoryCover(
+    @Arg("cover_url", () => String) cover_url: string,
+    @Arg("id", () => Int) id: number,
+    @Ctx() { req }: MyContext
+  ): Promise<Story | null> {
+    const story = await Story.findOne(id);
+    if (!story) {
+      return null;
+    }
+
+    if (story.creatorId !== req.session.userId) {
+      return null;
+    }
+    story.cover_url = cover_url;
+    const result = await story.save();
+    return result;
   }
 }

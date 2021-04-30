@@ -60,17 +60,6 @@ export class UserResolver {
     return User.findOne(req.session.userId);
   }
 
-  // @Query(() => User, { nullable: true })
-  // async user(@Arg("id", () => Int) id: number): Promise<User | null> {
-  //   //find user by id
-  //   const user = await User.findOne(id);
-  //   if (!user) {
-  //     return null;
-  //   }
-
-  //   return user;
-  // }
-
   @Mutation(() => AuthResponse)
   async register(
     @Arg("options", () => RegisterInput) options: RegisterInput,

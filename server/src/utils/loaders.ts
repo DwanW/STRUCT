@@ -1,4 +1,5 @@
 import DataLoader from "dataloader";
+import { Story } from "../entities/Story";
 import { User } from "../entities/User";
 
 export const createCreatorLoader = () =>
@@ -11,4 +12,16 @@ export const createCreatorLoader = () =>
     });
 
     return userIds.map((userId) => userIdToUser[userId]);
+  });
+
+export const createStoryLoader = () =>
+  new DataLoader<number, Story>(async (storyIds) => {
+    const stories = await Story.findByIds(storyIds as number[]);
+    const storyIdToStory: Record<number, Story> = {};
+
+    stories.forEach((story) => {
+      storyIdToStory[story.id] = story;
+    });
+
+    return storyIds.map((storyId) => storyIdToStory[storyId]);
   });

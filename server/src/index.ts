@@ -16,7 +16,9 @@ import connectRedis from "connect-redis";
 import { Story } from "./entities/Story";
 import { Vote } from "./entities/Vote";
 import { StoryResolver } from "./resolvers/story";
-import { createCreatorLoader } from "./utils/loaders";
+import { createCreatorLoader, createStoryLoader } from "./utils/loaders";
+import { SubStory } from "./entities/SubStory";
+import { SubStoryResolver } from "./resolvers/substory";
 
 // session custom variable type merging
 declare module "express-session" {
@@ -28,7 +30,7 @@ declare module "express-session" {
 const main = async () => {
   const connection = await createConnection({
     type: "postgres",
-    entities: [User, Story, Vote],
+    entities: [User, Story, SubStory, Vote],
     url: process.env.DATABASE_URL,
     //   synchronize: true,
     logging: true,
@@ -59,7 +61,7 @@ const main = async () => {
         disableTTL: true,
       }),
       cookie: {
-        maxAge: 1000 * 60,
+        maxAge: 1000 * 3600,
         httpOnly: true,
         sameSite: "lax",
         secure: __prod__,
@@ -72,13 +74,14 @@ const main = async () => {
 
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
-      resolvers: [HelloResolver, UserResolver, StoryResolver],
+      resolvers: [HelloResolver, UserResolver, StoryResolver, SubStoryResolver],
     }),
     context: ({ req, res }) => ({
       req,
       res,
       redis,
       creatorLoader: createCreatorLoader(),
+      storyLoader: createStoryLoader(),
     }),
     formatError: (err) => {
       console.log(err.message);
