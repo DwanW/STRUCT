@@ -11,6 +11,7 @@ import { IsEmail, IsUrl, Length } from "class-validator";
 import { Field, ObjectType } from "type-graphql";
 import { Story } from "./Story";
 import { Vote } from "./Vote";
+import { Review } from "./Review";
 
 @ObjectType({ description: "The user model" })
 @Entity()
@@ -60,4 +61,7 @@ export class User extends BaseEntity {
 
   @OneToMany(() => Vote, (vote) => vote.user)
   votes: Vote[];
+
+  @OneToMany(() => Review, (review) => review.user)
+  reviews: Review[];
 }

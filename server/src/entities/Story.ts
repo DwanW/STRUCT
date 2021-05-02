@@ -10,6 +10,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from "typeorm";
+import { Review } from "./Review";
 import { SubStory } from "./SubStory";
 import { User } from "./User";
 import { Vote } from "./Vote";
@@ -68,4 +69,7 @@ export class Story extends BaseEntity {
 
   @OneToMany(() => SubStory, (substory) => substory.story)
   substories: SubStory[];
+
+  @OneToMany(() => Review, (review) => review.story)
+  reviews: Review[];
 }
