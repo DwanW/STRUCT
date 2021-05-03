@@ -29,14 +29,14 @@ import { Vote } from "../entities/Vote";
 class PaginatedStory {
   @Field(() => [Story])
   stories: Story[];
-  @Field()
-  next_cursor: string;
+  @Field(() => Story)
+  next_cursor: Story;
 }
 
 @InputType()
 class TopStoryCursor {
   @Field(() => Int)
-  storyId: number;
+  id: number; // story id
 
   @Field(() => Int)
   net_up_votes: number;
@@ -69,13 +69,13 @@ export class StoryResolver {
   @Query(() => PaginatedStory)
   async getNewStories(
     @Arg("limit", () => Int) limit: number,
-    @Arg("cursor", () => String, { nullable: true }) cursor: string
+    @Arg("cursor", () => Int, { nullable: true }) cursor: number // story id
   ): Promise<PaginatedStory> {
     const fetchLimit = Math.min(20, limit);
     const fetchAmount = fetchLimit + 1;
     const sqlVariables: any[] = [fetchAmount];
     if (cursor) {
-      sqlVariables.push(parseInt(cursor));
+      sqlVariables.push(cursor);
     }
 
     const result = await getConnection().query(
@@ -91,7 +91,7 @@ export class StoryResolver {
     return {
       stories: result.slice(0, fetchLimit),
       next_cursor:
-        result.length === fetchAmount ? result[result.length - 1].id : "",
+        result.length === fetchAmount ? result[result.length - 1] : null,
     };
   }
 
@@ -108,14 +108,18 @@ export class StoryResolver {
 
     if (cursor !== null) {
       sqlVariables.push(cursor.net_up_votes);
-      sqlVariables.push(cursor.storyId);
+      sqlVariables.push(cursor.id);
       sqlVariables.push(time_limit);
     }
 
     const result = await getConnection().query(
       `
       select * from story
-      where ((story.up_vote - story.down_vote) = $2 and story.id <= $3 ) or ((story.up_vote - story.down_vote) < $2) and (story."createdAt" > $4)
+      where ${
+        cursor
+          ? `((story.up_vote - story.down_vote) = $2 and story.id <= $3 ) or ((story.up_vote - story.down_vote) < $2) and`
+          : ""
+      } story."createdAt" > $4
       order by (story.up_vote - story.down_vote) DESC, story.id DESC,
       limit $1
       `,
@@ -125,7 +129,7 @@ export class StoryResolver {
     return {
       stories: result.slice(0, fetchLimit),
       next_cursor:
-        result.length === fetchAmount ? result[result.length - 1].id : "",
+        result.length === fetchAmount ? result[result.length - 1] : null,
     };
   }
 

@@ -21,6 +21,7 @@ import { SubStory } from "./entities/SubStory";
 import { SubStoryResolver } from "./resolvers/substory";
 import { Review } from "./entities/Review";
 import { ReviewResolver } from "./resolvers/review";
+import { ReviewVote } from "./entities/ReviewVote";
 
 // session custom variable type merging
 declare module "express-session" {
@@ -32,7 +33,7 @@ declare module "express-session" {
 const main = async () => {
   const connection = await createConnection({
     type: "postgres",
-    entities: [User, Story, SubStory, Vote, Review],
+    entities: [User, Story, SubStory, Vote, Review, ReviewVote],
     url: process.env.DATABASE_URL,
     //   synchronize: true,
     logging: true,

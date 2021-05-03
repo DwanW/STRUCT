@@ -4,8 +4,10 @@ import {
   Column,
   Entity,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from "typeorm";
+import { ReviewVote } from "./ReviewVote";
 import { Story } from "./Story";
 import { User } from "./User";
 
@@ -55,4 +57,7 @@ export class Review extends BaseEntity {
   @Field(() => Story)
   @ManyToOne(() => Story, (story) => story.reviews, {onDelete: "CASCADE"})
   story: Story;
+
+  @OneToMany(() => ReviewVote, (review_vote) => review_vote.review)
+  review_votes: ReviewVote[]
 }

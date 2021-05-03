@@ -12,6 +12,7 @@ import { Field, ObjectType } from "type-graphql";
 import { Story } from "./Story";
 import { Vote } from "./Vote";
 import { Review } from "./Review";
+import { ReviewVote } from "./ReviewVote";
 
 @ObjectType({ description: "The user model" })
 @Entity()
@@ -64,4 +65,7 @@ export class User extends BaseEntity {
 
   @OneToMany(() => Review, (review) => review.user)
   reviews: Review[];
+
+  @OneToMany(() => ReviewVote, (review_vote) => review_vote.user)
+  review_votes: ReviewVote[];
 }
