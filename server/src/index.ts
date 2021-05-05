@@ -7,7 +7,6 @@ import { User } from "./entities/User";
 import express from "express";
 import { ApolloServer } from "apollo-server-express";
 import { buildSchema } from "type-graphql";
-import { HelloResolver } from "./resolvers/hello";
 import { UserResolver } from "./resolvers/user";
 import session from "express-session";
 import { COOKIE_NAME, __prod__ } from "./constants";
@@ -78,7 +77,6 @@ const main = async () => {
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
       resolvers: [
-        HelloResolver,
         UserResolver,
         StoryResolver,
         SubStoryResolver,
