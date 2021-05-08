@@ -21,6 +21,7 @@ import { SubStoryResolver } from "./resolvers/substory";
 import { Review } from "./entities/Review";
 import { ReviewResolver } from "./resolvers/review";
 import { ReviewVote } from "./entities/ReviewVote";
+import cors from "cors";
 
 // session custom variable type merging
 declare module "express-session" {
@@ -46,13 +47,13 @@ const main = async () => {
 
   const RedisStore = connectRedis(session);
   const redis = new Redis(process.env.REDIS_URL);
-  // app.set("trust proxy", 1);
-  // app.use(
-  //   cors({
-  //     origin: process.env.CORS_ORIGIN,
-  //     credentials: true,
-  //   })
-  // );
+  app.set("trust proxy", 1);
+  app.use(
+    cors({
+      origin: process.env.CORS_ORIGIN,
+      credentials: true,
+    })
+  );
 
   app.use(
     session({
@@ -102,7 +103,7 @@ const main = async () => {
     res.send("hello world");
   });
 
-  apolloServer.applyMiddleware({ app });
+  apolloServer.applyMiddleware({ app, cors: false });
 
   app.listen(parseInt(process.env.PORT), () => {
     console.log(

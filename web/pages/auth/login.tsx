@@ -1,11 +1,48 @@
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+import React, { useState } from "react";
 import AuthLayout from "../../components/Layout/AuthLayout";
+import { useLoginMutation, useMeQuery } from "../../generated/graphql";
+import { useRouter } from "next/dist/client/router";
 
 interface LoginProps {}
 
 const login: React.FC<LoginProps> = ({}) => {
+  const [loginMutation] = useLoginMutation();
+  const { data, loading, error } = useMeQuery({ variables: {} });
+  const router = useRouter();
+
+  console.log({ data, loading, error });
+
+  const [values, setValues] = useState({
+    email: "",
+    password: "",
+  });
+
+  const [errorMsg, setErrorMsg] = useState("");
+
+  const handleChange = (e: any) => {
+    const { name, value } = e.target;
+    setValues({ ...values, [name]: value });
+  };
+
+  const handleLoginSubmit = async (e: any) => {
+    e.preventDefault();
+    const response = await loginMutation({
+      variables: { email: values.email, password: values.password },
+    });
+    if (response.data?.login.error) {
+      setErrorMsg(response.data.login.error);
+    } else if (response.data?.login.user) {
+      if (typeof router.query.next === "string") {
+        router.push(router.query.next);
+      } else {
+        //default redirect
+        router.push("/");
+      }
+    }
+  };
+
   return (
     <AuthLayout>
       <div className="container mx-auto px-4 h-full">
@@ -40,11 +77,11 @@ const login: React.FC<LoginProps> = ({}) => {
                 <div className="text-gray-400 text-center mb-3 font-bold">
                   <small>Or sign in with credentials</small>
                 </div>
-                <form>
+                <form onSubmit={handleLoginSubmit}>
                   <div className="relative w-full mb-3">
                     <label
                       className="block uppercase text-gray-600 text-xs font-bold mb-2"
-                      htmlFor="grid-password"
+                      htmlFor="grid-email"
                     >
                       Email
                     </label>
@@ -52,6 +89,9 @@ const login: React.FC<LoginProps> = ({}) => {
                       type="email"
                       className="border-0 px-3 py-3 placeholder-gray-300 text-gray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
                       placeholder="Email"
+                      name="email"
+                      value={values.email}
+                      onChange={handleChange}
                     />
                   </div>
 
@@ -66,6 +106,9 @@ const login: React.FC<LoginProps> = ({}) => {
                       type="password"
                       className="border-0 px-3 py-3 placeholder-gray-300 text-gray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
                       placeholder="Password"
+                      name="password"
+                      value={values.password}
+                      onChange={handleChange}
                     />
                   </div>
                   <div>
@@ -82,32 +125,44 @@ const login: React.FC<LoginProps> = ({}) => {
                   </div>
 
                   <div className="text-center mt-6">
-                    <button
-                      className="bg-gray-800 text-white hover:bg-gray-600 text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 w-full ease-linear transition-all duration-150"
-                      type="button"
-                    >
-                      Sign In
-                    </button>
+                    {loading ? (
+                      <button
+                        className="bg-gray-800 text-white hover:bg-gray-600 text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 w-full ease-linear transition-all duration-150"
+                        type="submit"
+                      >
+                        Loading...
+                      </button>
+                    ) : (
+                      <button
+                        className="bg-gray-800 text-white hover:bg-gray-600 text-sm font-bold uppercase px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 w-full ease-linear transition-all duration-150"
+                        type="submit"
+                      >
+                        Sign In
+                      </button>
+                    )}
                   </div>
                 </form>
                 <div className="flex flex-wrap mt-6 relative">
-              <div className="w-1/2">
-                <a
-                  href="#pablo"
-                  onClick={(e) => e.preventDefault()}
-                  className="text-gray-600 hover:text-black"
-                >
-                  <small>Forgot password?</small>
-                </a>
-              </div>
-              <div className="w-1/2 text-right">
-                <Link href="/auth/register">
-                  <a href="#pablo" className="text-gray-600 hover:text-black">
-                    <small>Create new account</small>
-                  </a>
-                </Link>
-              </div>
-            </div>
+                  <div className="w-1/2">
+                    <a
+                      href="#pablo"
+                      onClick={(e) => e.preventDefault()}
+                      className="text-gray-600 hover:text-black"
+                    >
+                      <small>Forgot password?</small>
+                    </a>
+                  </div>
+                  <div className="w-1/2 text-right">
+                    <Link href="/auth/register">
+                      <a
+                        href="#pablo"
+                        className="text-gray-600 hover:text-black"
+                      >
+                        <small>Create new account</small>
+                      </a>
+                    </Link>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
