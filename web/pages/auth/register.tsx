@@ -2,19 +2,23 @@ import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import AuthLayout from "../../components/Layout/AuthLayout";
-import { useLoginMutation } from "../../generated/graphql";
+import { useRegisterMutation } from "../../generated/graphql";
 import { useRouter } from "next/dist/client/router";
+import { isRegisterInputValid } from "../../utils/validation";
 
-interface LoginProps {}
+interface RegisterProps {}
 
-const LoginPage: React.FC<LoginProps> = ({}) => {
-  const [loginMutation, {loading}] = useLoginMutation();
+const RegisterPage: React.FC<RegisterProps> = ({}) => {
+  const [registerMutation, { loading }] = useRegisterMutation();
   const router = useRouter();
 
   const [values, setValues] = useState({
+    username: "",
     email: "",
     password: "",
   });
+
+  const [agree, setAgree] = useState(false);
 
   const [errorMsg, setErrorMsg] = useState("");
 
@@ -33,16 +37,33 @@ const LoginPage: React.FC<LoginProps> = ({}) => {
 
   const handleLoginSubmit = async (e: any) => {
     e.preventDefault();
-    const response = await loginMutation({
-      variables: { email: values.email, password: values.password },
+    const validationResponse = isRegisterInputValid(values);
+    if (validationResponse !== true) {
+      setErrorMsg(validationResponse);
+      return;
+    }
+    if (!agree) {
+      setErrorMsg("Agree with our privacy policy to continue");
+      return;
+    }
+
+    const response = await registerMutation({
+      variables: {
+        options: {
+          username: values.username,
+          email: values.email,
+          password: values.password,
+        },
+      },
     });
-    if (response.data?.login.error) {
-      setErrorMsg(response.data.login.error);
+    if (response.data?.register.error) {
+      setErrorMsg(response.data.register.error);
       setValues({
+        username: "",
         email: "",
         password: "",
       });
-    } else if (response.data?.login.user) {
+    } else if (response.data?.register.user) {
       if (typeof router.query.next === "string") {
         router.push(router.query.next);
       } else {
@@ -58,7 +79,7 @@ const LoginPage: React.FC<LoginProps> = ({}) => {
         <div className="flex content-center items-center justify-center h-full">
           <div className="w-full lg:w-4/12 px-4">
             <div className="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded-lg bg-blue-100 border-0 bg-opacity-80">
-              <div className="rounded-t mb-0 px-6 py-6">
+              <div className="rounded-t px-6 py-6">
                 <div className="text-center mb-3">
                   <h6 className="text-gray-500 text-sm font-bold">
                     Sign in with
@@ -86,6 +107,22 @@ const LoginPage: React.FC<LoginProps> = ({}) => {
                   <small>Or sign in with credentials</small>
                 </div>
                 <form onSubmit={handleLoginSubmit}>
+                  <div className="relative w-full mb-3">
+                    <label
+                      className="block uppercase text-gray-600 text-xs font-bold mb-2"
+                      htmlFor="grid-username"
+                    >
+                      Username
+                    </label>
+                    <input
+                      type="text"
+                      className="border-0 px-3 py-3 placeholder-gray-300 text-gray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+                      placeholder="Username"
+                      name="username"
+                      value={values.username}
+                      onChange={handleChange}
+                    />
+                  </div>
                   <div className="relative w-full mb-3">
                     <label
                       className="block uppercase text-gray-600 text-xs font-bold mb-2"
@@ -125,9 +162,23 @@ const LoginPage: React.FC<LoginProps> = ({}) => {
                         id="customCheckLogin"
                         type="checkbox"
                         className="form-checkbox border-0 rounded text-gray-700 ml-1 w-5 h-5 ease-linear transition-all duration-150"
+                        checked={agree}
+                        onChange={() => setAgree(!agree)}
                       />
                       <span className="ml-2 text-sm font-semibold text-gray-600">
-                        Remember me
+                        I agree with the{" "}
+                        <Link href="/privacy-policy">
+                          <a
+                            href="#pablo"
+                            className="text-blue-500"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              router.push("/privacy-policy");
+                            }}
+                          >
+                            Privacy Policy
+                          </a>
+                        </Link>
                       </span>
                     </label>
                   </div>
@@ -143,27 +194,21 @@ const LoginPage: React.FC<LoginProps> = ({}) => {
                       type="submit"
                       disabled={loading}
                     >
-                      Sign In
+                      Create Account
                     </button>
                   </div>
                 </form>
                 <div className="flex flex-wrap mt-6 relative">
-                  <div className="w-1/2">
-                    <a
-                      href="#pablo"
-                      onClick={(e) => e.preventDefault()}
-                      className="text-gray-600 hover:text-black"
-                    >
-                      <small>Forgot password?</small>
-                    </a>
+                  <div className="w-full text-center text-gray-500">
+                    already have an account?
                   </div>
-                  <div className="w-1/2 text-right">
-                    <Link href="/auth/register">
+                  <div className="w-full text-center">
+                    <Link href="/auth/login">
                       <a
                         href="#pablo"
-                        className="text-gray-600 hover:text-black"
+                        className="text-gray-700 hover:text-black"
                       >
-                        <small>Create new account</small>
+                        <small>Log In here</small>
                       </a>
                     </Link>
                   </div>
@@ -177,4 +222,4 @@ const LoginPage: React.FC<LoginProps> = ({}) => {
   );
 };
 
-export default LoginPage;
+export default RegisterPage;

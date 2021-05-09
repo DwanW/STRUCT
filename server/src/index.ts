@@ -92,7 +92,7 @@ const main = async () => {
       storyLoader: createStoryLoader(),
     }),
     formatError: (err) => {
-      console.log(err.message);
+      console.log("formatError:", err);
       if (err.message === "Argument Validation Error") {
         return new Error("validation failed");
       }

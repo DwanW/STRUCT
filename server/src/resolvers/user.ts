@@ -67,6 +67,7 @@ export class UserResolver {
   ): Promise<AuthResponse> {
     const hashedPassword = await argon.hash(options.password);
     let user;
+    console.log(options)
 
     try {
       const newUser = User.create({
@@ -79,6 +80,7 @@ export class UserResolver {
       user = result;
     } catch (err) {
       console.log("createUser error: ", err);
+      return { error: "Failed to create account"}
     }
 
     req.session.userId = user?.id;
