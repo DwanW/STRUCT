@@ -4,11 +4,13 @@ import React, { useEffect, useState } from "react";
 import AuthLayout from "../../components/Layout/AuthLayout";
 import { useLoginMutation } from "../../generated/graphql";
 import { useRouter } from "next/dist/client/router";
+import { NextPage } from "next";
+import { isLoginInputValid } from "../../utils/validation";
 
 interface LoginProps {}
 
-const LoginPage: React.FC<LoginProps> = ({}) => {
-  const [loginMutation, {loading}] = useLoginMutation();
+const LoginPage: NextPage<LoginProps> = ({}) => {
+  const [loginMutation, { loading }] = useLoginMutation();
   const router = useRouter();
 
   const [values, setValues] = useState({
@@ -33,6 +35,13 @@ const LoginPage: React.FC<LoginProps> = ({}) => {
 
   const handleLoginSubmit = async (e: any) => {
     e.preventDefault();
+    const validationResponse = isLoginInputValid(values.email, values.password);
+
+    if (validationResponse !== true) {
+      setErrorMsg(validationResponse);
+      return;
+    }
+
     const response = await loginMutation({
       variables: { email: values.email, password: values.password },
     });
@@ -149,13 +158,11 @@ const LoginPage: React.FC<LoginProps> = ({}) => {
                 </form>
                 <div className="flex flex-wrap mt-6 relative">
                   <div className="w-1/2">
-                    <a
-                      href="#pablo"
-                      onClick={(e) => e.preventDefault()}
-                      className="text-gray-600 hover:text-black"
-                    >
-                      <small>Forgot password?</small>
-                    </a>
+                    <Link href="/auth/forgot-password">
+                      <a className="text-gray-600 hover:text-black">
+                        <small>Forgot password?</small>
+                      </a>
+                    </Link>
                   </div>
                   <div className="w-1/2 text-right">
                     <Link href="/auth/register">

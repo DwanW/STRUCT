@@ -5,10 +5,11 @@ import AuthLayout from "../../components/Layout/AuthLayout";
 import { useRegisterMutation } from "../../generated/graphql";
 import { useRouter } from "next/dist/client/router";
 import { isRegisterInputValid } from "../../utils/validation";
+import { NextPage } from "next";
 
 interface RegisterProps {}
 
-const RegisterPage: React.FC<RegisterProps> = ({}) => {
+const RegisterPage: NextPage<RegisterProps> = ({}) => {
   const [registerMutation, { loading }] = useRegisterMutation();
   const router = useRouter();
 

@@ -67,7 +67,7 @@ export class UserResolver {
   ): Promise<AuthResponse> {
     const hashedPassword = await argon.hash(options.password);
     let user;
-    console.log(options)
+    console.log(options);
 
     try {
       const newUser = User.create({
@@ -80,7 +80,7 @@ export class UserResolver {
       user = result;
     } catch (err) {
       console.log("createUser error: ", err);
-      return { error: "Failed to create account"}
+      return { error: "Failed to create account" };
     }
 
     req.session.userId = user?.id;
@@ -166,11 +166,12 @@ export class UserResolver {
     const token = v4();
     console.log({ token });
 
-    await redis.set(FORGET_PASSWORD_PREFIX + token, user.id, "ex", 1000 * 3600);
+    await redis.set(FORGET_PASSWORD_PREFIX + token, user.id, "ex", 1000 * 3600); //change this to the appropriate amount
 
     await sendEmail(
       email,
-      `<a href="${process.env.CORS_ORIGIN}/change-password/${token}">reset password</a>`
+      `<div>A password reset request was received, click the link below to reset your password.</div>
+      <a href="${process.env.CORS_ORIGIN}/auth/change-password/${token}">reset password</a>`
     );
     return true;
   }
