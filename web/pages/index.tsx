@@ -3,6 +3,12 @@
 // import { gql } from "@apollo/client";
 // import { apollo } from "../utils/apollo-client";
 
+import StoryNavbar from "../components/Navbars/StoryNavbar";
+
 export default function Home() {
-  return <div>hello next js</div>;
+  return (
+    <StoryNavbar>
+      <div>hello next js</div>
+    </StoryNavbar>
+  );
 }

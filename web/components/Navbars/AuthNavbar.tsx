@@ -9,7 +9,7 @@ const AuthNavbar: React.FC<AuthNavbarProps> = () => {
   return (
     <nav className="top-0 fixed z-50 w-full flex flex-wrap items-center justify-between px-2 py-2">
       <div className="container px-4 mx-auto flex flex-wrap item-center justify-between">
-        <div className="w-full relative flex justify-between lg:w-auto lg:static lg:block lg:justify-start">
+        <div className="w-full relative flex justify-between sm:w-auto sm:static sm:block sm:justify-start">
           <Link href="/">
             <a
               href="/"
@@ -19,7 +19,7 @@ const AuthNavbar: React.FC<AuthNavbarProps> = () => {
             </a>
           </Link>
           <button
-            className="cursor-pointer text-2xl leading-none px-3 py-1 border-solid border-transparent rounded bg-transparent block lg:hidden outline-none focus:outline-none"
+            className="cursor-pointer text-2xl leading-none px-3 py-1 border-solid border-transparent rounded bg-transparent block sm:hidden outline-none focus:outline-none"
             type="button"
             onClick={() => setMobileNavbarOpen(!mobileNavbarOpen)}
           >
@@ -41,20 +41,20 @@ const AuthNavbar: React.FC<AuthNavbarProps> = () => {
         </div>
         <div
           className={
-            "lg:flex flex-grow items-center bg-white lg:bg-opacity-0 lg:shadow-none" +
+            "sm:flex flex-grow items-center bg-white sm:bg-opacity-0 sm:shadow-none" +
             (mobileNavbarOpen ? " block rounded shadow-lg" : " hidden")
           }
         >
-          <ul className="flex flex-col lg:flex-row list-none mr-auto">
+          <ul className="flex flex-col sm:flex-row list-none mr-auto">
             <li className="flex items-center">
               <Link href="/">
                 <a
-                  className="lg:hover:text-gray-800 text-gray-500 px-3 py-4 lg:py-2 flex items-center text-xs uppercase font-bold w-full"
+                  className="sm:hover:text-gray-800 text-gray-500 px-3 py-4 sm:py-2 flex items-center text-xs uppercase font-bold w-full"
                   href="/"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5 lg:text-blue-700 text-blue-500 text-lg leading-6 mr-2"
+                    className="h-5 w-5 sm:text-blue-700 text-blue-500 text-lg leading-6 mr-2"
                     viewBox="0 0 20 20"
                     fill="currentColor"
                   >
@@ -69,17 +69,17 @@ const AuthNavbar: React.FC<AuthNavbarProps> = () => {
               </Link>
             </li>
           </ul>
-          <ul className="flex flex-col lg:flex-row list-none lg:ml-auto">
+          <ul className="flex flex-col sm:flex-row list-none sm:ml-auto">
             <li className="flex items-center">
               <Link href="/">
                 <a
-                  className="lg:hover:text-gray-800 text-gray-500 px-3 py-4 lg:py-2 flex items-center text-xs uppercase font-bold w-full"
+                  className="sm:hover:text-gray-800 text-gray-500 px-3 py-4 sm:py-2 flex items-center text-xs uppercase font-bold w-full"
                   href=""
                   target="_blank"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    className="h-6 w-6 lg:text-blue-700 text-blue-500"
+                    className="h-6 w-6 sm:text-blue-700 text-blue-500"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -91,7 +91,7 @@ const AuthNavbar: React.FC<AuthNavbarProps> = () => {
                       d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
                     />
                   </svg>
-                  <span className="lg:hover:text-gray-800 text-gray-500 inline-block ml-2">
+                  <span className="sm:hover:text-gray-800 text-gray-500 inline-block ml-2">
                     Feedback
                   </span>
                 </a>

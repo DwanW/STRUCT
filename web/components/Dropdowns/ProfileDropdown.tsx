@@ -24,7 +24,7 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({}) => {
   return (
     <>
       <a
-        className="lg:hover:text-gray-800 text-gray-500 px-3 py-4 lg:py-2 flex items-center text-xs uppercase font-bold w-full"
+        className="sm:hover:text-gray-800 text-gray-500 px-3 py-4 sm:py-2 flex items-center text-xs uppercase font-bold w-full"
         href="#pablo"
         ref={btnDropdownRef}
         onClick={(e) => {
