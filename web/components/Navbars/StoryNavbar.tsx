@@ -1,5 +1,6 @@
 import Link from "next/link";
 import React, { useState } from "react";
+import ProfileDropdown from "../Dropdowns/ProfileDropdown";
 
 interface StoryNavbarProps {}
 
@@ -45,24 +46,9 @@ const StoryNavbar: React.FC<StoryNavbarProps> = ({}) => {
                 />
               </svg>
             </button>
-            <button
-              className="cursor-pointer text-2xl leading-none px-3 py-1 border-solid border-transparent rounded bg-transparent block sm:hidden outline-none focus:outline-none"
-              type="button"
-              onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-8 w-8"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z"
-                  clipRule="evenodd"
-                />
-              </svg>
-            </button>
+            <div className="flex items-center sm:hidden">
+              <ProfileDropdown />
+            </div>
           </div>
           <div
             className={`${
@@ -134,24 +120,10 @@ const StoryNavbar: React.FC<StoryNavbarProps> = ({}) => {
               </div>
             </form>
           </div>
-          <div className="flex flex-col sm:flex-row list-none sm:ml-auto">
-            <button
-              className="sm:hover:text-gray-800 text-gray-500  sm:py-2 flex items-center text-xs uppercase font-bold w-full outline-none focus:outline-none focus:ring"
-              onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-8 w-8"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z"
-                  clipRule="evenodd"
-                />
-              </svg>
-            </button>
+          <div className="flex flex-col sm:flex-row sm:ml-auto">
+            <div className="flex items-center">
+              <ProfileDropdown />
+            </div>
           </div>
         </div>
       </div>

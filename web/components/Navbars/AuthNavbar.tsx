@@ -97,9 +97,6 @@ const AuthNavbar: React.FC<AuthNavbarProps> = () => {
                 </a>
               </Link>
             </li>
-            <li className="flex items-center">
-              <ProfileDropdown />
-            </li>
           </ul>
         </div>
       </div>
