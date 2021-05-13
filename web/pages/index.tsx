@@ -1,14 +1,33 @@
 // import Head from "next/head";
 // import Image from "next/image";
-// import { gql } from "@apollo/client";
-// import { apollo } from "../utils/apollo-client";
 
+import { useState } from "react";
 import StoryNavbar from "../components/Navbars/StoryNavbar";
+import { useStoriesNewQuery } from "../generated/graphql";
 
 export default function Home() {
+  const [storyNewCursor, setStoryNewCursor] = useState(null);
+
+  const { data, loading, error } = useStoriesNewQuery({
+    variables: {
+      limit: 10,
+      cursor: storyNewCursor,
+    },
+  });
+
+  // console.log({data});
   return (
-    <StoryNavbar>
+    <>
+      <StoryNavbar />
       <div>hello next js</div>
-    </StoryNavbar>
+      <div>
+        {data?.getNewStories.stories.map((story, idx) => (
+          <div key={idx}>
+            <div>{story.title}</div>
+            <div>{story.overview}</div>
+          </div>
+        ))}
+      </div>
+    </>
   );
 }

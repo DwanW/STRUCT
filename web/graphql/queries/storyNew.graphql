@@ -1,0 +1,13 @@
+query StoriesNew($limit: Int!, $cursor: Int){
+  getNewStories (limit: $limit, cursor: $cursor){
+		stories {
+      id
+      title
+      overview
+      createdAt
+    }
+    next_cursor {
+      id
+    }
+  }
+}

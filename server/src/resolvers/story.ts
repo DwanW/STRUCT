@@ -29,7 +29,7 @@ import { Vote } from "../entities/Vote";
 class PaginatedStory {
   @Field(() => [Story])
   stories: Story[];
-  @Field(() => Story)
+  @Field(() => Story, { nullable: true })
   next_cursor: Story;
 }
 
@@ -99,7 +99,7 @@ export class StoryResolver {
   async getTopStories(
     @Arg("limit", () => Int) limit: number,
     @Arg("cursor", { nullable: true }) cursor: TopStoryCursor,
-    @Arg("time_range", () => String, { defaultValue: "1" }) time_range: string
+    @Arg("time_range", () => String, { defaultValue: "1" }) time_range: string //# number of days in string
   ) {
     const fetchLimit = Math.min(20, limit);
     const fetchAmount = fetchLimit + 1;
@@ -120,9 +120,9 @@ export class StoryResolver {
           ? `((story.up_vote - story.down_vote) = $2 and story.id <= $3 ) or ((story.up_vote - story.down_vote) < $2) and`
           : ""
       } story."createdAt" > $4
-      order by (story.up_vote - story.down_vote) DESC, story.id DESC,
+      order by (story.up_vote - story.down_vote) DESC, story.id DESC
       limit $1
-      `,
+    `,
       sqlVariables
     );
 

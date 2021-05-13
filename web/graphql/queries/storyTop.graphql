@@ -1,0 +1,15 @@
+query StoriesTop($limit: Int!, $cursor: TopStoryCursor, $time_range: String!) {
+  getTopStories(limit: $limit, cursor: $cursor, time_range: $time_range) {
+    stories {
+      id
+      title
+      overview
+      createdAt
+    }
+    next_cursor {
+      id
+      up_vote
+      down_vote
+    }
+  }
+}

@@ -202,7 +202,7 @@ export type PaginatedReview = {
 export type PaginatedStory = {
   __typename?: 'PaginatedStory';
   stories: Array<Story>;
-  next_cursor: Story;
+  next_cursor?: Maybe<Story>;
 };
 
 export type Query = {
@@ -400,6 +400,14 @@ export type LoginMutation = (
   ) }
 );
 
+export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type LogoutMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'logout'>
+);
+
 export type RegisterMutationVariables = Exact<{
   options: RegisterInput;
 }>;
@@ -426,6 +434,47 @@ export type MeQuery = (
     { __typename?: 'User' }
     & Pick<User, 'id' | 'email' | 'about' | 'createdAt'>
   )> }
+);
+
+export type StoriesNewQueryVariables = Exact<{
+  limit: Scalars['Int'];
+  cursor?: Maybe<Scalars['Int']>;
+}>;
+
+
+export type StoriesNewQuery = (
+  { __typename?: 'Query' }
+  & { getNewStories: (
+    { __typename?: 'PaginatedStory' }
+    & { stories: Array<(
+      { __typename?: 'Story' }
+      & Pick<Story, 'id' | 'title' | 'overview' | 'createdAt'>
+    )>, next_cursor?: Maybe<(
+      { __typename?: 'Story' }
+      & Pick<Story, 'id'>
+    )> }
+  ) }
+);
+
+export type StoriesTopQueryVariables = Exact<{
+  limit: Scalars['Int'];
+  cursor?: Maybe<TopStoryCursor>;
+  time_range: Scalars['String'];
+}>;
+
+
+export type StoriesTopQuery = (
+  { __typename?: 'Query' }
+  & { getTopStories: (
+    { __typename?: 'PaginatedStory' }
+    & { stories: Array<(
+      { __typename?: 'Story' }
+      & Pick<Story, 'id' | 'title' | 'overview' | 'createdAt'>
+    )>, next_cursor?: Maybe<(
+      { __typename?: 'Story' }
+      & Pick<Story, 'id' | 'up_vote' | 'down_vote'>
+    )> }
+  ) }
 );
 
 
@@ -537,6 +586,36 @@ export function useLoginMutation(baseOptions?: Apollo.MutationHookOptions<LoginM
 export type LoginMutationHookResult = ReturnType<typeof useLoginMutation>;
 export type LoginMutationResult = Apollo.MutationResult<LoginMutation>;
 export type LoginMutationOptions = Apollo.BaseMutationOptions<LoginMutation, LoginMutationVariables>;
+export const LogoutDocument = gql`
+    mutation Logout {
+  logout
+}
+    `;
+export type LogoutMutationFn = Apollo.MutationFunction<LogoutMutation, LogoutMutationVariables>;
+
+/**
+ * __useLogoutMutation__
+ *
+ * To run a mutation, you first call `useLogoutMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useLogoutMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [logoutMutation, { data, loading, error }] = useLogoutMutation({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useLogoutMutation(baseOptions?: Apollo.MutationHookOptions<LogoutMutation, LogoutMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<LogoutMutation, LogoutMutationVariables>(LogoutDocument, options);
+      }
+export type LogoutMutationHookResult = ReturnType<typeof useLogoutMutation>;
+export type LogoutMutationResult = Apollo.MutationResult<LogoutMutation>;
+export type LogoutMutationOptions = Apollo.BaseMutationOptions<LogoutMutation, LogoutMutationVariables>;
 export const RegisterDocument = gql`
     mutation Register($options: RegisterInput!) {
   register(options: $options) {
@@ -613,3 +692,94 @@ export function useMeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MeQuery
 export type MeQueryHookResult = ReturnType<typeof useMeQuery>;
 export type MeLazyQueryHookResult = ReturnType<typeof useMeLazyQuery>;
 export type MeQueryResult = Apollo.QueryResult<MeQuery, MeQueryVariables>;
+export const StoriesNewDocument = gql`
+    query StoriesNew($limit: Int!, $cursor: Int) {
+  getNewStories(limit: $limit, cursor: $cursor) {
+    stories {
+      id
+      title
+      overview
+      createdAt
+    }
+    next_cursor {
+      id
+    }
+  }
+}
+    `;
+
+/**
+ * __useStoriesNewQuery__
+ *
+ * To run a query within a React component, call `useStoriesNewQuery` and pass it any options that fit your needs.
+ * When your component renders, `useStoriesNewQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useStoriesNewQuery({
+ *   variables: {
+ *      limit: // value for 'limit'
+ *      cursor: // value for 'cursor'
+ *   },
+ * });
+ */
+export function useStoriesNewQuery(baseOptions: Apollo.QueryHookOptions<StoriesNewQuery, StoriesNewQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<StoriesNewQuery, StoriesNewQueryVariables>(StoriesNewDocument, options);
+      }
+export function useStoriesNewLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<StoriesNewQuery, StoriesNewQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<StoriesNewQuery, StoriesNewQueryVariables>(StoriesNewDocument, options);
+        }
+export type StoriesNewQueryHookResult = ReturnType<typeof useStoriesNewQuery>;
+export type StoriesNewLazyQueryHookResult = ReturnType<typeof useStoriesNewLazyQuery>;
+export type StoriesNewQueryResult = Apollo.QueryResult<StoriesNewQuery, StoriesNewQueryVariables>;
+export const StoriesTopDocument = gql`
+    query StoriesTop($limit: Int!, $cursor: TopStoryCursor, $time_range: String!) {
+  getTopStories(limit: $limit, cursor: $cursor, time_range: $time_range) {
+    stories {
+      id
+      title
+      overview
+      createdAt
+    }
+    next_cursor {
+      id
+      up_vote
+      down_vote
+    }
+  }
+}
+    `;
+
+/**
+ * __useStoriesTopQuery__
+ *
+ * To run a query within a React component, call `useStoriesTopQuery` and pass it any options that fit your needs.
+ * When your component renders, `useStoriesTopQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useStoriesTopQuery({
+ *   variables: {
+ *      limit: // value for 'limit'
+ *      cursor: // value for 'cursor'
+ *      time_range: // value for 'time_range'
+ *   },
+ * });
+ */
+export function useStoriesTopQuery(baseOptions: Apollo.QueryHookOptions<StoriesTopQuery, StoriesTopQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<StoriesTopQuery, StoriesTopQueryVariables>(StoriesTopDocument, options);
+      }
+export function useStoriesTopLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<StoriesTopQuery, StoriesTopQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<StoriesTopQuery, StoriesTopQueryVariables>(StoriesTopDocument, options);
+        }
+export type StoriesTopQueryHookResult = ReturnType<typeof useStoriesTopQuery>;
+export type StoriesTopLazyQueryHookResult = ReturnType<typeof useStoriesTopLazyQuery>;
+export type StoriesTopQueryResult = Apollo.QueryResult<StoriesTopQuery, StoriesTopQueryVariables>;
