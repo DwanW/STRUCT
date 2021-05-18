@@ -5,6 +5,7 @@ query StoriesTop($limit: Int!, $cursor: TopStoryCursor, $time_range: String!) {
       title
       overview
       createdAt
+      cover_url
     }
     next_cursor {
       id

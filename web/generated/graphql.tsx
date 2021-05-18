@@ -425,6 +425,34 @@ export type RegisterMutation = (
   ) }
 );
 
+export type SignS3StoryCoverMutationVariables = Exact<{
+  filename: Scalars['String'];
+  filetype: Scalars['String'];
+}>;
+
+
+export type SignS3StoryCoverMutation = (
+  { __typename?: 'Mutation' }
+  & { signS3StoryCover: (
+    { __typename?: 'S3SignResponse' }
+    & Pick<S3SignResponse, 'error' | 'signedS3url' | 'obj_url'>
+  ) }
+);
+
+export type UpdateStoryCoverMutationVariables = Exact<{
+  cover_url: Scalars['String'];
+  id: Scalars['Int'];
+}>;
+
+
+export type UpdateStoryCoverMutation = (
+  { __typename?: 'Mutation' }
+  & { updateStoryCover?: Maybe<(
+    { __typename?: 'Story' }
+    & Pick<Story, 'id' | 'cover_url'>
+  )> }
+);
+
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -448,7 +476,7 @@ export type StoriesNewQuery = (
     { __typename?: 'PaginatedStory' }
     & { stories: Array<(
       { __typename?: 'Story' }
-      & Pick<Story, 'id' | 'title' | 'overview' | 'createdAt'>
+      & Pick<Story, 'id' | 'title' | 'overview' | 'cover_url' | 'createdAt'>
     )>, next_cursor?: Maybe<(
       { __typename?: 'Story' }
       & Pick<Story, 'id'>
@@ -469,7 +497,7 @@ export type StoriesTopQuery = (
     { __typename?: 'PaginatedStory' }
     & { stories: Array<(
       { __typename?: 'Story' }
-      & Pick<Story, 'id' | 'title' | 'overview' | 'createdAt'>
+      & Pick<Story, 'id' | 'title' | 'overview' | 'createdAt' | 'cover_url'>
     )>, next_cursor?: Maybe<(
       { __typename?: 'Story' }
       & Pick<Story, 'id' | 'up_vote' | 'down_vote'>
@@ -655,6 +683,77 @@ export function useRegisterMutation(baseOptions?: Apollo.MutationHookOptions<Reg
 export type RegisterMutationHookResult = ReturnType<typeof useRegisterMutation>;
 export type RegisterMutationResult = Apollo.MutationResult<RegisterMutation>;
 export type RegisterMutationOptions = Apollo.BaseMutationOptions<RegisterMutation, RegisterMutationVariables>;
+export const SignS3StoryCoverDocument = gql`
+    mutation SignS3StoryCover($filename: String!, $filetype: String!) {
+  signS3StoryCover(filename: $filename, filetype: $filetype) {
+    error
+    signedS3url
+    obj_url
+  }
+}
+    `;
+export type SignS3StoryCoverMutationFn = Apollo.MutationFunction<SignS3StoryCoverMutation, SignS3StoryCoverMutationVariables>;
+
+/**
+ * __useSignS3StoryCoverMutation__
+ *
+ * To run a mutation, you first call `useSignS3StoryCoverMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSignS3StoryCoverMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [signS3StoryCoverMutation, { data, loading, error }] = useSignS3StoryCoverMutation({
+ *   variables: {
+ *      filename: // value for 'filename'
+ *      filetype: // value for 'filetype'
+ *   },
+ * });
+ */
+export function useSignS3StoryCoverMutation(baseOptions?: Apollo.MutationHookOptions<SignS3StoryCoverMutation, SignS3StoryCoverMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<SignS3StoryCoverMutation, SignS3StoryCoverMutationVariables>(SignS3StoryCoverDocument, options);
+      }
+export type SignS3StoryCoverMutationHookResult = ReturnType<typeof useSignS3StoryCoverMutation>;
+export type SignS3StoryCoverMutationResult = Apollo.MutationResult<SignS3StoryCoverMutation>;
+export type SignS3StoryCoverMutationOptions = Apollo.BaseMutationOptions<SignS3StoryCoverMutation, SignS3StoryCoverMutationVariables>;
+export const UpdateStoryCoverDocument = gql`
+    mutation UpdateStoryCover($cover_url: String!, $id: Int!) {
+  updateStoryCover(cover_url: $cover_url, id: $id) {
+    id
+    cover_url
+  }
+}
+    `;
+export type UpdateStoryCoverMutationFn = Apollo.MutationFunction<UpdateStoryCoverMutation, UpdateStoryCoverMutationVariables>;
+
+/**
+ * __useUpdateStoryCoverMutation__
+ *
+ * To run a mutation, you first call `useUpdateStoryCoverMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateStoryCoverMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateStoryCoverMutation, { data, loading, error }] = useUpdateStoryCoverMutation({
+ *   variables: {
+ *      cover_url: // value for 'cover_url'
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useUpdateStoryCoverMutation(baseOptions?: Apollo.MutationHookOptions<UpdateStoryCoverMutation, UpdateStoryCoverMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateStoryCoverMutation, UpdateStoryCoverMutationVariables>(UpdateStoryCoverDocument, options);
+      }
+export type UpdateStoryCoverMutationHookResult = ReturnType<typeof useUpdateStoryCoverMutation>;
+export type UpdateStoryCoverMutationResult = Apollo.MutationResult<UpdateStoryCoverMutation>;
+export type UpdateStoryCoverMutationOptions = Apollo.BaseMutationOptions<UpdateStoryCoverMutation, UpdateStoryCoverMutationVariables>;
 export const MeDocument = gql`
     query Me {
   me {
@@ -699,6 +798,7 @@ export const StoriesNewDocument = gql`
       id
       title
       overview
+      cover_url
       createdAt
     }
     next_cursor {
@@ -744,6 +844,7 @@ export const StoriesTopDocument = gql`
       title
       overview
       createdAt
+      cover_url
     }
     next_cursor {
       id

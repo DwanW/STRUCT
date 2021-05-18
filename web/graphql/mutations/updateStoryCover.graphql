@@ -1,0 +1,6 @@
+mutation UpdateStoryCover($cover_url: String!, $id: Int!) {
+  updateStoryCover(cover_url: $cover_url, id: $id) {
+    id
+    cover_url
+  }
+}
