@@ -6,12 +6,11 @@ interface CardProps {
 }
 
 const Card: React.FC<CardProps> = ({ title, coverUrl }) => {
-  console.log(coverUrl)
   return (
-    <div className="relative w-48 h-96">
-      <div className="shadow-xl h-60 w-full">
+    <div className="relative mx-auto w-48 h-80">
+      <div className="w-full h-56 border-gray-200 border shadow-md">
         <img
-          className="absolute top-0 w-full h-full z-0 object-cover"
+          className="w-full h-full z-0 object-cover"
           src={coverUrl ? coverUrl : "/img/user-default.svg"}
         />
       </div>

@@ -1,0 +1,7 @@
+mutation SignS3UserAvatar ($filename: String!, $filetype: String!){
+  signS3UserAvatar(filename: $filename, filetype: $filetype){
+    error
+    signedS3url
+    obj_url
+  }
+}

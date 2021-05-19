@@ -21,12 +21,15 @@ export default function Home() {
   return (
     <>
       <StoryNavbar />
-      <div className="container mt-16 mx-auto px-4 min-h-full">
+      <div className="mt-16 container mx-auto px-8 pb-2 font-medium text-2xl border-b-2 border-gray-100">New Stories</div>
+      <div className="container mx-auto px-4 min-h-full flex flex-col sm:flex-row flex-wrap">
         {data?.getNewStories.stories.map((story, idx) => (
-          <Card key={idx} title={story.title} coverUrl={story.cover_url} />
+          <div className="my-4 mx-4">
+            <Card key={idx} title={story.title} coverUrl={story.cover_url} />
+          </div>
         ))}
       </div>
-      <StoryCoverUpload storyId={3} />
+      {/* <StoryCoverUpload storyId={3} /> */}
     </>
   );
 }
