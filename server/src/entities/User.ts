@@ -8,7 +8,7 @@ import {
   OneToMany,
 } from "typeorm";
 import { IsEmail, IsUrl, Length } from "class-validator";
-import { Field, ObjectType } from "type-graphql";
+import { Field, ID, ObjectType } from "type-graphql";
 import { Story } from "./Story";
 import { Vote } from "./Vote";
 import { Review } from "./Review";
@@ -17,7 +17,7 @@ import { ReviewVote } from "./ReviewVote";
 @ObjectType({ description: "The user model" })
 @Entity()
 export class User extends BaseEntity {
-  @Field()
+  @Field(() => ID!)
   @PrimaryGeneratedColumn()
   id!: number;
 

@@ -6,7 +6,6 @@ interface StoryNavbarProps {}
 
 const StoryNavbar: React.FC<StoryNavbarProps> = ({}) => {
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
-  const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
   const [searchValue, setSearchValue] = useState("");
 
   const handleSearchSubmit = (e: any) => {

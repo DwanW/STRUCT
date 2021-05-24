@@ -1,4 +1,4 @@
-import { Field, ObjectType } from "type-graphql";
+import { Field, ID, ObjectType } from "type-graphql";
 import {
   BaseEntity,
   Column,
@@ -13,7 +13,7 @@ import { Story } from "./Story";
 @ObjectType({ description: "sub-story model" })
 @Entity()
 export class SubStory extends BaseEntity {
-  @Field()
+  @Field(() => ID!)
   @PrimaryGeneratedColumn()
   id!: number;
 

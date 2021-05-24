@@ -18,9 +18,11 @@ const StoryCoverUpload: React.FC<StoryCoverUploadProps> = ({ storyId }) => {
   const handleUploadSubmit = async (e: any) => {
     e.preventDefault();
     if (data?.me?.id && fileRef?.current?.files) {
-      const { type, name } = fileRef.current.files[0];
+      const suffix = Date.now();
+      const { type } = fileRef.current.files[0];
+      // sign with s3
       const response = await signS3StoryCoverMutation({
-        variables: { filename: `${storyId}.jpg`, filetype: type },
+        variables: { filename: `${storyId}-${suffix}.jpg`, filetype: type },
       });
 
       if (
@@ -28,10 +30,12 @@ const StoryCoverUpload: React.FC<StoryCoverUploadProps> = ({ storyId }) => {
         response.data?.signS3StoryCover.obj_url
       ) {
         try {
+          // upload to s3
           await fetch(response.data?.signS3StoryCover.signedS3url, {
             method: "PUT",
             body: fileRef.current.files[0],
           });
+          // update image url in db
           await updateStoryCoverMutation({
             variables: {
               cover_url: response.data?.signS3StoryCover.obj_url.replace(

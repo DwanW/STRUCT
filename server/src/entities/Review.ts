@@ -1,4 +1,4 @@
-import { Field, ObjectType } from "type-graphql";
+import { Field, ID, ObjectType } from "type-graphql";
 import {
   BaseEntity,
   Column,
@@ -11,12 +11,10 @@ import { ReviewVote } from "./ReviewVote";
 import { Story } from "./Story";
 import { User } from "./User";
 
-
-
 @ObjectType({ description: "review model" })
 @Entity()
 export class Review extends BaseEntity {
-  @Field()
+  @Field(() => ID!)
   @PrimaryGeneratedColumn()
   id!: number;
 
@@ -55,9 +53,9 @@ export class Review extends BaseEntity {
   user: User;
 
   @Field(() => Story)
-  @ManyToOne(() => Story, (story) => story.reviews, {onDelete: "CASCADE"})
+  @ManyToOne(() => Story, (story) => story.reviews, { onDelete: "CASCADE" })
   story: Story;
 
   @OneToMany(() => ReviewVote, (review_vote) => review_vote.review)
-  review_votes: ReviewVote[]
+  review_votes: ReviewVote[];
 }

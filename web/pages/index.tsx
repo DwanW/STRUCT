@@ -2,7 +2,7 @@ import { useState } from "react";
 import StoryCarousel from "../components/Carousel/StoryCarousel";
 import Card from "../components/Containers/Card";
 import StoryNavbar from "../components/Navbars/StoryNavbar";
-// import StoryCoverUpload from "../components/Uploads/StoryCoverUpload";
+import StoryCoverUpload from "../components/Uploads/StoryCoverUpload";
 import { useStoriesNewQuery } from "../generated/graphql";
 
 export default function Home() {
@@ -29,7 +29,9 @@ export default function Home() {
           <Card key={idx} title={story.title} coverUrl={story.cover_url} />
         ))}
       </StoryCarousel>
-      {/* <StoryCoverUpload storyId={3} /> */}
+      <div className="container mx-auto mt-10">
+        <StoryCoverUpload storyId={3} />
+      </div>
     </>
   );
 }
