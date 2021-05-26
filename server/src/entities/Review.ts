@@ -1,4 +1,4 @@
-import { Field, ID, ObjectType } from "type-graphql";
+import { Field, ObjectType } from "type-graphql";
 import {
   BaseEntity,
   Column,
@@ -14,7 +14,7 @@ import { User } from "./User";
 @ObjectType({ description: "review model" })
 @Entity()
 export class Review extends BaseEntity {
-  @Field(() => ID!)
+  @Field()
   @PrimaryGeneratedColumn()
   id!: number;
 

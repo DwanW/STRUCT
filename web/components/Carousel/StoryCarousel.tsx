@@ -21,9 +21,14 @@ const responsive = {
   },
 };
 
-interface StoryCarouselProps {}
+interface StoryCarouselProps {
+  loadMoreCallback: Function;
+}
 
-const StoryCarousel: React.FC<StoryCarouselProps> = ({ children }) => {
+const StoryCarousel: React.FC<StoryCarouselProps> = ({
+  children,
+  loadMoreCallback,
+}) => {
   return (
     <div className="container mx-auto">
       <Carousel
@@ -31,6 +36,13 @@ const StoryCarousel: React.FC<StoryCarouselProps> = ({ children }) => {
         ssr={true}
         removeArrowOnDeviceType={["tablet", "mobile"]}
         swipeable={true}
+        afterChange={(previousSlide, state) => {
+          const { currentSlide, slidesToShow, totalItems } = state;
+          if (currentSlide + slidesToShow === totalItems) {
+            console.log("called");
+            loadMoreCallback();
+          }
+        }}
       >
         {children}
       </Carousel>

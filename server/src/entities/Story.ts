@@ -1,5 +1,5 @@
 import { IsUrl } from "class-validator";
-import { Field, ID, ObjectType } from "type-graphql";
+import { Field, ObjectType } from "type-graphql";
 import {
   BaseEntity,
   Column,
@@ -18,7 +18,7 @@ import { Vote } from "./Vote";
 @ObjectType({ description: "story model" })
 @Entity()
 export class Story extends BaseEntity {
-  @Field(() => ID!)
+  @Field()
   @PrimaryGeneratedColumn()
   id!: number;
 
