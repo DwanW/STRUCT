@@ -1,4 +1,4 @@
-query StoriesTop($limit: Int!, $cursor: TopStoryCursor, $time_range: String!) {
+query StoriesTop($limit: Int!, $cursor: TopStoryCursor, $time_range: Int) {
   getTopStories(limit: $limit, cursor: $cursor, time_range: $time_range) {
     stories {
       id

@@ -15,6 +15,15 @@ export const apollo = new ApolloClient({
               };
             },
           },
+          getTopStories: {
+            keyArgs: false,
+            merge(existing = { stories: [] }, incoming) {
+              return {
+                stories: [...existing.stories, ...incoming.stories],
+                next_cursor: incoming.next_cursor,
+              };
+            },
+          },
         },
       },
     },

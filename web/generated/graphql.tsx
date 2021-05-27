@@ -231,7 +231,7 @@ export type QueryGetNewStoriesArgs = {
 
 
 export type QueryGetTopStoriesArgs = {
-  time_range?: Maybe<Scalars['String']>;
+  time_range?: Maybe<Scalars['Int']>;
   cursor?: Maybe<TopStoryCursor>;
   limit: Scalars['Int'];
 };
@@ -514,7 +514,7 @@ export type StoriesNewQuery = (
 export type StoriesTopQueryVariables = Exact<{
   limit: Scalars['Int'];
   cursor?: Maybe<TopStoryCursor>;
-  time_range: Scalars['String'];
+  time_range?: Maybe<Scalars['Int']>;
 }>;
 
 
@@ -934,7 +934,7 @@ export type StoriesNewQueryHookResult = ReturnType<typeof useStoriesNewQuery>;
 export type StoriesNewLazyQueryHookResult = ReturnType<typeof useStoriesNewLazyQuery>;
 export type StoriesNewQueryResult = Apollo.QueryResult<StoriesNewQuery, StoriesNewQueryVariables>;
 export const StoriesTopDocument = gql`
-    query StoriesTop($limit: Int!, $cursor: TopStoryCursor, $time_range: String!) {
+    query StoriesTop($limit: Int!, $cursor: TopStoryCursor, $time_range: Int) {
   getTopStories(limit: $limit, cursor: $cursor, time_range: $time_range) {
     stories {
       id

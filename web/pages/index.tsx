@@ -3,34 +3,55 @@ import StoryCarousel from "../components/Carousel/StoryCarousel";
 import Card from "../components/Containers/Card";
 import StoryNavbar from "../components/Navbars/StoryNavbar";
 import StoryCoverUpload from "../components/Uploads/StoryCoverUpload";
-import { useStoriesNewQuery } from "../generated/graphql";
+import {
+  TopStoryCursor,
+  useStoriesNewQuery,
+  useStoriesTopQuery,
+} from "../generated/graphql";
 
 export default function Home() {
-  const [storyNewCursor, setStoryNewCursor] = useState<number | null>(null);
-
-  const { data, fetchMore } = useStoriesNewQuery({
+  const { data: dataNew, fetchMore: fetchMoreNewStory } = useStoriesNewQuery({
     variables: {
       limit: 5,
       cursor: null,
     },
   });
 
-  useEffect(() => {
-    if (data?.getNewStories.next_cursor?.id) {
-      setStoryNewCursor(data.getNewStories.next_cursor?.id);
-    }
+  const { data: dataTop, fetchMore: fetchMoreTopStory } = useStoriesTopQuery({
+    variables: {
+      limit: 5,
+      cursor: null,
+      // time_range: 30, //30 days
+    },
   });
 
-  if (!data) {
+  if (!dataNew || !dataTop) {
     return <div>loading...</div>;
   }
 
-  const fetchMoreStory = () => {
-    if (data.getNewStories.next_cursor) {
-      fetchMore({
+  const fetchMoreNew = () => {
+    if (dataNew?.getNewStories.next_cursor) {
+      fetchMoreNewStory({
         variables: {
           limit: 5,
-          cursor: storyNewCursor,
+          cursor: dataNew.getNewStories.next_cursor?.id,
+        },
+      });
+    }
+  };
+
+  const fetchMoreTop = () => {
+    if (dataTop?.getTopStories.next_cursor) {
+      let newCursor: TopStoryCursor = {
+        id: dataTop.getTopStories.next_cursor.id,
+        net_up_votes:
+          dataTop.getTopStories.next_cursor.up_vote -
+          dataTop.getTopStories.next_cursor.down_vote,
+      };
+      fetchMoreTopStory({
+        variables: {
+          limit: 5,
+          cursor: newCursor,
         },
       });
     }
@@ -39,14 +60,39 @@ export default function Home() {
   return (
     <>
       <StoryNavbar />
-      <div className="mt-16 container mx-auto px-8 pb-2 font-medium text-2xl border-b-2 border-gray-100">
-        New Stories
+      <div className="mt-16 container mx-auto">
+        <div className="px-8 pb-2 font-medium text-2xl border-b-2 border-gray-100">
+          Recommended For you
+        </div>
+        <StoryCarousel loadMoreCallback={fetchMoreNew}>
+          {dataNew?.getNewStories.stories.map((story, idx) => (
+            <Card key={idx} title={story.title} coverUrl={story.cover_url} />
+          ))}
+        </StoryCarousel>
       </div>
-      <StoryCarousel loadMoreCallback={fetchMoreStory}>
-        {data?.getNewStories.stories.map((story, idx) => (
-          <Card key={idx} title={story.title} coverUrl={story.cover_url} />
-        ))}
-      </StoryCarousel>
+
+      <div className="mt-8 container mx-auto">
+        <div className="px-8 pb-2 font-medium text-2xl border-b-2 border-gray-100">
+          New Stories
+        </div>
+        <StoryCarousel loadMoreCallback={fetchMoreNew}>
+          {dataNew?.getNewStories.stories.map((story, idx) => (
+            <Card key={idx} title={story.title} coverUrl={story.cover_url} />
+          ))}
+        </StoryCarousel>
+      </div>
+
+      <div className="mt-8 container mx-auto">
+        <div className="px-8 pb-2 font-medium text-2xl border-b-2 border-gray-100">
+          Top Stories
+        </div>
+        <StoryCarousel loadMoreCallback={fetchMoreTop}>
+          {dataTop?.getTopStories.stories.map((story, idx) => (
+            <Card key={idx} title={story.title} coverUrl={story.cover_url} />
+          ))}
+        </StoryCarousel>
+      </div>
+
       {/* <div className="container mx-auto mt-10">
         <StoryCoverUpload storyId={3} />
       </div> */}
