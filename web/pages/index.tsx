@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import StoryCarousel from "../components/Carousel/StoryCarousel";
 import Card from "../components/Containers/Card";
@@ -66,7 +67,11 @@ export default function Home() {
         </div>
         <StoryCarousel loadMoreCallback={fetchMoreNew}>
           {dataNew?.getNewStories.stories.map((story, idx) => (
-            <Card key={idx} title={story.title} coverUrl={story.cover_url} />
+            <Link href={`/story/${encodeURIComponent(story.id)}`} key={idx}>
+              <a className="block relative mx-auto w-48 h-80 hover:bg-blue-100 hover:shadow-md">
+                <Card title={story.title} coverUrl={story.cover_url} />
+              </a>
+            </Link>
           ))}
         </StoryCarousel>
       </div>
@@ -77,7 +82,11 @@ export default function Home() {
         </div>
         <StoryCarousel loadMoreCallback={fetchMoreNew}>
           {dataNew?.getNewStories.stories.map((story, idx) => (
-            <Card key={idx} title={story.title} coverUrl={story.cover_url} />
+            <Link href={`/story/${encodeURIComponent(story.id)}`} key={idx}>
+              <a className="block relative mx-auto w-48 h-80 hover:bg-blue-100 hover:shadow-md">
+                <Card title={story.title} coverUrl={story.cover_url} />
+              </a>
+            </Link>
           ))}
         </StoryCarousel>
       </div>
@@ -88,7 +97,11 @@ export default function Home() {
         </div>
         <StoryCarousel loadMoreCallback={fetchMoreTop}>
           {dataTop?.getTopStories.stories.map((story, idx) => (
-            <Card key={idx} title={story.title} coverUrl={story.cover_url} />
+            <Link href={`/story/${encodeURIComponent(story.id)}`} key={idx}>
+              <a className="block relative mx-auto w-48 h-80 hover:bg-blue-100 hover:shadow-md">
+                <Card title={story.title} coverUrl={story.cover_url} />
+              </a>
+            </Link>
           ))}
         </StoryCarousel>
       </div>

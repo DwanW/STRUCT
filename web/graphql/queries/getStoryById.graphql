@@ -1,0 +1,13 @@
+query getStoryById($id: Int!) {
+  getStoryById(id: $id) {
+    id
+    title
+    overview
+    up_vote
+    down_vote
+    creator {
+      id
+      endorsed
+    }
+  }
+}

@@ -480,6 +480,23 @@ export type UpdateUserAvatarMutation = (
   )> }
 );
 
+export type GetStoryByIdQueryVariables = Exact<{
+  id: Scalars['Int'];
+}>;
+
+
+export type GetStoryByIdQuery = (
+  { __typename?: 'Query' }
+  & { getStoryById?: Maybe<(
+    { __typename?: 'Story' }
+    & Pick<Story, 'id' | 'title' | 'overview' | 'up_vote' | 'down_vote'>
+    & { creator: (
+      { __typename?: 'User' }
+      & Pick<User, 'id' | 'endorsed'>
+    ) }
+  )> }
+);
+
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -851,6 +868,49 @@ export function useUpdateUserAvatarMutation(baseOptions?: Apollo.MutationHookOpt
 export type UpdateUserAvatarMutationHookResult = ReturnType<typeof useUpdateUserAvatarMutation>;
 export type UpdateUserAvatarMutationResult = Apollo.MutationResult<UpdateUserAvatarMutation>;
 export type UpdateUserAvatarMutationOptions = Apollo.BaseMutationOptions<UpdateUserAvatarMutation, UpdateUserAvatarMutationVariables>;
+export const GetStoryByIdDocument = gql`
+    query getStoryById($id: Int!) {
+  getStoryById(id: $id) {
+    id
+    title
+    overview
+    up_vote
+    down_vote
+    creator {
+      id
+      endorsed
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetStoryByIdQuery__
+ *
+ * To run a query within a React component, call `useGetStoryByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetStoryByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetStoryByIdQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetStoryByIdQuery(baseOptions: Apollo.QueryHookOptions<GetStoryByIdQuery, GetStoryByIdQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetStoryByIdQuery, GetStoryByIdQueryVariables>(GetStoryByIdDocument, options);
+      }
+export function useGetStoryByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetStoryByIdQuery, GetStoryByIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetStoryByIdQuery, GetStoryByIdQueryVariables>(GetStoryByIdDocument, options);
+        }
+export type GetStoryByIdQueryHookResult = ReturnType<typeof useGetStoryByIdQuery>;
+export type GetStoryByIdLazyQueryHookResult = ReturnType<typeof useGetStoryByIdLazyQuery>;
+export type GetStoryByIdQueryResult = Apollo.QueryResult<GetStoryByIdQuery, GetStoryByIdQueryVariables>;
 export const MeDocument = gql`
     query Me {
   me {
