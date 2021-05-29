@@ -104,23 +104,22 @@ export class StoryResolver {
   ) {
     const fetchLimit = Math.min(20, limit);
     const fetchAmount = fetchLimit + 1;
-    const sqlVariables: any[] = [fetchAmount];
     const time_limit = new Date(Date.now() - time_range * 86400000);
+    const sqlVariables: any[] = [fetchAmount, time_limit];
 
     if (cursor !== null) {
-      sqlVariables.push(cursor.net_up_votes);
-      sqlVariables.push(cursor.id);
+      sqlVariables.push(cursor.net_up_votes); //$3
+      sqlVariables.push(cursor.id); //$4
     }
-    sqlVariables.push(time_limit);
 
     const result = await getConnection().query(
       `
       select * from story
       where ${
         cursor
-          ? `((story.up_vote - story.down_vote) = $2 and story.id <= $3 ) or ((story.up_vote - story.down_vote) < $2) and story."createdAt" > $4`
-          : `story."createdAt" > $2`
-      }
+          ? `((story.up_vote - story.down_vote) = $3 and story.id <= $4 ) or ((story.up_vote - story.down_vote) < $3) and `
+          : ""
+      } story."createdAt" > $2
       order by (story.up_vote - story.down_vote) DESC, story.id DESC
       limit $1
     `,

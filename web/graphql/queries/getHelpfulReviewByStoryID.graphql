@@ -1,0 +1,28 @@
+query GetHelpfulStoryReviews(
+  $limit: Int!
+  $cursor: HelpfulReviewCursor
+  $time_range: Int
+  $storyId: Int!
+) {
+  getHelpfulStoryReviews(
+    limit: $limit
+    cursor: $cursor
+    time_range: $time_range
+    storyId: $storyId
+  ) {
+    reviews {
+      id
+      text
+      type
+      helpful_score
+      funny_score
+      unhelpful_score
+      userId
+      storyId
+    }
+    next_cursor {
+      id
+      helpful_score
+    }
+  }
+}

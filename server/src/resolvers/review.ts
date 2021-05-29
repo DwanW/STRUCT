@@ -23,7 +23,7 @@ declare type ReviewType = "positive" | "negative" | "neutral";
 class PaginatedReview {
   @Field(() => [Review])
   reviews: Review[];
-  @Field(() => Review)
+  @Field(() => Review, { nullable: true })
   next_cursor: Review;
 }
 
@@ -102,17 +102,19 @@ export class ReviewResolver {
   async getHelpfulStoryReviews(
     @Arg("limit", () => Int) limit: number,
     @Arg("cursor", { nullable: true }) cursor: HelpfulReviewCursor,
-    @Arg("time_range", () => String, { defaultValue: "1" }) time_range: string,
+    @Arg("time_range", () => Int, { defaultValue: 30, nullable: true })
+    time_range: number,
     @Arg("storyId", () => Int) storyId: number
   ): Promise<PaginatedReview> {
     const fetchLimit = Math.min(20, limit);
     const fetchAmount = fetchLimit + 1;
-    const sqlVariables: any[] = [fetchAmount, storyId];
-    const time_limit = new Date(Date.now() - parseInt(time_range) * 86400000);
+
+    const time_limit = new Date(Date.now() - time_range * 86400000);
+    const sqlVariables: any[] = [fetchAmount, storyId, time_limit];
+
     if (cursor !== null) {
-      sqlVariables.push(cursor.helpful_score); //$3
-      sqlVariables.push(cursor.id); //$4
-      sqlVariables.push(time_limit); //$5
+      sqlVariables.push(cursor.helpful_score); //$4
+      sqlVariables.push(cursor.id); //$5
     }
 
     const result = await getConnection().query(
@@ -120,9 +122,9 @@ export class ReviewResolver {
         select * from review
         where ${
           cursor
-            ? `(review.helpful_score = $3 and review.id <= $4 ) or (review.helpful_score < $2) and`
+            ? `(review.helpful_score = $4 and review.id <= $5 ) or (review.helpful_score < $2) and`
             : ""
-        } review."storyId" = $2 and (review."createdAt" > $5)
+        } review."storyId" = $2 and (review."createdAt" > $3)
         order by review.helpful_score DESC, review.id DESC
         limit $1
         `,
@@ -145,21 +147,18 @@ export class ReviewResolver {
   ) {
     const fetchLimit = Math.min(20, limit);
     const fetchAmount = fetchLimit + 1;
-    const sqlVariables: any[] = [fetchAmount, userId];
     const time_limit = new Date(Date.now() - parseInt(time_range) * 86400000);
+    const sqlVariables: any[] = [fetchAmount, userId, time_limit];
     if (cursor !== null) {
-      sqlVariables.push(cursor); //$3
-      sqlVariables.push(time_limit); //$4
+      sqlVariables.push(cursor); //$4
     }
 
     const result = await getConnection().query(
       `
         select * from review
         where ${
-          cursor
-            ? `review.id <= $3 and`
-            : ""
-        } review."userId" = $2 and (review."createdAt" > $4)
+          cursor ? `review.id <= $4 and` : ""
+        } review."userId" = $2 and (review."createdAt" > $3)
         order by review.id DESC
         limit $1
         `,

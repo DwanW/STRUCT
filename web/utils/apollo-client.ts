@@ -24,6 +24,15 @@ export const apollo = new ApolloClient({
               };
             },
           },
+          getHelpfulStoryReviews: {
+            keyArgs: false,
+            merge(existing = { reviews: [] }, incoming) {
+              return {
+                reviews: [...existing.reviews, ...incoming.reviews],
+                next_cursor: incoming.next_cursor,
+              };
+            },
+          },
         },
       },
     },

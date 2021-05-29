@@ -2,10 +2,12 @@ import { Field, ObjectType } from "type-graphql";
 import {
   BaseEntity,
   Column,
+  CreateDateColumn,
   Entity,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from "typeorm";
 import { ReviewVote } from "./ReviewVote";
 import { Story } from "./Story";
@@ -46,6 +48,14 @@ export class Review extends BaseEntity {
   @Field()
   @Column()
   storyId: number;
+
+  @Field(() => String)
+  @CreateDateColumn({ type: "date" })
+  createdAt: Date = new Date();
+
+  @Field(() => String)
+  @UpdateDateColumn({ type: "date" })
+  updatedAt: Date = new Date();
 
   //relationship
   @Field(() => User)

@@ -5,8 +5,13 @@ query getStoryById($id: Int!) {
     overview
     up_vote
     down_vote
+    cover_url
+    status
+    createdAt
     creator {
       id
+      username
+      avatar_url
       endorsed
     }
   }

@@ -196,7 +196,7 @@ export type MutationDeleteReviewArgs = {
 export type PaginatedReview = {
   __typename?: 'PaginatedReview';
   reviews: Array<Review>;
-  next_cursor: Review;
+  next_cursor?: Maybe<Review>;
 };
 
 export type PaginatedStory = {
@@ -254,7 +254,7 @@ export type QueryGetReviewByIdArgs = {
 
 export type QueryGetHelpfulStoryReviewsArgs = {
   storyId: Scalars['Int'];
-  time_range?: Maybe<Scalars['String']>;
+  time_range?: Maybe<Scalars['Int']>;
   cursor?: Maybe<HelpfulReviewCursor>;
   limit: Scalars['Int'];
 };
@@ -284,6 +284,8 @@ export type Review = {
   unhelpful_score: Scalars['Float'];
   userId: Scalars['Float'];
   storyId: Scalars['Float'];
+  createdAt: Scalars['String'];
+  updatedAt: Scalars['String'];
   user: User;
   story: Story;
 };
@@ -480,6 +482,28 @@ export type UpdateUserAvatarMutation = (
   )> }
 );
 
+export type GetHelpfulStoryReviewsQueryVariables = Exact<{
+  limit: Scalars['Int'];
+  cursor?: Maybe<HelpfulReviewCursor>;
+  time_range?: Maybe<Scalars['Int']>;
+  storyId: Scalars['Int'];
+}>;
+
+
+export type GetHelpfulStoryReviewsQuery = (
+  { __typename?: 'Query' }
+  & { getHelpfulStoryReviews: (
+    { __typename?: 'PaginatedReview' }
+    & { reviews: Array<(
+      { __typename?: 'Review' }
+      & Pick<Review, 'id' | 'text' | 'type' | 'helpful_score' | 'funny_score' | 'unhelpful_score' | 'userId' | 'storyId'>
+    )>, next_cursor?: Maybe<(
+      { __typename?: 'Review' }
+      & Pick<Review, 'id' | 'helpful_score'>
+    )> }
+  ) }
+);
+
 export type GetStoryByIdQueryVariables = Exact<{
   id: Scalars['Int'];
 }>;
@@ -489,10 +513,10 @@ export type GetStoryByIdQuery = (
   { __typename?: 'Query' }
   & { getStoryById?: Maybe<(
     { __typename?: 'Story' }
-    & Pick<Story, 'id' | 'title' | 'overview' | 'up_vote' | 'down_vote'>
+    & Pick<Story, 'id' | 'title' | 'overview' | 'up_vote' | 'down_vote' | 'cover_url' | 'status' | 'createdAt'>
     & { creator: (
       { __typename?: 'User' }
-      & Pick<User, 'id' | 'endorsed'>
+      & Pick<User, 'id' | 'username' | 'avatar_url' | 'endorsed'>
     ) }
   )> }
 );
@@ -868,6 +892,62 @@ export function useUpdateUserAvatarMutation(baseOptions?: Apollo.MutationHookOpt
 export type UpdateUserAvatarMutationHookResult = ReturnType<typeof useUpdateUserAvatarMutation>;
 export type UpdateUserAvatarMutationResult = Apollo.MutationResult<UpdateUserAvatarMutation>;
 export type UpdateUserAvatarMutationOptions = Apollo.BaseMutationOptions<UpdateUserAvatarMutation, UpdateUserAvatarMutationVariables>;
+export const GetHelpfulStoryReviewsDocument = gql`
+    query GetHelpfulStoryReviews($limit: Int!, $cursor: HelpfulReviewCursor, $time_range: Int, $storyId: Int!) {
+  getHelpfulStoryReviews(
+    limit: $limit
+    cursor: $cursor
+    time_range: $time_range
+    storyId: $storyId
+  ) {
+    reviews {
+      id
+      text
+      type
+      helpful_score
+      funny_score
+      unhelpful_score
+      userId
+      storyId
+    }
+    next_cursor {
+      id
+      helpful_score
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetHelpfulStoryReviewsQuery__
+ *
+ * To run a query within a React component, call `useGetHelpfulStoryReviewsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetHelpfulStoryReviewsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetHelpfulStoryReviewsQuery({
+ *   variables: {
+ *      limit: // value for 'limit'
+ *      cursor: // value for 'cursor'
+ *      time_range: // value for 'time_range'
+ *      storyId: // value for 'storyId'
+ *   },
+ * });
+ */
+export function useGetHelpfulStoryReviewsQuery(baseOptions: Apollo.QueryHookOptions<GetHelpfulStoryReviewsQuery, GetHelpfulStoryReviewsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetHelpfulStoryReviewsQuery, GetHelpfulStoryReviewsQueryVariables>(GetHelpfulStoryReviewsDocument, options);
+      }
+export function useGetHelpfulStoryReviewsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetHelpfulStoryReviewsQuery, GetHelpfulStoryReviewsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetHelpfulStoryReviewsQuery, GetHelpfulStoryReviewsQueryVariables>(GetHelpfulStoryReviewsDocument, options);
+        }
+export type GetHelpfulStoryReviewsQueryHookResult = ReturnType<typeof useGetHelpfulStoryReviewsQuery>;
+export type GetHelpfulStoryReviewsLazyQueryHookResult = ReturnType<typeof useGetHelpfulStoryReviewsLazyQuery>;
+export type GetHelpfulStoryReviewsQueryResult = Apollo.QueryResult<GetHelpfulStoryReviewsQuery, GetHelpfulStoryReviewsQueryVariables>;
 export const GetStoryByIdDocument = gql`
     query getStoryById($id: Int!) {
   getStoryById(id: $id) {
@@ -876,8 +956,13 @@ export const GetStoryByIdDocument = gql`
     overview
     up_vote
     down_vote
+    cover_url
+    status
+    createdAt
     creator {
       id
+      username
+      avatar_url
       endorsed
     }
   }
