@@ -2,6 +2,7 @@ query Me {
   me {
     id
     email
+    avatar_url
     about
     createdAt
   }

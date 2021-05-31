@@ -19,6 +19,13 @@ query GetHelpfulStoryReviews(
       unhelpful_score
       userId
       storyId
+      createdAt
+      reviewVoteStatus
+      user {
+        id
+        username
+        avatar_url
+      }
     }
     next_cursor {
       id

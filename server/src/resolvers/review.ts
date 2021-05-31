@@ -2,12 +2,14 @@ import {
   Arg,
   Ctx,
   Field,
+  FieldResolver,
   InputType,
   Int,
   Mutation,
   ObjectType,
   Query,
   Resolver,
+  Root,
   UseMiddleware,
 } from "type-graphql";
 import { MyContext } from "../types";
@@ -16,6 +18,7 @@ import { Review } from "../entities/Review";
 import { Story } from "../entities/Story";
 import { getConnection } from "typeorm";
 import { ReviewVote } from "../entities/ReviewVote";
+import { User } from "../entities/User";
 
 declare type ReviewType = "positive" | "negative" | "neutral";
 
@@ -47,10 +50,26 @@ class HelpfulReviewCursor {
 
 @Resolver(Review)
 export class ReviewResolver {
-  //   @FieldResolver(() => User)
-  //   creator(@Root() story: Story, @Ctx() { creatorLoader }: MyContext) {
-  //     return creatorLoader.load(story.creatorId);
-  //   }
+  @FieldResolver(() => User)
+  user(@Root() review: Review, @Ctx() { creatorLoader }: MyContext) {
+    return creatorLoader.load(review.userId);
+  }
+
+  @FieldResolver(() => Int, { nullable: true })
+  async reviewVoteStatus(
+    @Root() review: Review,
+    @Ctx() { reviewVoteLoader, req }: MyContext
+  ) {
+    if (!req.session.userId) {
+      return null;
+    }
+    const currentVote = await reviewVoteLoader.load({
+      reviewId: review.id,
+      userId: req.session.userId,
+    });
+
+    return currentVote ? currentVote.value : null;
+  }
 
   @Mutation(() => ReviewResponse)
   @UseMiddleware(isAuth)
@@ -194,7 +213,7 @@ export class ReviewResolver {
     return result.raw[0];
   }
 
-  @Mutation(() => Boolean)
+  @Mutation(() => Review)
   @UseMiddleware(isAuth)
   async voteReview(
     @Arg("reviewId", () => Int) reviewId: number,
@@ -272,7 +291,11 @@ export class ReviewResolver {
           `);
       });
     }
-    return true;
+
+    const modifiedReview = await Review.findOne({
+      where: { id: reviewId },
+    });
+    return modifiedReview;
   }
 
   @Mutation(() => Boolean)

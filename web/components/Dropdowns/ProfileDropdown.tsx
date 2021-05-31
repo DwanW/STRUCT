@@ -1,11 +1,36 @@
 import Link from "next/link";
 import React, { useRef, useState } from "react";
 import { createPopper } from "@popperjs/core";
+import Avatar from "../Containers/Avatar";
+import { useLogoutMutation } from "../../generated/graphql";
+import gql from "graphql-tag";
 
-interface ProfileDropdownProps {}
+interface ProfileDropdownProps {
+  avatarUrl: string;
+}
 
-const ProfileDropdown: React.FC<ProfileDropdownProps> = ({}) => {
+const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ avatarUrl }) => {
   const [dropdownPopoverShow, setDropdownPopoverShow] = useState(false);
+  const [logout] = useLogoutMutation({
+    update: (cache) => {
+      cache.writeQuery({
+        query: gql`
+          query Me {
+            me {
+              id
+              email
+              avatar_url
+              about
+              createdAt
+            }
+          }
+        `,
+        data: {
+          me: null,
+        },
+      });
+    },
+  });
 
   const btnDropdownRef = useRef<HTMLAnchorElement>(null);
   const popoverDropdownRef = useRef<HTMLDivElement>(null);
@@ -32,21 +57,7 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({}) => {
           dropdownPopoverShow ? closeDropdownPopover() : openDropdownPopover();
         }}
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="h-6 w-6 mr-2"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-          />
-        </svg>
-        Profile
+        <Avatar avatarUrl={avatarUrl} />
       </a>
       <div
         ref={popoverDropdownRef}
@@ -90,16 +101,14 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({}) => {
         >
           Options
         </span>
-        <Link href="/auth/login">
-          <a
-            href="#pablo"
-            className={
-              "text-sm py-2 px-4 font-normal block w-full whitespace-nowrap hover:bg-blue-100 text-gray-700"
-            }
-          >
-            Logout
-          </a>
-        </Link>
+        <button
+          className={
+            "text-sm py-2 px-4 font-normal block w-full whitespace-nowrap hover:bg-blue-100 text-gray-700"
+          }
+          onClick={() => logout()}
+        >
+          Logout
+        </button>
         <Link href="/auth/register">
           <a
             href="#pablo"

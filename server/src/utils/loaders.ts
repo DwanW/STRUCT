@@ -1,4 +1,5 @@
 import DataLoader from "dataloader";
+import { ReviewVote } from "../entities/ReviewVote";
 import { Story } from "../entities/Story";
 import { User } from "../entities/User";
 
@@ -25,3 +26,18 @@ export const createStoryLoader = () =>
 
     return storyIds.map((storyId) => storyIdToStory[storyId]);
   });
+
+export const createReviewVoteLoader = () =>
+  new DataLoader<{ reviewId: number; userId: number }, ReviewVote | null>(
+    async (keys) => {
+      const reviewVote = await ReviewVote.findByIds(keys as any);
+      const reviewVotesObject: Record<string, ReviewVote> = {};
+      reviewVote.forEach((vote) => {
+        reviewVotesObject[`${vote.userId}|${vote.reviewId}`] = vote;
+      });
+
+      return keys.map(
+        (key) => reviewVotesObject[`${key.userId}|${key.reviewId}`]
+      );
+    }
+  );

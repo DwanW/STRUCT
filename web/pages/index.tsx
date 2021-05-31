@@ -61,7 +61,7 @@ export default function Home() {
   return (
     <>
       <StoryNavbar />
-      <div className="mt-16 container mx-auto">
+      <div className="mt-24 container mx-auto">
         <div className="px-8 pb-2 font-medium text-2xl border-b-2 border-gray-100">
           Recommended For you
         </div>

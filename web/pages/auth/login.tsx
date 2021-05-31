@@ -6,11 +6,29 @@ import { useLoginMutation } from "../../generated/graphql";
 import { useRouter } from "next/dist/client/router";
 import { NextPage } from "next";
 import { isLoginInputValid } from "../../utils/validation";
+import gql from "graphql-tag";
 
 interface LoginProps {}
 
 const LoginPage: NextPage<LoginProps> = ({}) => {
-  const [loginMutation, { loading }] = useLoginMutation();
+  const [loginMutation, { loading }] = useLoginMutation({
+    fetchPolicy: "no-cache",
+    refetchQueries: [
+      {
+        query: gql`
+          query Me {
+            me {
+              id
+              email
+              avatar_url
+              about
+              createdAt
+            }
+          }
+        `,
+      },
+    ],
+  });
   const router = useRouter();
 
   const [values, setValues] = useState({

@@ -1,13 +1,12 @@
 import React, { useState } from "react";
 import Link from "next/link";
-import ProfileDropdown from "../Dropdowns/ProfileDropdown";
 
 interface AuthNavbarProps {}
 
 const AuthNavbar: React.FC<AuthNavbarProps> = () => {
   const [mobileNavbarOpen, setMobileNavbarOpen] = useState(false);
   return (
-    <nav className="top-0 fixed z-50 w-full flex flex-wrap items-center justify-between px-2 py-2">
+    <nav className="top-0 fixed z-50 w-full flex flex-wrap items-center justify-between px-2 py-2 backdrop-filter backdrop-blur-md backdrop-contrast-200">
       <div className="container px-4 mx-auto flex flex-wrap item-center justify-between">
         <div className="w-full relative flex justify-between sm:w-auto sm:static sm:block sm:justify-start">
           <Link href="/">

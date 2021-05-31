@@ -1,0 +1,9 @@
+mutation VoteReview($value: Int!, $reviewId: Int!) {
+  voteReview(value: $value, reviewId: $reviewId) {
+    id
+    helpful_score
+    funny_score
+    unhelpful_score
+    reviewVoteStatus
+  }
+}

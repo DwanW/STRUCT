@@ -15,7 +15,7 @@ import connectRedis from "connect-redis";
 import { Story } from "./entities/Story";
 import { Vote } from "./entities/Vote";
 import { StoryResolver } from "./resolvers/story";
-import { createCreatorLoader, createStoryLoader } from "./utils/loaders";
+import { createCreatorLoader, createReviewVoteLoader, createStoryLoader } from "./utils/loaders";
 import { SubStory } from "./entities/SubStory";
 import { SubStoryResolver } from "./resolvers/substory";
 import { Review } from "./entities/Review";
@@ -90,6 +90,7 @@ const main = async () => {
       redis,
       creatorLoader: createCreatorLoader(),
       storyLoader: createStoryLoader(),
+      reviewVoteLoader: createReviewVoteLoader()
     }),
     formatError: (err) => {
       console.log("formatError:", err);

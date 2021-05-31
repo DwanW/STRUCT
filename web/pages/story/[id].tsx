@@ -1,17 +1,19 @@
 import { NextPage } from "next";
 import React from "react";
+import Avatar from "../../components/Containers/Avatar";
 import Hero from "../../components/Containers/Hero";
 import ReviewList from "../../components/List/ReviewList";
 import AuthNavbar from "../../components/Navbars/AuthNavbar";
+import { useMeQuery } from "../../generated/graphql";
 import { useGetStoryFromUrl } from "../../utils/hooks";
 
 interface StoryProps {}
 
 const StoryPage: NextPage<StoryProps> = ({}) => {
-  const { data } = useGetStoryFromUrl();
-  console.log(data);
+  const { data: storyData } = useGetStoryFromUrl();
+  const { data: meData } = useMeQuery();
 
-  if (!data) {
+  if (!storyData) {
     return <div>loading page...</div>;
   }
 
@@ -19,7 +21,7 @@ const StoryPage: NextPage<StoryProps> = ({}) => {
     <>
       <AuthNavbar />
       <div className="mt-16 container mx-auto">
-        <Hero data={data} />
+        <Hero data={storyData} />
         <section className="my-4 mx-auto md:w-10/12 px-5">
           <h6 className="text-xl font-normal leading-normal mb-2 text-blue-800">
             Overview
@@ -35,14 +37,10 @@ const StoryPage: NextPage<StoryProps> = ({}) => {
             About Author
           </h6>
           <div className="flex">
-            <img
-              alt="author avatar"
-              className="w-16 h-16 rounded-full align-middle border-none shadow-lg"
-              src="/img/user-default.svg"
-            />
+            <Avatar avatarUrl={meData?.me?.avatar_url} />
             <div className="mt-1 text-base ml-4">
               <div className="capitalize text-xl">
-                {data.getStoryById?.creator.username}
+                {storyData.getStoryById?.creator.username}
               </div>
               <p className="mt-1 text-base">
                 The extension comes with three pre-built pages to help you get
@@ -56,7 +54,7 @@ const StoryPage: NextPage<StoryProps> = ({}) => {
           <h6 className="text-xl font-normal leading-normal mb-2 text-blue-800">
             Related News
           </h6>
-          <div className="h-56 w-full border-2 border-pink-800">
+          <div className="h-56 w-full border border-pink-200">
             news articles
           </div>
         </section>
@@ -65,7 +63,7 @@ const StoryPage: NextPage<StoryProps> = ({}) => {
           <h6 className="text-xl font-normal leading-normal mb-2 text-blue-800">
             Reviews
           </h6>
-          <ReviewList storyId={data.getStoryById?.id as number} />
+          <ReviewList storyId={storyData.getStoryById?.id as number} />
         </section>
       </div>
     </>

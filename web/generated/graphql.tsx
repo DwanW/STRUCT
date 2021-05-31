@@ -59,7 +59,7 @@ export type Mutation = {
   deleteSubStoryById: Scalars['Boolean'];
   createReview: ReviewResponse;
   updateReview: Review;
-  voteReview: Scalars['Boolean'];
+  voteReview: Review;
   deleteReview: Scalars['Boolean'];
 };
 
@@ -284,6 +284,7 @@ export type Review = {
   unhelpful_score: Scalars['Float'];
   userId: Scalars['Float'];
   storyId: Scalars['Float'];
+  reviewVoteStatus?: Maybe<Scalars['Int']>;
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
   user: User;
@@ -397,7 +398,7 @@ export type LoginMutation = (
     & Pick<AuthResponse, 'error'>
     & { user?: Maybe<(
       { __typename?: 'User' }
-      & Pick<User, 'username' | 'id' | 'createdAt'>
+      & Pick<User, 'id' | 'username' | 'createdAt'>
     )> }
   ) }
 );
@@ -482,6 +483,20 @@ export type UpdateUserAvatarMutation = (
   )> }
 );
 
+export type VoteReviewMutationVariables = Exact<{
+  value: Scalars['Int'];
+  reviewId: Scalars['Int'];
+}>;
+
+
+export type VoteReviewMutation = (
+  { __typename?: 'Mutation' }
+  & { voteReview: (
+    { __typename?: 'Review' }
+    & Pick<Review, 'id' | 'helpful_score' | 'funny_score' | 'unhelpful_score' | 'reviewVoteStatus'>
+  ) }
+);
+
 export type GetHelpfulStoryReviewsQueryVariables = Exact<{
   limit: Scalars['Int'];
   cursor?: Maybe<HelpfulReviewCursor>;
@@ -496,7 +511,11 @@ export type GetHelpfulStoryReviewsQuery = (
     { __typename?: 'PaginatedReview' }
     & { reviews: Array<(
       { __typename?: 'Review' }
-      & Pick<Review, 'id' | 'text' | 'type' | 'helpful_score' | 'funny_score' | 'unhelpful_score' | 'userId' | 'storyId'>
+      & Pick<Review, 'id' | 'text' | 'type' | 'helpful_score' | 'funny_score' | 'unhelpful_score' | 'userId' | 'storyId' | 'createdAt' | 'reviewVoteStatus'>
+      & { user: (
+        { __typename?: 'User' }
+        & Pick<User, 'id' | 'username' | 'avatar_url'>
+      ) }
     )>, next_cursor?: Maybe<(
       { __typename?: 'Review' }
       & Pick<Review, 'id' | 'helpful_score'>
@@ -528,7 +547,7 @@ export type MeQuery = (
   { __typename?: 'Query' }
   & { me?: Maybe<(
     { __typename?: 'User' }
-    & Pick<User, 'id' | 'email' | 'about' | 'createdAt'>
+    & Pick<User, 'id' | 'email' | 'avatar_url' | 'about' | 'createdAt'>
   )> }
 );
 
@@ -648,8 +667,8 @@ export const LoginDocument = gql`
   login(email: $email, password: $password) {
     error
     user {
-      username
       id
+      username
       createdAt
     }
   }
@@ -892,6 +911,44 @@ export function useUpdateUserAvatarMutation(baseOptions?: Apollo.MutationHookOpt
 export type UpdateUserAvatarMutationHookResult = ReturnType<typeof useUpdateUserAvatarMutation>;
 export type UpdateUserAvatarMutationResult = Apollo.MutationResult<UpdateUserAvatarMutation>;
 export type UpdateUserAvatarMutationOptions = Apollo.BaseMutationOptions<UpdateUserAvatarMutation, UpdateUserAvatarMutationVariables>;
+export const VoteReviewDocument = gql`
+    mutation VoteReview($value: Int!, $reviewId: Int!) {
+  voteReview(value: $value, reviewId: $reviewId) {
+    id
+    helpful_score
+    funny_score
+    unhelpful_score
+    reviewVoteStatus
+  }
+}
+    `;
+export type VoteReviewMutationFn = Apollo.MutationFunction<VoteReviewMutation, VoteReviewMutationVariables>;
+
+/**
+ * __useVoteReviewMutation__
+ *
+ * To run a mutation, you first call `useVoteReviewMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useVoteReviewMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [voteReviewMutation, { data, loading, error }] = useVoteReviewMutation({
+ *   variables: {
+ *      value: // value for 'value'
+ *      reviewId: // value for 'reviewId'
+ *   },
+ * });
+ */
+export function useVoteReviewMutation(baseOptions?: Apollo.MutationHookOptions<VoteReviewMutation, VoteReviewMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<VoteReviewMutation, VoteReviewMutationVariables>(VoteReviewDocument, options);
+      }
+export type VoteReviewMutationHookResult = ReturnType<typeof useVoteReviewMutation>;
+export type VoteReviewMutationResult = Apollo.MutationResult<VoteReviewMutation>;
+export type VoteReviewMutationOptions = Apollo.BaseMutationOptions<VoteReviewMutation, VoteReviewMutationVariables>;
 export const GetHelpfulStoryReviewsDocument = gql`
     query GetHelpfulStoryReviews($limit: Int!, $cursor: HelpfulReviewCursor, $time_range: Int, $storyId: Int!) {
   getHelpfulStoryReviews(
@@ -909,6 +966,13 @@ export const GetHelpfulStoryReviewsDocument = gql`
       unhelpful_score
       userId
       storyId
+      createdAt
+      reviewVoteStatus
+      user {
+        id
+        username
+        avatar_url
+      }
     }
     next_cursor {
       id
@@ -1001,6 +1065,7 @@ export const MeDocument = gql`
   me {
     id
     email
+    avatar_url
     about
     createdAt
   }

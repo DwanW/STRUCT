@@ -1,6 +1,10 @@
 import { Request, Response } from "express";
 import { Redis } from "ioredis";
-import { createCreatorLoader, createStoryLoader } from "./utils/Loaders";
+import {
+  createCreatorLoader,
+  createStoryLoader,
+  createReviewVoteLoader,
+} from "./utils/Loaders";
 
 export type MyContext = {
   req: Request;
@@ -8,4 +12,5 @@ export type MyContext = {
   redis: Redis;
   creatorLoader: ReturnType<typeof createCreatorLoader>;
   storyLoader: ReturnType<typeof createStoryLoader>;
+  reviewVoteLoader: ReturnType<typeof createReviewVoteLoader>;
 };

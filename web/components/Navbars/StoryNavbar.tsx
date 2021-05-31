@@ -1,5 +1,6 @@
 import Link from "next/link";
 import React, { useState } from "react";
+import { useMeQuery } from "../../generated/graphql";
 import ProfileDropdown from "../Dropdowns/ProfileDropdown";
 
 interface StoryNavbarProps {}
@@ -7,6 +8,8 @@ interface StoryNavbarProps {}
 const StoryNavbar: React.FC<StoryNavbarProps> = ({}) => {
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   const [searchValue, setSearchValue] = useState("");
+
+  const { data } = useMeQuery();
 
   const handleSearchSubmit = (e: any) => {
     e.preventDefault();
@@ -45,8 +48,17 @@ const StoryNavbar: React.FC<StoryNavbarProps> = ({}) => {
                 />
               </svg>
             </button>
+
             <div className="flex items-center sm:hidden">
-              <ProfileDropdown />
+              {data?.me?.id ? (
+                <ProfileDropdown avatarUrl={data?.me?.avatar_url as string} />
+              ) : (
+                <Link href="/auth/login">
+                  <a className="w-20 font-bold border border-black text-center">
+                    Sign In
+                  </a>
+                </Link>
+              )}
             </div>
           </div>
           <div
@@ -120,9 +132,15 @@ const StoryNavbar: React.FC<StoryNavbarProps> = ({}) => {
             </form>
           </div>
           <div className="flex flex-col sm:flex-row sm:ml-auto">
-            <div className="flex items-center">
-              <ProfileDropdown />
-            </div>
+            {data?.me?.id ? (
+              <ProfileDropdown avatarUrl={data?.me?.avatar_url as string} />
+            ) : (
+              <Link href="/auth/login">
+                <a className="w-20 font-bold border border-black text-center">
+                  Sign In
+                </a>
+              </Link>
+            )}
           </div>
         </div>
       </div>

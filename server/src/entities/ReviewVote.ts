@@ -4,7 +4,7 @@ import { User } from "./User";
 
 @Entity()
 export class ReviewVote extends BaseEntity {
-  @Column({ type: "int" })
+  @Column({ type: "int", nullable: true })
   value: number; // 1: helpful, 0: funny, -1: not helpful
 
   @PrimaryColumn()

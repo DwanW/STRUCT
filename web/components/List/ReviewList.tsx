@@ -1,8 +1,10 @@
 import React from "react";
 import {
   HelpfulReviewCursor,
+  Review,
   useGetHelpfulStoryReviewsQuery,
 } from "../../generated/graphql";
+import ReviewItem from "../Containers/ReviewItem";
 
 interface ReviewListProps {
   storyId: number;
@@ -22,8 +24,8 @@ const ReviewList: React.FC<ReviewListProps> = ({ storyId }) => {
     return <div>loading reviews...</div>;
   }
 
-  if(data.getHelpfulStoryReviews.reviews.length === 0){
-      return <div>This story doesn't have any review yet.</div>
+  if (data.getHelpfulStoryReviews.reviews.length === 0) {
+    return <div>This story doesn't have any review yet.</div>;
   }
 
   const fetchMoreHelpfulReview = () => {
@@ -43,10 +45,9 @@ const ReviewList: React.FC<ReviewListProps> = ({ storyId }) => {
 
   return (
     <>
-      <div>Review section</div>
-      <div>
+      <div className="flex-col w-full">
         {data.getHelpfulStoryReviews.reviews.map((review, idx) => (
-          <div key={idx}>{review.text}</div>
+          <ReviewItem key={idx} review={review as Review} />
         ))}
       </div>
     </>
