@@ -6,5 +6,6 @@ query Me {
     avatar_url
     about
     createdAt
+    endorsed
   }
 }

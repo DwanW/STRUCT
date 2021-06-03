@@ -73,7 +73,7 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ avatarUrl }) => {
         >
           Personalize
         </span>
-        <Link href="/myaccount">
+        <Link href="/myaccount/profile">
           <a
             href="#pablo"
             className={

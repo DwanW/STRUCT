@@ -1,0 +1,10 @@
+query getUserById($id: Int!) {
+  getUserById(id: $id) {
+    id
+    username
+    avatar_url
+    endorsed
+    about
+    createdAt
+  }
+}

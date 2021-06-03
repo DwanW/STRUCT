@@ -1,7 +1,10 @@
 import { useRouter } from "next/dist/client/router";
-import { useGetStoryByIdQuery } from "../generated/graphql";
+import {
+  useGetStoryByIdQuery,
+  useGetUserByIdQuery,
+} from "../generated/graphql";
 
-export const useGetStoryIdFromUrl = () => {
+export const useGetIdFromUrl = () => {
   const router = useRouter();
   const intId =
     typeof router.query.id === "string" ? parseInt(router.query.id) : -1;
@@ -10,8 +13,19 @@ export const useGetStoryIdFromUrl = () => {
 
 export const useGetStoryFromUrl = () => {
   //get post id hook
-  const intId = useGetStoryIdFromUrl();
+  const intId = useGetIdFromUrl();
   return useGetStoryByIdQuery({
+    skip: intId === -1,
+    variables: {
+      id: intId,
+    },
+  });
+};
+
+export const useGetUserFromUrl = () => {
+  //get user info hook
+  const intId = useGetIdFromUrl();
+  return useGetUserByIdQuery({
     skip: intId === -1,
     variables: {
       id: intId,

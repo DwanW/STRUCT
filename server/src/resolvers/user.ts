@@ -10,6 +10,7 @@ import {
   FieldResolver,
   Root,
   UseMiddleware,
+  Int,
 } from "type-graphql";
 // import { MyContext } from "../types";
 import { RegisterInput } from "../utils/RegisterInput";
@@ -58,6 +59,11 @@ export class UserResolver {
     }
 
     return User.findOne(req.session.userId);
+  }
+
+  @Query(() => User, { nullable: true })
+  getUserById(@Arg("id", () => Int) id: number): Promise<User | undefined> {
+    return User.findOne(id);
   }
 
   @Mutation(() => AuthResponse)
