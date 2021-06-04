@@ -1,8 +1,13 @@
 import { NextPage } from "next";
-import React from "react";
-import { useMeQuery } from "../../generated/graphql";
+import React, { useState } from "react";
+import {
+  useMeQuery,
+  useUpdateUserAboutMutation,
+} from "../../generated/graphql";
 import { useRouter } from "next/router";
 import SideNav from "../../components/Navbars/SideNav";
+import Image from "next/image";
+import FormTextArea from "../../components/Forms/FormTextArea";
 
 interface ProfilePageProps {}
 
@@ -15,6 +20,13 @@ const ProfilePage: NextPage<ProfilePageProps> = ({}) => {
       }
     },
   });
+
+  const [updateUserAbout, { loading: aboutLoading }] =
+    useUpdateUserAboutMutation();
+
+  const updateAbout = async (value: string) => {
+    await updateUserAbout({ variables: { about: value } });
+  };
 
   if (loading || !data?.me) {
     return <div>loading profile</div>;
@@ -63,11 +75,17 @@ const ProfilePage: NextPage<ProfilePageProps> = ({}) => {
               <div className="px-6">
                 <div className="flex flex-wrap justify-center">
                   <div className="w-full lg:w-3/12 px-4 lg:order-2 flex justify-center">
-                    <div className="relative w-full">
-                      <img
+                    <div className="relative w-full flex flex-row justify-center items-start -mt-20">
+                      <Image
                         alt="..."
-                        src="/img/user-default.svg"
-                        className="shadow-xl rounded-full h-36 align-middle border-none mx-auto -mt-20 bg-white"
+                        src={
+                          data.me.avatar_url
+                            ? data.me.avatar_url
+                            : "/img/user-default.svg"
+                        }
+                        height={144}
+                        width={144}
+                        className="shadow-xl rounded-full align-middle border-none bg-white"
                       />
                     </div>
                   </div>
@@ -131,9 +149,13 @@ const ProfilePage: NextPage<ProfilePageProps> = ({}) => {
                 <div className="mt-10 py-10 border-t border-blue-200 text-center">
                   <div className="flex flex-wrap justify-center">
                     <div className="w-full lg:w-9/12 px-4">
-                      <p className="mb-4 text-lg leading-relaxed text-blue-700">
-                        {data.me.about}
-                      </p>
+
+                        <FormTextArea
+                          label="About"
+                          submitMutation={updateAbout}
+                          value={data.me.about}
+                          className="mb-4"
+                        />
                       <a
                         href="#pablo"
                         className="font-normal text-blue-500"

@@ -1,0 +1,11 @@
+mutation UpdateUserAbout($about: String!) {
+  updateUserAbout(about: $about) {
+    id
+    username
+    email
+    avatar_url
+    about
+    createdAt
+    endorsed
+  }
+}

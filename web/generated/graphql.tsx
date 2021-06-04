@@ -476,6 +476,19 @@ export type UpdateStoryCoverMutation = (
   )> }
 );
 
+export type UpdateUserAboutMutationVariables = Exact<{
+  about: Scalars['String'];
+}>;
+
+
+export type UpdateUserAboutMutation = (
+  { __typename?: 'Mutation' }
+  & { updateUserAbout?: Maybe<(
+    { __typename?: 'User' }
+    & Pick<User, 'id' | 'username' | 'email' | 'avatar_url' | 'about' | 'createdAt' | 'endorsed'>
+  )> }
+);
+
 export type UpdateUserAvatarMutationVariables = Exact<{
   avatar_url: Scalars['String'];
 }>;
@@ -896,6 +909,45 @@ export function useUpdateStoryCoverMutation(baseOptions?: Apollo.MutationHookOpt
 export type UpdateStoryCoverMutationHookResult = ReturnType<typeof useUpdateStoryCoverMutation>;
 export type UpdateStoryCoverMutationResult = Apollo.MutationResult<UpdateStoryCoverMutation>;
 export type UpdateStoryCoverMutationOptions = Apollo.BaseMutationOptions<UpdateStoryCoverMutation, UpdateStoryCoverMutationVariables>;
+export const UpdateUserAboutDocument = gql`
+    mutation UpdateUserAbout($about: String!) {
+  updateUserAbout(about: $about) {
+    id
+    username
+    email
+    avatar_url
+    about
+    createdAt
+    endorsed
+  }
+}
+    `;
+export type UpdateUserAboutMutationFn = Apollo.MutationFunction<UpdateUserAboutMutation, UpdateUserAboutMutationVariables>;
+
+/**
+ * __useUpdateUserAboutMutation__
+ *
+ * To run a mutation, you first call `useUpdateUserAboutMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateUserAboutMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateUserAboutMutation, { data, loading, error }] = useUpdateUserAboutMutation({
+ *   variables: {
+ *      about: // value for 'about'
+ *   },
+ * });
+ */
+export function useUpdateUserAboutMutation(baseOptions?: Apollo.MutationHookOptions<UpdateUserAboutMutation, UpdateUserAboutMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateUserAboutMutation, UpdateUserAboutMutationVariables>(UpdateUserAboutDocument, options);
+      }
+export type UpdateUserAboutMutationHookResult = ReturnType<typeof useUpdateUserAboutMutation>;
+export type UpdateUserAboutMutationResult = Apollo.MutationResult<UpdateUserAboutMutation>;
+export type UpdateUserAboutMutationOptions = Apollo.BaseMutationOptions<UpdateUserAboutMutation, UpdateUserAboutMutationVariables>;
 export const UpdateUserAvatarDocument = gql`
     mutation UpdateUserAvatar($avatar_url: String!) {
   updateUserAvatar(avatar_url: $avatar_url) {

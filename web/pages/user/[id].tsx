@@ -1,4 +1,5 @@
 import { NextPage } from "next";
+import Image from "next/image";
 import React from "react";
 import { useGetUserFromUrl } from "../../utils/hooks";
 
@@ -52,11 +53,17 @@ const UserPage: NextPage<UserPageProps> = ({}) => {
             <div className="px-6">
               <div className="flex flex-wrap justify-center">
                 <div className="w-full lg:w-3/12 px-4 lg:order-2 flex justify-center">
-                  <div className="relative w-full">
-                    <img
+                  <div className="relative w-full flex flex-row justify-center items-start -mt-20">
+                    <Image
                       alt="..."
-                      src="/img/user-default.svg"
-                      className="shadow-xl rounded-full h-36 align-middle border-none mx-auto -mt-20 bg-white"
+                      src={
+                        userData.getUserById.avatar_url
+                          ? userData.getUserById.avatar_url
+                          : "/img/user-default.svg"
+                      }
+                      height={144}
+                      width={144}
+                      className="shadow-xl rounded-full align-middle border-none bg-white"
                     />
                   </div>
                 </div>
