@@ -1,0 +1,13 @@
+mutation createReview($type: String!, $text: String!, $storyId: Int!) {
+  createReview(type: $type, text: $text, storyId: $storyId) {
+    error
+    review {
+      text
+      id
+      funny_score
+      helpful_score
+      unhelpful_score
+      type
+    }
+  }
+}

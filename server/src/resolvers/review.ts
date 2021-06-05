@@ -117,6 +117,27 @@ export class ReviewResolver {
     return Review.findOne(id);
   }
 
+  @Query(() => Boolean, {})
+  async canUserCreateReview(
+    @Arg("storyId", () => Int) storyId: number,
+    @Arg("storyCreatorId", () => Int) storyCreatorId: number,
+    @Ctx() { req }: MyContext
+  ): Promise<Boolean> {
+    if (!req.session.userId || req.session.userId === storyCreatorId) {
+      return false;
+    }
+
+    const review = await Review.findOne({
+      storyId,
+      userId: req.session.userId,
+    });
+    if (review) {
+      return false;
+    }
+
+    return true;
+  }
+
   @Query(() => PaginatedReview)
   async getHelpfulStoryReviews(
     @Arg("limit", () => Int) limit: number,

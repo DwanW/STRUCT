@@ -63,7 +63,10 @@ const StoryPage: NextPage<StoryProps> = ({}) => {
           <h6 className="text-xl font-normal leading-normal mb-2 text-blue-800">
             Reviews
           </h6>
-          <ReviewList storyId={storyData.getStoryById?.id as number} />
+          <ReviewList
+            storyId={storyData.getStoryById?.id as number}
+            storyCreatorId={storyData.getStoryById?.creator.id}
+          />
         </section>
       </div>
     </>

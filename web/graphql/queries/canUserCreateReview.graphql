@@ -1,0 +1,3 @@
+query CanUserCreateReview($storyId: Int!, $storyCreatorId: Int!) {
+  canUserCreateReview(storyId: $storyId, storyCreatorId: $storyCreatorId)
+}

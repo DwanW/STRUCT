@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import AuthLayout from "../../components/Layout/AuthLayout";
-import { useLoginMutation } from "../../generated/graphql";
+import { MeDocument, useLoginMutation } from "../../generated/graphql";
 import { useRouter } from "next/dist/client/router";
 import { NextPage } from "next";
 import { isLoginInputValid } from "../../utils/validation";
@@ -12,20 +12,9 @@ interface LoginProps {}
 
 const LoginPage: NextPage<LoginProps> = ({}) => {
   const [loginMutation, { loading }] = useLoginMutation({
-    fetchPolicy: "no-cache",
     refetchQueries: [
       {
-        query: gql`
-          query Me {
-            me {
-              id
-              email
-              avatar_url
-              about
-              createdAt
-            }
-          }
-        `,
+        query: MeDocument
       },
     ],
   });

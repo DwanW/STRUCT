@@ -2,15 +2,18 @@ import React from "react";
 import {
   HelpfulReviewCursor,
   Review,
+  useCanUserCreateReviewQuery,
   useGetHelpfulStoryReviewsQuery,
 } from "../../generated/graphql";
 import ReviewItem from "../Containers/ReviewItem";
+import CreateReview from "../Forms/CreateReview";
 
 interface ReviewListProps {
   storyId: number;
+  storyCreatorId?: number;
 }
 
-const ReviewList: React.FC<ReviewListProps> = ({ storyId }) => {
+const ReviewList: React.FC<ReviewListProps> = ({ storyId, storyCreatorId }) => {
   const { data, loading, error, fetchMore } = useGetHelpfulStoryReviewsQuery({
     variables: {
       limit: 10,
@@ -20,6 +23,22 @@ const ReviewList: React.FC<ReviewListProps> = ({ storyId }) => {
     },
   });
 
+  const { data: accessData } = useCanUserCreateReviewQuery({
+    fetchPolicy: "no-cache",
+    variables: {
+      storyId: storyId,
+      storyCreatorId: storyCreatorId as number,
+    },
+  });
+
+  const renderCreateReviewSection = () => {
+    if (!accessData?.canUserCreateReview) {
+      return null;
+    }
+
+    return <CreateReview storyId={storyId} />;
+  };
+
   if (!data) {
     return <div>loading reviews...</div>;
   }
@@ -28,6 +47,7 @@ const ReviewList: React.FC<ReviewListProps> = ({ storyId }) => {
     return <div>This story doesn't have any review yet.</div>;
   }
 
+  //paginated review if needed
   const fetchMoreHelpfulReview = () => {
     if (data?.getHelpfulStoryReviews.next_cursor) {
       let newCursor: HelpfulReviewCursor = {
@@ -45,6 +65,7 @@ const ReviewList: React.FC<ReviewListProps> = ({ storyId }) => {
 
   return (
     <>
+      <div>{renderCreateReviewSection()}</div>
       <div className="flex-col w-full">
         {data.getHelpfulStoryReviews.reviews.map((review, idx) => (
           <ReviewItem key={idx} review={review as Review} />

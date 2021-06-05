@@ -215,6 +215,7 @@ export type Query = {
   getSubStoryById?: Maybe<SubStory>;
   getSubStoriesFromStoryId: Array<SubStory>;
   getReviewById?: Maybe<Review>;
+  canUserCreateReview: Scalars['Boolean'];
   getHelpfulStoryReviews: PaginatedReview;
   getRecentUserReviews: PaginatedReview;
 };
@@ -255,6 +256,12 @@ export type QueryGetSubStoriesFromStoryIdArgs = {
 
 export type QueryGetReviewByIdArgs = {
   id: Scalars['Int'];
+};
+
+
+export type QueryCanUserCreateReviewArgs = {
+  storyCreatorId: Scalars['Int'];
+  storyId: Scalars['Int'];
 };
 
 
@@ -377,6 +384,25 @@ export type ChangePasswordMutation = (
     & { user?: Maybe<(
       { __typename?: 'User' }
       & Pick<User, 'username' | 'email'>
+    )> }
+  ) }
+);
+
+export type CreateReviewMutationVariables = Exact<{
+  type: Scalars['String'];
+  text: Scalars['String'];
+  storyId: Scalars['Int'];
+}>;
+
+
+export type CreateReviewMutation = (
+  { __typename?: 'Mutation' }
+  & { createReview: (
+    { __typename?: 'ReviewResponse' }
+    & Pick<ReviewResponse, 'error'>
+    & { review?: Maybe<(
+      { __typename?: 'Review' }
+      & Pick<Review, 'text' | 'id' | 'funny_score' | 'helpful_score' | 'unhelpful_score' | 'type'>
     )> }
   ) }
 );
@@ -514,6 +540,17 @@ export type VoteReviewMutation = (
     { __typename?: 'Review' }
     & Pick<Review, 'id' | 'helpful_score' | 'funny_score' | 'unhelpful_score' | 'reviewVoteStatus'>
   ) }
+);
+
+export type CanUserCreateReviewQueryVariables = Exact<{
+  storyId: Scalars['Int'];
+  storyCreatorId: Scalars['Int'];
+}>;
+
+
+export type CanUserCreateReviewQuery = (
+  { __typename?: 'Query' }
+  & Pick<Query, 'canUserCreateReview'>
 );
 
 export type GetHelpfulStoryReviewsQueryVariables = Exact<{
@@ -663,6 +700,49 @@ export function useChangePasswordMutation(baseOptions?: Apollo.MutationHookOptio
 export type ChangePasswordMutationHookResult = ReturnType<typeof useChangePasswordMutation>;
 export type ChangePasswordMutationResult = Apollo.MutationResult<ChangePasswordMutation>;
 export type ChangePasswordMutationOptions = Apollo.BaseMutationOptions<ChangePasswordMutation, ChangePasswordMutationVariables>;
+export const CreateReviewDocument = gql`
+    mutation createReview($type: String!, $text: String!, $storyId: Int!) {
+  createReview(type: $type, text: $text, storyId: $storyId) {
+    error
+    review {
+      text
+      id
+      funny_score
+      helpful_score
+      unhelpful_score
+      type
+    }
+  }
+}
+    `;
+export type CreateReviewMutationFn = Apollo.MutationFunction<CreateReviewMutation, CreateReviewMutationVariables>;
+
+/**
+ * __useCreateReviewMutation__
+ *
+ * To run a mutation, you first call `useCreateReviewMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateReviewMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createReviewMutation, { data, loading, error }] = useCreateReviewMutation({
+ *   variables: {
+ *      type: // value for 'type'
+ *      text: // value for 'text'
+ *      storyId: // value for 'storyId'
+ *   },
+ * });
+ */
+export function useCreateReviewMutation(baseOptions?: Apollo.MutationHookOptions<CreateReviewMutation, CreateReviewMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateReviewMutation, CreateReviewMutationVariables>(CreateReviewDocument, options);
+      }
+export type CreateReviewMutationHookResult = ReturnType<typeof useCreateReviewMutation>;
+export type CreateReviewMutationResult = Apollo.MutationResult<CreateReviewMutation>;
+export type CreateReviewMutationOptions = Apollo.BaseMutationOptions<CreateReviewMutation, CreateReviewMutationVariables>;
 export const ForgotPasswordDocument = gql`
     mutation ForgotPassword($email: String!) {
   forgotPassword(email: $email)
@@ -1020,6 +1100,40 @@ export function useVoteReviewMutation(baseOptions?: Apollo.MutationHookOptions<V
 export type VoteReviewMutationHookResult = ReturnType<typeof useVoteReviewMutation>;
 export type VoteReviewMutationResult = Apollo.MutationResult<VoteReviewMutation>;
 export type VoteReviewMutationOptions = Apollo.BaseMutationOptions<VoteReviewMutation, VoteReviewMutationVariables>;
+export const CanUserCreateReviewDocument = gql`
+    query CanUserCreateReview($storyId: Int!, $storyCreatorId: Int!) {
+  canUserCreateReview(storyId: $storyId, storyCreatorId: $storyCreatorId)
+}
+    `;
+
+/**
+ * __useCanUserCreateReviewQuery__
+ *
+ * To run a query within a React component, call `useCanUserCreateReviewQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCanUserCreateReviewQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCanUserCreateReviewQuery({
+ *   variables: {
+ *      storyId: // value for 'storyId'
+ *      storyCreatorId: // value for 'storyCreatorId'
+ *   },
+ * });
+ */
+export function useCanUserCreateReviewQuery(baseOptions: Apollo.QueryHookOptions<CanUserCreateReviewQuery, CanUserCreateReviewQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<CanUserCreateReviewQuery, CanUserCreateReviewQueryVariables>(CanUserCreateReviewDocument, options);
+      }
+export function useCanUserCreateReviewLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CanUserCreateReviewQuery, CanUserCreateReviewQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<CanUserCreateReviewQuery, CanUserCreateReviewQueryVariables>(CanUserCreateReviewDocument, options);
+        }
+export type CanUserCreateReviewQueryHookResult = ReturnType<typeof useCanUserCreateReviewQuery>;
+export type CanUserCreateReviewLazyQueryHookResult = ReturnType<typeof useCanUserCreateReviewLazyQuery>;
+export type CanUserCreateReviewQueryResult = Apollo.QueryResult<CanUserCreateReviewQuery, CanUserCreateReviewQueryVariables>;
 export const GetHelpfulStoryReviewsDocument = gql`
     query GetHelpfulStoryReviews($limit: Int!, $cursor: HelpfulReviewCursor, $time_range: Int, $storyId: Int!) {
   getHelpfulStoryReviews(
