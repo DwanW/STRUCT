@@ -1,5 +1,8 @@
 import React, { useState } from "react";
-import { GetHelpfulStoryReviewsDocument, useCreateReviewMutation } from "../../generated/graphql";
+import {
+  CanUserCreateReviewDocument,
+  useCreateReviewMutation,
+} from "../../generated/graphql";
 
 interface CreateReviewProps {
   storyId: number;
@@ -21,13 +24,18 @@ const CreateReview: React.FC<CreateReviewProps> = ({ storyId }) => {
         storyId: storyId,
         text: reviewText,
       },
-    //   update(cache) {
-    //       cache.modify({
-    //           fields:getHelpfulStoryReviews(existing){
-
-    //           }
-    //       })
-    //   },
+      update(cache, { data }) {
+        cache.modify({
+          fields: {
+            getHelpfulStoryReviews(existingList = { reviews: [] }) {
+              return {
+                reviews: [data?.createReview.review, ...existingList.reviews],
+                next_cursor: existingList.next_cursor,
+              };
+            },
+          },
+        });
+      },
     });
   };
 

@@ -25,7 +25,7 @@ export const apollo = new ApolloClient({
             },
           },
           getHelpfulStoryReviews: {
-            keyArgs: false,
+            keyArgs: ["storyId"],
             merge(existing = { reviews: [] }, incoming) {
               return {
                 reviews: [...existing.reviews, ...incoming.reviews],
@@ -37,5 +37,5 @@ export const apollo = new ApolloClient({
       },
     },
   }),
-  credentials: "include",
+  credentials: "include"
 });

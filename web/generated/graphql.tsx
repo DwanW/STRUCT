@@ -402,7 +402,7 @@ export type CreateReviewMutation = (
     & Pick<ReviewResponse, 'error'>
     & { review?: Maybe<(
       { __typename?: 'Review' }
-      & Pick<Review, 'text' | 'id' | 'funny_score' | 'helpful_score' | 'unhelpful_score' | 'type'>
+      & Pick<Review, 'id' | 'text' | 'type' | 'helpful_score' | 'funny_score' | 'unhelpful_score' | 'userId' | 'storyId' | 'createdAt' | 'reviewVoteStatus'>
     )> }
   ) }
 );
@@ -705,12 +705,16 @@ export const CreateReviewDocument = gql`
   createReview(type: $type, text: $text, storyId: $storyId) {
     error
     review {
-      text
       id
-      funny_score
-      helpful_score
-      unhelpful_score
+      text
       type
+      helpful_score
+      funny_score
+      unhelpful_score
+      userId
+      storyId
+      createdAt
+      reviewVoteStatus
     }
   }
 }

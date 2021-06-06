@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   HelpfulReviewCursor,
   Review,
@@ -7,6 +7,7 @@ import {
 } from "../../generated/graphql";
 import ReviewItem from "../Containers/ReviewItem";
 import CreateReview from "../Forms/CreateReview";
+import { NetworkStatus } from "@apollo/client";
 
 interface ReviewListProps {
   storyId: number;
@@ -14,14 +15,21 @@ interface ReviewListProps {
 }
 
 const ReviewList: React.FC<ReviewListProps> = ({ storyId, storyCreatorId }) => {
-  const { data, loading, error, fetchMore } = useGetHelpfulStoryReviewsQuery({
-    variables: {
-      limit: 10,
-      cursor: null,
-      //   time_range:30,
-      storyId: storyId,
-    },
-  });
+  const { data, loading, fetchMore, refetch, networkStatus } =
+    useGetHelpfulStoryReviewsQuery({
+      variables: {
+        limit: 10,
+        cursor: null,
+        //   time_range:30,
+        storyId: storyId,
+      },
+      // fetchPolicy: "no-cache",
+      notifyOnNetworkStatusChange: true,
+    });
+  // console.log(networkStatus, NetworkStatus.refetch);
+  // useEffect(() => {
+  //   refetch();
+  // }, [storyId]);
 
   const { data: accessData } = useCanUserCreateReviewQuery({
     fetchPolicy: "no-cache",
@@ -39,12 +47,17 @@ const ReviewList: React.FC<ReviewListProps> = ({ storyId, storyCreatorId }) => {
     return <CreateReview storyId={storyId} />;
   };
 
-  if (!data) {
+  if (loading || networkStatus === NetworkStatus.refetch) {
     return <div>loading reviews...</div>;
   }
 
-  if (data.getHelpfulStoryReviews.reviews.length === 0) {
-    return <div>This story doesn't have any review yet.</div>;
+  if (data && data.getHelpfulStoryReviews.reviews.length === 0) {
+    return (
+      <div>
+        This story doesn't have any review yet.{" "}
+        <div>{renderCreateReviewSection()}</div>
+      </div>
+    );
   }
 
   //paginated review if needed
