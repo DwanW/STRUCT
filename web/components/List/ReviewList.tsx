@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   HelpfulReviewCursor,
   Review,
@@ -15,21 +15,16 @@ interface ReviewListProps {
 }
 
 const ReviewList: React.FC<ReviewListProps> = ({ storyId, storyCreatorId }) => {
-  const { data, loading, fetchMore, refetch, networkStatus } =
-    useGetHelpfulStoryReviewsQuery({
-      variables: {
-        limit: 10,
-        cursor: null,
-        //   time_range:30,
-        storyId: storyId,
-      },
-      // fetchPolicy: "no-cache",
-      notifyOnNetworkStatusChange: true,
-    });
-  // console.log(networkStatus, NetworkStatus.refetch);
-  // useEffect(() => {
-  //   refetch();
-  // }, [storyId]);
+  const [showCreate, setShowCreate] = useState<Boolean>(false);
+
+  const { data, loading, fetchMore } = useGetHelpfulStoryReviewsQuery({
+    variables: {
+      limit: 10,
+      cursor: null,
+      //   time_range:30,
+      storyId: storyId,
+    },
+  });
 
   const { data: accessData } = useCanUserCreateReviewQuery({
     fetchPolicy: "no-cache",
@@ -37,18 +32,21 @@ const ReviewList: React.FC<ReviewListProps> = ({ storyId, storyCreatorId }) => {
       storyId: storyId,
       storyCreatorId: storyCreatorId as number,
     },
+    onCompleted: (accessData) => {
+      setShowCreate(accessData.canUserCreateReview);
+    },
   });
 
   const renderCreateReviewSection = () => {
-    if (!accessData?.canUserCreateReview) {
+    if (!showCreate) {
       return null;
     }
 
-    return <CreateReview storyId={storyId} />;
+    return <CreateReview storyId={storyId} setDisplay={setShowCreate} />;
   };
 
-  if (loading || networkStatus === NetworkStatus.refetch) {
-    return <div>loading reviews...</div>;
+  if (loading || !data) {
+    return <div>loading review</div>;
   }
 
   if (data && data.getHelpfulStoryReviews.reviews.length === 0) {

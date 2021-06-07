@@ -1,16 +1,17 @@
 import React, { useState } from "react";
 import {
-  CanUserCreateReviewDocument,
+  GetHelpfulStoryReviewsDocument,
   useCreateReviewMutation,
 } from "../../generated/graphql";
 
 interface CreateReviewProps {
   storyId: number;
+  setDisplay: Function;
 }
 
 declare type ReviewType = "positive" | "negative" | "neutral";
 
-const CreateReview: React.FC<CreateReviewProps> = ({ storyId }) => {
+const CreateReview: React.FC<CreateReviewProps> = ({ storyId, setDisplay }) => {
   const [reviewText, setReviewText] = useState("");
   const [reviewType, setReviewType] = useState<ReviewType>("positive");
 
@@ -18,25 +19,28 @@ const CreateReview: React.FC<CreateReviewProps> = ({ storyId }) => {
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-    await createReviewMutation({
-      variables: {
-        type: reviewType,
-        storyId: storyId,
-        text: reviewText,
-      },
-      update(cache, { data }) {
-        cache.modify({
-          fields: {
-            getHelpfulStoryReviews(existingList = { reviews: [] }) {
-              return {
-                reviews: [data?.createReview.review, ...existingList.reviews],
-                next_cursor: existingList.next_cursor,
-              };
+    try {
+      await createReviewMutation({
+        variables: {
+          type: reviewType,
+          storyId: storyId,
+          text: reviewText,
+        },
+        refetchQueries: [
+          {
+            query: GetHelpfulStoryReviewsDocument,
+            variables: {
+              limit: 10,
+              cursor: null,
+              storyId: storyId,
             },
           },
-        });
-      },
-    });
+        ],
+      });
+      setDisplay(false);
+    } catch (e) {
+      console.log("create review error");
+    }
   };
 
   return (
