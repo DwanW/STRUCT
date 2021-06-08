@@ -407,6 +407,24 @@ export type CreateReviewMutation = (
   ) }
 );
 
+export type DeleteAccountMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type DeleteAccountMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'deleteAccount'>
+);
+
+export type DeleteReviewByIdMutationVariables = Exact<{
+  reviewId: Scalars['Int'];
+}>;
+
+
+export type DeleteReviewByIdMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'deleteReview'>
+);
+
 export type ForgotPasswordMutationVariables = Exact<{
   email: Scalars['String'];
 }>;
@@ -747,6 +765,67 @@ export function useCreateReviewMutation(baseOptions?: Apollo.MutationHookOptions
 export type CreateReviewMutationHookResult = ReturnType<typeof useCreateReviewMutation>;
 export type CreateReviewMutationResult = Apollo.MutationResult<CreateReviewMutation>;
 export type CreateReviewMutationOptions = Apollo.BaseMutationOptions<CreateReviewMutation, CreateReviewMutationVariables>;
+export const DeleteAccountDocument = gql`
+    mutation DeleteAccount {
+  deleteAccount
+}
+    `;
+export type DeleteAccountMutationFn = Apollo.MutationFunction<DeleteAccountMutation, DeleteAccountMutationVariables>;
+
+/**
+ * __useDeleteAccountMutation__
+ *
+ * To run a mutation, you first call `useDeleteAccountMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteAccountMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteAccountMutation, { data, loading, error }] = useDeleteAccountMutation({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useDeleteAccountMutation(baseOptions?: Apollo.MutationHookOptions<DeleteAccountMutation, DeleteAccountMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteAccountMutation, DeleteAccountMutationVariables>(DeleteAccountDocument, options);
+      }
+export type DeleteAccountMutationHookResult = ReturnType<typeof useDeleteAccountMutation>;
+export type DeleteAccountMutationResult = Apollo.MutationResult<DeleteAccountMutation>;
+export type DeleteAccountMutationOptions = Apollo.BaseMutationOptions<DeleteAccountMutation, DeleteAccountMutationVariables>;
+export const DeleteReviewByIdDocument = gql`
+    mutation DeleteReviewById($reviewId: Int!) {
+  deleteReview(id: $reviewId)
+}
+    `;
+export type DeleteReviewByIdMutationFn = Apollo.MutationFunction<DeleteReviewByIdMutation, DeleteReviewByIdMutationVariables>;
+
+/**
+ * __useDeleteReviewByIdMutation__
+ *
+ * To run a mutation, you first call `useDeleteReviewByIdMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteReviewByIdMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteReviewByIdMutation, { data, loading, error }] = useDeleteReviewByIdMutation({
+ *   variables: {
+ *      reviewId: // value for 'reviewId'
+ *   },
+ * });
+ */
+export function useDeleteReviewByIdMutation(baseOptions?: Apollo.MutationHookOptions<DeleteReviewByIdMutation, DeleteReviewByIdMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteReviewByIdMutation, DeleteReviewByIdMutationVariables>(DeleteReviewByIdDocument, options);
+      }
+export type DeleteReviewByIdMutationHookResult = ReturnType<typeof useDeleteReviewByIdMutation>;
+export type DeleteReviewByIdMutationResult = Apollo.MutationResult<DeleteReviewByIdMutation>;
+export type DeleteReviewByIdMutationOptions = Apollo.BaseMutationOptions<DeleteReviewByIdMutation, DeleteReviewByIdMutationVariables>;
 export const ForgotPasswordDocument = gql`
     mutation ForgotPassword($email: String!) {
   forgotPassword(email: $email)

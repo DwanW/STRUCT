@@ -61,7 +61,7 @@ export class Story extends BaseEntity {
 
   //relationship
   @Field(() => User)
-  @ManyToOne(() => User, (user) => user.stories)
+  @ManyToOne(() => User, (user) => user.stories, { onDelete: "CASCADE" })
   creator: User;
 
   @OneToMany(() => Vote, (vote) => vote.story)

@@ -14,9 +14,9 @@ export class ReviewVote extends BaseEntity {
   reviewId: number;
 
   //relationship
-  @ManyToOne(() => User, (user) => user.review_votes)
+  @ManyToOne(() => User, (user) => user.review_votes, {onDelete: "CASCADE"})
   user: User;
 
-  @ManyToOne(() => Review, (review) => review.review_votes)
+  @ManyToOne(() => Review, (review) => review.review_votes, {onDelete: "CASCADE"})
   review: Review;
 }

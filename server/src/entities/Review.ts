@@ -62,7 +62,7 @@ export class Review extends BaseEntity {
 
   //relationship
   @Field(() => User)
-  @ManyToOne(() => User, (user) => user.reviews)
+  @ManyToOne(() => User, (user) => user.reviews, { onDelete: "CASCADE" })
   user: User;
 
   @Field(() => Story)
