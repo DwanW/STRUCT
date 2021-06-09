@@ -210,6 +210,7 @@ export type Query = {
   me?: Maybe<User>;
   getUserById?: Maybe<User>;
   getStoryById?: Maybe<Story>;
+  getMyStories?: Maybe<PaginatedStory>;
   getNewStories: PaginatedStory;
   getTopStories: PaginatedStory;
   getSubStoryById?: Maybe<SubStory>;
@@ -228,6 +229,12 @@ export type QueryGetUserByIdArgs = {
 
 export type QueryGetStoryByIdArgs = {
   id: Scalars['Int'];
+};
+
+
+export type QueryGetMyStoriesArgs = {
+  cursor?: Maybe<Scalars['Int']>;
+  limit: Scalars['Int'];
 };
 
 
@@ -404,6 +411,23 @@ export type CreateReviewMutation = (
       { __typename?: 'Review' }
       & Pick<Review, 'id' | 'text' | 'type' | 'helpful_score' | 'funny_score' | 'unhelpful_score' | 'userId' | 'storyId' | 'createdAt' | 'reviewVoteStatus'>
     )> }
+  ) }
+);
+
+export type CreateStoryMutationVariables = Exact<{
+  storyInput: CreateStoryInput;
+}>;
+
+
+export type CreateStoryMutation = (
+  { __typename?: 'Mutation' }
+  & { createStory: (
+    { __typename?: 'Story' }
+    & Pick<Story, 'id' | 'title' | 'overview' | 'cover_url' | 'up_vote' | 'down_vote' | 'status' | 'creatorId' | 'createdAt'>
+    & { creator: (
+      { __typename?: 'User' }
+      & Pick<User, 'id' | 'username'>
+    ) }
   ) }
 );
 
@@ -597,6 +621,26 @@ export type GetHelpfulStoryReviewsQuery = (
   ) }
 );
 
+export type GetMyStoriesQueryVariables = Exact<{
+  limit: Scalars['Int'];
+  cursor?: Maybe<Scalars['Int']>;
+}>;
+
+
+export type GetMyStoriesQuery = (
+  { __typename?: 'Query' }
+  & { getMyStories?: Maybe<(
+    { __typename?: 'PaginatedStory' }
+    & { stories: Array<(
+      { __typename?: 'Story' }
+      & Pick<Story, 'id' | 'title' | 'overview' | 'createdAt' | 'cover_url'>
+    )>, next_cursor?: Maybe<(
+      { __typename?: 'Story' }
+      & Pick<Story, 'id'>
+    )> }
+  )> }
+);
+
 export type GetStoryByIdQueryVariables = Exact<{
   id: Scalars['Int'];
 }>;
@@ -765,6 +809,51 @@ export function useCreateReviewMutation(baseOptions?: Apollo.MutationHookOptions
 export type CreateReviewMutationHookResult = ReturnType<typeof useCreateReviewMutation>;
 export type CreateReviewMutationResult = Apollo.MutationResult<CreateReviewMutation>;
 export type CreateReviewMutationOptions = Apollo.BaseMutationOptions<CreateReviewMutation, CreateReviewMutationVariables>;
+export const CreateStoryDocument = gql`
+    mutation CreateStory($storyInput: CreateStoryInput!) {
+  createStory(storyInput: $storyInput) {
+    id
+    title
+    overview
+    cover_url
+    up_vote
+    down_vote
+    status
+    creator {
+      id
+      username
+    }
+    creatorId
+    createdAt
+  }
+}
+    `;
+export type CreateStoryMutationFn = Apollo.MutationFunction<CreateStoryMutation, CreateStoryMutationVariables>;
+
+/**
+ * __useCreateStoryMutation__
+ *
+ * To run a mutation, you first call `useCreateStoryMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateStoryMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createStoryMutation, { data, loading, error }] = useCreateStoryMutation({
+ *   variables: {
+ *      storyInput: // value for 'storyInput'
+ *   },
+ * });
+ */
+export function useCreateStoryMutation(baseOptions?: Apollo.MutationHookOptions<CreateStoryMutation, CreateStoryMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateStoryMutation, CreateStoryMutationVariables>(CreateStoryDocument, options);
+      }
+export type CreateStoryMutationHookResult = ReturnType<typeof useCreateStoryMutation>;
+export type CreateStoryMutationResult = Apollo.MutationResult<CreateStoryMutation>;
+export type CreateStoryMutationOptions = Apollo.BaseMutationOptions<CreateStoryMutation, CreateStoryMutationVariables>;
 export const DeleteAccountDocument = gql`
     mutation DeleteAccount {
   deleteAccount
@@ -1280,6 +1369,51 @@ export function useGetHelpfulStoryReviewsLazyQuery(baseOptions?: Apollo.LazyQuer
 export type GetHelpfulStoryReviewsQueryHookResult = ReturnType<typeof useGetHelpfulStoryReviewsQuery>;
 export type GetHelpfulStoryReviewsLazyQueryHookResult = ReturnType<typeof useGetHelpfulStoryReviewsLazyQuery>;
 export type GetHelpfulStoryReviewsQueryResult = Apollo.QueryResult<GetHelpfulStoryReviewsQuery, GetHelpfulStoryReviewsQueryVariables>;
+export const GetMyStoriesDocument = gql`
+    query GetMyStories($limit: Int!, $cursor: Int) {
+  getMyStories(limit: $limit, cursor: $cursor) {
+    stories {
+      id
+      title
+      overview
+      createdAt
+      cover_url
+    }
+    next_cursor {
+      id
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetMyStoriesQuery__
+ *
+ * To run a query within a React component, call `useGetMyStoriesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetMyStoriesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetMyStoriesQuery({
+ *   variables: {
+ *      limit: // value for 'limit'
+ *      cursor: // value for 'cursor'
+ *   },
+ * });
+ */
+export function useGetMyStoriesQuery(baseOptions: Apollo.QueryHookOptions<GetMyStoriesQuery, GetMyStoriesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetMyStoriesQuery, GetMyStoriesQueryVariables>(GetMyStoriesDocument, options);
+      }
+export function useGetMyStoriesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetMyStoriesQuery, GetMyStoriesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetMyStoriesQuery, GetMyStoriesQueryVariables>(GetMyStoriesDocument, options);
+        }
+export type GetMyStoriesQueryHookResult = ReturnType<typeof useGetMyStoriesQuery>;
+export type GetMyStoriesLazyQueryHookResult = ReturnType<typeof useGetMyStoriesLazyQuery>;
+export type GetMyStoriesQueryResult = Apollo.QueryResult<GetMyStoriesQuery, GetMyStoriesQueryVariables>;
 export const GetStoryByIdDocument = gql`
     query getStoryById($id: Int!) {
   getStoryById(id: $id) {

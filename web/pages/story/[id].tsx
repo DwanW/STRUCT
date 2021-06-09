@@ -17,20 +17,24 @@ const StoryPage: NextPage<StoryProps> = ({}) => {
     return <div>loading page...</div>;
   }
 
+  const renderUpdate = () => {
+    if (storyData.getStoryById?.creator.id === meData?.me?.id) {
+      return <div>I can update this</div>;
+    }
+    return null;
+  };
+
   return (
     <>
       <AuthNavbar />
       <div className="mt-16 container mx-auto">
         <Hero data={storyData} />
         <section className="my-4 mx-auto md:w-10/12 px-5">
+          {renderUpdate()}
           <h6 className="text-xl font-normal leading-normal mb-2 text-blue-800">
             Overview
           </h6>
-          <p className="mt-1 text-base">
-            The extension comes with three pre-built pages to help you get
-            started faster. You can change the text and images and you're good
-            to go.
-          </p>
+          <p className="mt-1 text-base">{storyData.getStoryById?.overview}</p>
         </section>
         <section className="my-4 mx-auto md:w-10/12 px-5">
           <h6 className="text-xl font-normal leading-normal mb-2 text-blue-800">

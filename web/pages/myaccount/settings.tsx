@@ -1,3 +1,4 @@
+import { NextPage } from "next";
 import { useRouter } from "next/router";
 import React from "react";
 import SideNav from "../../components/Navbars/SideNav";
@@ -9,7 +10,7 @@ import {
 
 interface settingsProps {}
 
-const settings: React.FC<settingsProps> = ({}) => {
+const Settings: NextPage<settingsProps> = ({}) => {
   const router = useRouter();
   const { data, loading } = useMeQuery({
     onCompleted: (data) => {
@@ -48,4 +49,4 @@ const settings: React.FC<settingsProps> = ({}) => {
   );
 };
 
-export default settings;
+export default Settings;

@@ -65,6 +65,36 @@ export class StoryResolver {
     return Story.findOne(id);
   }
 
+  @Query(() => PaginatedStory, { nullable: true })
+  async getMyStories(
+    @Ctx() { req }: MyContext,
+    @Arg("limit", () => Int) limit: number,
+    @Arg("cursor", () => Int, { nullable: true }) cursor: number // story id
+  ): Promise<PaginatedStory> {
+    const fetchLimit = Math.min(20, limit);
+    const fetchAmount = fetchLimit + 1;
+    const sqlVariables: any[] = [fetchAmount, req.session.userId];
+    if (cursor) {
+      sqlVariables.push(cursor);
+    }
+
+    const result = await getConnection().query(
+      `
+      select * from story
+      where story."creatorId" = $2 ${cursor ? "and story.id <= $3" : ""}
+      order by story.id DESC
+      limit $1
+      `,
+      sqlVariables
+    );
+
+    return {
+      stories: result.slice(0, fetchLimit),
+      next_cursor:
+        result.length === fetchAmount ? result[result.length - 1] : null,
+    };
+  }
+
   // query sort from new to old
   @Query(() => PaginatedStory)
   async getNewStories(

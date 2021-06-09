@@ -83,14 +83,14 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ avatarUrl }) => {
             Profile
           </a>
         </Link>
-        <Link href="/admin/settings">
+        <Link href="/write">
           <a
             href="#pablo"
             className={
               "text-sm py-2 px-4 font-normal block w-full whitespace-nowrap hover:bg-blue-100 text-gray-700"
             }
           >
-            Settings
+            Write A Story
           </a>
         </Link>
         <div className="h-0 mx-4 my-2 border border-solid border-blue-700" />

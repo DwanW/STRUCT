@@ -1,0 +1,17 @@
+mutation CreateStory($storyInput: CreateStoryInput!) {
+  createStory(storyInput: $storyInput) {
+    id
+    title
+    overview
+    cover_url
+    up_vote
+    down_vote
+    status
+    creator {
+      id
+      username
+    }
+    creatorId
+    createdAt
+  }
+}

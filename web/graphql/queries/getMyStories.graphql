@@ -1,0 +1,14 @@
+query GetMyStories($limit: Int!, $cursor: Int) {
+  getMyStories(limit: $limit, cursor: $cursor) {
+    stories {
+      id
+      title
+      overview
+      createdAt
+      cover_url
+    }
+    next_cursor {
+      id
+    }
+  }
+}
