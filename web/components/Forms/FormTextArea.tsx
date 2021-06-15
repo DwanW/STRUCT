@@ -5,6 +5,8 @@ interface FormTextAreaProps {
   value: string;
   label: string;
   className?: string;
+  enableEdit?: boolean;
+  showTitle?: boolean;
 }
 
 const FormTextArea: React.FC<FormTextAreaProps> = ({
@@ -12,6 +14,8 @@ const FormTextArea: React.FC<FormTextAreaProps> = ({
   value,
   label,
   className,
+  enableEdit = true,
+  showTitle = true,
 }) => {
   const [isEdit, setIsEdit] = useState<Boolean>(false);
   const [inputValue, setInputValue] = useState<any>(value);
@@ -26,11 +30,17 @@ const FormTextArea: React.FC<FormTextAreaProps> = ({
     return (
       <div className={className}>
         <div className="flex flex-row justify-between">
-          <h4 className="text-left text-lg leading-relaxed text-blue-700 font-bold">
+          <h4
+            className={`text-left text-lg leading-relaxed text-blue-700 font-bold ${
+              showTitle ? "" : "hidden"
+            }`}
+          >
             {label}
           </h4>
           <button
-            className="text-green-600 px-1 rounded-full shadow border hover:border-gray-300 hover:bg-gray-300"
+            className={`text-green-600 px-1 rounded-full shadow border hover:border-gray-300 hover:bg-gray-300 ${
+              enableEdit ? "" : "hidden"
+            }`}
             onClick={() => setIsEdit(!isEdit)}
           >
             <svg

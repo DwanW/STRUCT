@@ -149,13 +149,13 @@ const ProfilePage: NextPage<ProfilePageProps> = ({}) => {
                 <div className="mt-10 py-10 border-t border-blue-200 text-center">
                   <div className="flex flex-wrap justify-center">
                     <div className="w-full lg:w-9/12 px-4">
-
-                        <FormTextArea
-                          label="About"
-                          submitMutation={updateAbout}
-                          value={data.me.about}
-                          className="mb-4"
-                        />
+                      <FormTextArea
+                        label="About"
+                        submitMutation={updateAbout}
+                        value={data.me.about}
+                        enableEdit={true}
+                        className="mb-4"
+                      />
                       <a
                         href="#pablo"
                         className="font-normal text-blue-500"

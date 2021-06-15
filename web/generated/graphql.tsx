@@ -530,6 +530,21 @@ export type SignS3UserAvatarMutation = (
   ) }
 );
 
+export type UpdateStoryMutationVariables = Exact<{
+  id: Scalars['Int'];
+  title: Scalars['String'];
+  overview: Scalars['String'];
+}>;
+
+
+export type UpdateStoryMutation = (
+  { __typename?: 'Mutation' }
+  & { updateStory: (
+    { __typename?: 'Story' }
+    & Pick<Story, 'id' | 'title' | 'overview' | 'updatedAt' | 'createdAt'>
+  ) }
+);
+
 export type UpdateStoryCoverMutationVariables = Exact<{
   cover_url: Scalars['String'];
   id: Scalars['Int'];
@@ -1126,6 +1141,45 @@ export function useSignS3UserAvatarMutation(baseOptions?: Apollo.MutationHookOpt
 export type SignS3UserAvatarMutationHookResult = ReturnType<typeof useSignS3UserAvatarMutation>;
 export type SignS3UserAvatarMutationResult = Apollo.MutationResult<SignS3UserAvatarMutation>;
 export type SignS3UserAvatarMutationOptions = Apollo.BaseMutationOptions<SignS3UserAvatarMutation, SignS3UserAvatarMutationVariables>;
+export const UpdateStoryDocument = gql`
+    mutation UpdateStory($id: Int!, $title: String!, $overview: String!) {
+  updateStory(id: $id, title: $title, overview: $overview) {
+    id
+    title
+    overview
+    updatedAt
+    createdAt
+  }
+}
+    `;
+export type UpdateStoryMutationFn = Apollo.MutationFunction<UpdateStoryMutation, UpdateStoryMutationVariables>;
+
+/**
+ * __useUpdateStoryMutation__
+ *
+ * To run a mutation, you first call `useUpdateStoryMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateStoryMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateStoryMutation, { data, loading, error }] = useUpdateStoryMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      title: // value for 'title'
+ *      overview: // value for 'overview'
+ *   },
+ * });
+ */
+export function useUpdateStoryMutation(baseOptions?: Apollo.MutationHookOptions<UpdateStoryMutation, UpdateStoryMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateStoryMutation, UpdateStoryMutationVariables>(UpdateStoryDocument, options);
+      }
+export type UpdateStoryMutationHookResult = ReturnType<typeof useUpdateStoryMutation>;
+export type UpdateStoryMutationResult = Apollo.MutationResult<UpdateStoryMutation>;
+export type UpdateStoryMutationOptions = Apollo.BaseMutationOptions<UpdateStoryMutation, UpdateStoryMutationVariables>;
 export const UpdateStoryCoverDocument = gql`
     mutation UpdateStoryCover($cover_url: String!, $id: Int!) {
   updateStoryCover(cover_url: $cover_url, id: $id) {

@@ -1,11 +1,21 @@
 import React from "react";
 import { GetStoryByIdQuery } from "../../generated/graphql";
+import FormTextArea from "../Forms/FormTextArea";
+import Link from "next/link";
 
 interface HeroProps {
   data: GetStoryByIdQuery;
+  enableEdit?: boolean;
+  updateMutation: Function;
+  storyLink: string;
 }
 
-const Hero: React.FC<HeroProps> = ({ data }) => {
+const Hero: React.FC<HeroProps> = ({
+  data,
+  enableEdit = false,
+  updateMutation,
+  storyLink,
+}) => {
   return (
     <div className="flex flex-wrap items-center">
       <div className="w-full h-96 mx-auto md:w-4/12 px-4">
@@ -18,7 +28,14 @@ const Hero: React.FC<HeroProps> = ({ data }) => {
       <div className="w-full md:w-5/12 mx-auto px-4">
         <div className="px-1 md:pr-12">
           <h3 className="mt-8 text-3xl font-semibold capitalize">
-            {data.getStoryById?.title}
+            <FormTextArea
+              label="Title"
+              submitMutation={updateMutation}
+              value={data.getStoryById?.title as string}
+              className="mb-4"
+              showTitle={false}
+              enableEdit={enableEdit}
+            />
           </h3>
           <div className="mt-4 text-lg">Reviews: descriptive word</div>
           <div className="mt-4 text-sm">Publish Date: date string</div>
@@ -63,17 +80,16 @@ const Hero: React.FC<HeroProps> = ({ data }) => {
               </div>
             </li>
           </ul>
-          <button
-            className="bg-green-500 flex text-white font-bold uppercase text-base px-8 py-3 rounded-full shadow-md hover:shadow-lg outline-none focus:outline-none mt-4 mr-1 mb-1 ease-linear transition-all duration-150"
-            type="button"
-          >
-            <img
-              alt="icon"
-              className="w-6 h-6 mr-2 text-green-800 inline"
-              src="/img/book-open.svg"
-            />{" "}
-            Open
-          </button>
+          <Link href={storyLink}>
+            <a className="bg-green-500 flex w-40 text-white font-bold uppercase text-base px-8 py-3 rounded-full shadow-md hover:shadow-lg outline-none focus:outline-none mt-4 mr-1 mb-1 ease-linear transition-all duration-150">
+              <img
+                alt="icon"
+                className="w-6 h-6 mr-2 text-green-800 inline"
+                src="/img/book-open.svg"
+              />{" "}
+              Open
+            </a>
+          </Link>
         </div>
       </div>
     </div>

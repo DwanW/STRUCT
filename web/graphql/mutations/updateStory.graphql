@@ -1,0 +1,9 @@
+mutation UpdateStory($id: Int!, $title: String!, $overview: String!) {
+  updateStory(id: $id, title: $title, overview: $overview) {
+    id
+    title
+    overview
+    updatedAt
+    createdAt
+  }
+}
