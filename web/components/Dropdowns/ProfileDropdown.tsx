@@ -38,7 +38,7 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ avatarUrl }) => {
   const openDropdownPopover = () => {
     if (btnDropdownRef.current && popoverDropdownRef.current) {
       createPopper(btnDropdownRef.current, popoverDropdownRef.current, {
-        placement: "bottom-end",
+        placement: "top-end",
       });
     }
     setDropdownPopoverShow(true);
