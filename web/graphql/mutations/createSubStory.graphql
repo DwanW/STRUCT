@@ -1,0 +1,14 @@
+mutation CreateSubStory($storyId: Int!, $storyInput: CreateSubStoryInput!) {
+  createSubStory(storyId: $storyId, storyInput: $storyInput) {
+    error
+    substory {
+      id
+      title
+      text
+      order_index
+      storyId
+      createdAt
+      updatedAt
+    }
+  }
+}

@@ -431,6 +431,24 @@ export type CreateStoryMutation = (
   ) }
 );
 
+export type CreateSubStoryMutationVariables = Exact<{
+  storyId: Scalars['Int'];
+  storyInput: CreateSubStoryInput;
+}>;
+
+
+export type CreateSubStoryMutation = (
+  { __typename?: 'Mutation' }
+  & { createSubStory: (
+    { __typename?: 'SubStoryResponse' }
+    & Pick<SubStoryResponse, 'error'>
+    & { substory?: Maybe<(
+      { __typename?: 'SubStory' }
+      & Pick<SubStory, 'id' | 'title' | 'text' | 'order_index' | 'storyId' | 'createdAt' | 'updatedAt'>
+    )> }
+  ) }
+);
+
 export type DeleteAccountMutationVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -673,6 +691,23 @@ export type GetStoryByIdQuery = (
   )> }
 );
 
+export type GetSubStoriesFromStoryIdQueryVariables = Exact<{
+  storyId: Scalars['Int'];
+}>;
+
+
+export type GetSubStoriesFromStoryIdQuery = (
+  { __typename?: 'Query' }
+  & { getSubStoriesFromStoryId: Array<(
+    { __typename?: 'SubStory' }
+    & Pick<SubStory, 'id' | 'title' | 'text' | 'order_index' | 'storyId'>
+    & { story: (
+      { __typename?: 'Story' }
+      & Pick<Story, 'creatorId'>
+    ) }
+  )> }
+);
+
 export type GetUserByIdQueryVariables = Exact<{
   id: Scalars['Int'];
 }>;
@@ -869,6 +904,49 @@ export function useCreateStoryMutation(baseOptions?: Apollo.MutationHookOptions<
 export type CreateStoryMutationHookResult = ReturnType<typeof useCreateStoryMutation>;
 export type CreateStoryMutationResult = Apollo.MutationResult<CreateStoryMutation>;
 export type CreateStoryMutationOptions = Apollo.BaseMutationOptions<CreateStoryMutation, CreateStoryMutationVariables>;
+export const CreateSubStoryDocument = gql`
+    mutation CreateSubStory($storyId: Int!, $storyInput: CreateSubStoryInput!) {
+  createSubStory(storyId: $storyId, storyInput: $storyInput) {
+    error
+    substory {
+      id
+      title
+      text
+      order_index
+      storyId
+      createdAt
+      updatedAt
+    }
+  }
+}
+    `;
+export type CreateSubStoryMutationFn = Apollo.MutationFunction<CreateSubStoryMutation, CreateSubStoryMutationVariables>;
+
+/**
+ * __useCreateSubStoryMutation__
+ *
+ * To run a mutation, you first call `useCreateSubStoryMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateSubStoryMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createSubStoryMutation, { data, loading, error }] = useCreateSubStoryMutation({
+ *   variables: {
+ *      storyId: // value for 'storyId'
+ *      storyInput: // value for 'storyInput'
+ *   },
+ * });
+ */
+export function useCreateSubStoryMutation(baseOptions?: Apollo.MutationHookOptions<CreateSubStoryMutation, CreateSubStoryMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateSubStoryMutation, CreateSubStoryMutationVariables>(CreateSubStoryDocument, options);
+      }
+export type CreateSubStoryMutationHookResult = ReturnType<typeof useCreateSubStoryMutation>;
+export type CreateSubStoryMutationResult = Apollo.MutationResult<CreateSubStoryMutation>;
+export type CreateSubStoryMutationOptions = Apollo.BaseMutationOptions<CreateSubStoryMutation, CreateSubStoryMutationVariables>;
 export const DeleteAccountDocument = gql`
     mutation DeleteAccount {
   deleteAccount
@@ -1516,6 +1594,48 @@ export function useGetStoryByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptio
 export type GetStoryByIdQueryHookResult = ReturnType<typeof useGetStoryByIdQuery>;
 export type GetStoryByIdLazyQueryHookResult = ReturnType<typeof useGetStoryByIdLazyQuery>;
 export type GetStoryByIdQueryResult = Apollo.QueryResult<GetStoryByIdQuery, GetStoryByIdQueryVariables>;
+export const GetSubStoriesFromStoryIdDocument = gql`
+    query GetSubStoriesFromStoryId($storyId: Int!) {
+  getSubStoriesFromStoryId(storyId: $storyId) {
+    id
+    title
+    text
+    order_index
+    storyId
+    story {
+      creatorId
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetSubStoriesFromStoryIdQuery__
+ *
+ * To run a query within a React component, call `useGetSubStoriesFromStoryIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetSubStoriesFromStoryIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetSubStoriesFromStoryIdQuery({
+ *   variables: {
+ *      storyId: // value for 'storyId'
+ *   },
+ * });
+ */
+export function useGetSubStoriesFromStoryIdQuery(baseOptions: Apollo.QueryHookOptions<GetSubStoriesFromStoryIdQuery, GetSubStoriesFromStoryIdQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetSubStoriesFromStoryIdQuery, GetSubStoriesFromStoryIdQueryVariables>(GetSubStoriesFromStoryIdDocument, options);
+      }
+export function useGetSubStoriesFromStoryIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetSubStoriesFromStoryIdQuery, GetSubStoriesFromStoryIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetSubStoriesFromStoryIdQuery, GetSubStoriesFromStoryIdQueryVariables>(GetSubStoriesFromStoryIdDocument, options);
+        }
+export type GetSubStoriesFromStoryIdQueryHookResult = ReturnType<typeof useGetSubStoriesFromStoryIdQuery>;
+export type GetSubStoriesFromStoryIdLazyQueryHookResult = ReturnType<typeof useGetSubStoriesFromStoryIdLazyQuery>;
+export type GetSubStoriesFromStoryIdQueryResult = Apollo.QueryResult<GetSubStoriesFromStoryIdQuery, GetSubStoriesFromStoryIdQueryVariables>;
 export const GetUserByIdDocument = gql`
     query getUserById($id: Int!) {
   getUserById(id: $id) {

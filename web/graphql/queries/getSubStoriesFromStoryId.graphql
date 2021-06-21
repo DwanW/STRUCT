@@ -1,0 +1,12 @@
+query GetSubStoriesFromStoryId($storyId: Int!) {
+  getSubStoriesFromStoryId(storyId: $storyId) {
+    id
+    title
+    text
+    order_index
+    storyId
+    story {
+      creatorId
+    }
+  }
+}
