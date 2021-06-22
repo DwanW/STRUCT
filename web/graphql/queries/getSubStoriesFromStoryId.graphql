@@ -5,8 +5,7 @@ query GetSubStoriesFromStoryId($storyId: Int!) {
     text
     order_index
     storyId
-    story {
-      creatorId
-    }
+    createdAt
+    updatedAt
   }
 }

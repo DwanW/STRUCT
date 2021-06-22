@@ -700,11 +700,7 @@ export type GetSubStoriesFromStoryIdQuery = (
   { __typename?: 'Query' }
   & { getSubStoriesFromStoryId: Array<(
     { __typename?: 'SubStory' }
-    & Pick<SubStory, 'id' | 'title' | 'text' | 'order_index' | 'storyId'>
-    & { story: (
-      { __typename?: 'Story' }
-      & Pick<Story, 'creatorId'>
-    ) }
+    & Pick<SubStory, 'id' | 'title' | 'text' | 'order_index' | 'storyId' | 'createdAt' | 'updatedAt'>
   )> }
 );
 
@@ -1602,9 +1598,8 @@ export const GetSubStoriesFromStoryIdDocument = gql`
     text
     order_index
     storyId
-    story {
-      creatorId
-    }
+    createdAt
+    updatedAt
   }
 }
     `;

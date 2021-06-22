@@ -1,7 +1,10 @@
 import { Fragment, useRef, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import MDEditor from "../Forms/MDEditor";
-import { useCreateSubStoryMutation } from "../../generated/graphql";
+import {
+  GetSubStoriesFromStoryIdDocument,
+  useCreateSubStoryMutation,
+} from "../../generated/graphql";
 
 interface ModalProps {
   isOpen: boolean;
@@ -14,7 +17,29 @@ const Modal: React.FC<ModalProps> = ({ isOpen, setIsOpen, storyId }) => {
   const [mdText, setMdText] = useState("");
   const [titleText, setTitleText] = useState("");
 
-  const [createSubStoryMutation] = useCreateSubStoryMutation();
+  const [createSubStoryMutation] = useCreateSubStoryMutation({
+    update: (cache, { data }) => {
+      try {
+        const subStories: any = cache.readQuery({
+          query: GetSubStoriesFromStoryIdDocument,
+          variables: { storyId: storyId },
+        });
+
+        cache.writeQuery({
+          query: GetSubStoriesFromStoryIdDocument,
+          variables: { storyId: storyId },
+          data: {
+            getSubStoriesFromStoryId: [
+              ...subStories.getSubStoriesFromStoryId,
+              data?.createSubStory.substory,
+            ],
+          },
+        });
+      } catch (e) {
+        console.log(e);
+      }
+    },
+  });
 
   const handleCreateSubSection = async () => {
     if (mdText && titleText) {
