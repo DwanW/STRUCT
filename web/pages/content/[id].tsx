@@ -54,7 +54,7 @@ const StoryContent: NextPage<StoryContentProps> = ({}) => {
           </button>
           {data?.getSubStoriesFromStoryId
             ? data.getSubStoriesFromStoryId.map((substory, idx) => (
-                <div key={`subtitle${idx}`}>{substory.title}</div>
+                <div key={`subtitle${idx}`} className="px-4 py-2 w-full text-lg hover:shadow cursor-pointer hover:bg-gray-200">{substory.title}</div>
               ))
             : null}
         </div>
