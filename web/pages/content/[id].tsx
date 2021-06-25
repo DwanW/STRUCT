@@ -29,7 +29,7 @@ const StoryContent: NextPage<StoryContentProps> = ({}) => {
             <ReactMarkdown
               children={substr.text}
               remarkPlugins={[[gfm, { singleTilde: false }]]}
-              className="px-3 py-2 w-full prose border-b border-blue-200"
+              className="px-3 py-2 w-full prose mx-auto border-b border-blue-200"
             />
           </React.Fragment>
         )
@@ -42,7 +42,7 @@ const StoryContent: NextPage<StoryContentProps> = ({}) => {
       <StoryNavBar />
       {/* <MDEditor /> */}
       <div className="mt-24 container mx-auto flex flex-col sm:flex-row ">
-        <div className="border p-4 min-h-screen flex-1">
+        <div className="border p-4 h-screen flex-1 overflow-y-scroll">
           {renderMD(data?.getSubStoriesFromStoryId)}
         </div>
         <div className="w-full sm:w-[300px] border flex flex-col items-center">
@@ -54,7 +54,7 @@ const StoryContent: NextPage<StoryContentProps> = ({}) => {
           </button>
           {data?.getSubStoriesFromStoryId
             ? data.getSubStoriesFromStoryId.map((substory, idx) => (
-                <div key={`subtitle${idx}`} className="px-4 py-2 w-full text-lg hover:shadow cursor-pointer hover:bg-gray-200">{substory.title}</div>
+                <div key={`subtitle${idx}`} className="px-4 py-2 w-full text-lg font-bold hover:shadow cursor-pointer hover:bg-gray-200">{substory.title}</div>
               ))
             : null}
         </div>
