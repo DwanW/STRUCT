@@ -467,6 +467,17 @@ export type DeleteReviewByIdMutation = (
   & Pick<Mutation, 'deleteReview'>
 );
 
+export type DeleteSubStoryByIdMutationVariables = Exact<{
+  id: Scalars['Int'];
+  storyId: Scalars['Int'];
+}>;
+
+
+export type DeleteSubStoryByIdMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'deleteSubStoryById'>
+);
+
 export type ForgotPasswordMutationVariables = Exact<{
   email: Scalars['String'];
 }>;
@@ -575,6 +586,26 @@ export type UpdateStoryCoverMutation = (
     { __typename?: 'Story' }
     & Pick<Story, 'id' | 'cover_url'>
   )> }
+);
+
+export type UpdateSubStoryMutationVariables = Exact<{
+  id: Scalars['Int'];
+  storyId: Scalars['Int'];
+  title: Scalars['String'];
+  text: Scalars['String'];
+}>;
+
+
+export type UpdateSubStoryMutation = (
+  { __typename?: 'Mutation' }
+  & { updateSubStory: (
+    { __typename?: 'SubStoryResponse' }
+    & Pick<SubStoryResponse, 'error'>
+    & { substory?: Maybe<(
+      { __typename?: 'SubStory' }
+      & Pick<SubStory, 'id' | 'title' | 'text' | 'order_index'>
+    )> }
+  ) }
 );
 
 export type UpdateUserAboutMutationVariables = Exact<{
@@ -1004,6 +1035,38 @@ export function useDeleteReviewByIdMutation(baseOptions?: Apollo.MutationHookOpt
 export type DeleteReviewByIdMutationHookResult = ReturnType<typeof useDeleteReviewByIdMutation>;
 export type DeleteReviewByIdMutationResult = Apollo.MutationResult<DeleteReviewByIdMutation>;
 export type DeleteReviewByIdMutationOptions = Apollo.BaseMutationOptions<DeleteReviewByIdMutation, DeleteReviewByIdMutationVariables>;
+export const DeleteSubStoryByIdDocument = gql`
+    mutation DeleteSubStoryById($id: Int!, $storyId: Int!) {
+  deleteSubStoryById(id: $id, storyId: $storyId)
+}
+    `;
+export type DeleteSubStoryByIdMutationFn = Apollo.MutationFunction<DeleteSubStoryByIdMutation, DeleteSubStoryByIdMutationVariables>;
+
+/**
+ * __useDeleteSubStoryByIdMutation__
+ *
+ * To run a mutation, you first call `useDeleteSubStoryByIdMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteSubStoryByIdMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteSubStoryByIdMutation, { data, loading, error }] = useDeleteSubStoryByIdMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      storyId: // value for 'storyId'
+ *   },
+ * });
+ */
+export function useDeleteSubStoryByIdMutation(baseOptions?: Apollo.MutationHookOptions<DeleteSubStoryByIdMutation, DeleteSubStoryByIdMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteSubStoryByIdMutation, DeleteSubStoryByIdMutationVariables>(DeleteSubStoryByIdDocument, options);
+      }
+export type DeleteSubStoryByIdMutationHookResult = ReturnType<typeof useDeleteSubStoryByIdMutation>;
+export type DeleteSubStoryByIdMutationResult = Apollo.MutationResult<DeleteSubStoryByIdMutation>;
+export type DeleteSubStoryByIdMutationOptions = Apollo.BaseMutationOptions<DeleteSubStoryByIdMutation, DeleteSubStoryByIdMutationVariables>;
 export const ForgotPasswordDocument = gql`
     mutation ForgotPassword($email: String!) {
   forgotPassword(email: $email)
@@ -1289,6 +1352,48 @@ export function useUpdateStoryCoverMutation(baseOptions?: Apollo.MutationHookOpt
 export type UpdateStoryCoverMutationHookResult = ReturnType<typeof useUpdateStoryCoverMutation>;
 export type UpdateStoryCoverMutationResult = Apollo.MutationResult<UpdateStoryCoverMutation>;
 export type UpdateStoryCoverMutationOptions = Apollo.BaseMutationOptions<UpdateStoryCoverMutation, UpdateStoryCoverMutationVariables>;
+export const UpdateSubStoryDocument = gql`
+    mutation UpdateSubStory($id: Int!, $storyId: Int!, $title: String!, $text: String!) {
+  updateSubStory(id: $id, storyId: $storyId, title: $title, text: $text) {
+    error
+    substory {
+      id
+      title
+      text
+      order_index
+    }
+  }
+}
+    `;
+export type UpdateSubStoryMutationFn = Apollo.MutationFunction<UpdateSubStoryMutation, UpdateSubStoryMutationVariables>;
+
+/**
+ * __useUpdateSubStoryMutation__
+ *
+ * To run a mutation, you first call `useUpdateSubStoryMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateSubStoryMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateSubStoryMutation, { data, loading, error }] = useUpdateSubStoryMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      storyId: // value for 'storyId'
+ *      title: // value for 'title'
+ *      text: // value for 'text'
+ *   },
+ * });
+ */
+export function useUpdateSubStoryMutation(baseOptions?: Apollo.MutationHookOptions<UpdateSubStoryMutation, UpdateSubStoryMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateSubStoryMutation, UpdateSubStoryMutationVariables>(UpdateSubStoryDocument, options);
+      }
+export type UpdateSubStoryMutationHookResult = ReturnType<typeof useUpdateSubStoryMutation>;
+export type UpdateSubStoryMutationResult = Apollo.MutationResult<UpdateSubStoryMutation>;
+export type UpdateSubStoryMutationOptions = Apollo.BaseMutationOptions<UpdateSubStoryMutation, UpdateSubStoryMutationVariables>;
 export const UpdateUserAboutDocument = gql`
     mutation UpdateUserAbout($about: String!) {
   updateUserAbout(about: $about) {

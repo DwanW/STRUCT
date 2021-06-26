@@ -1,0 +1,16 @@
+mutation UpdateSubStory(
+  $id: Int!
+  $storyId: Int!
+  $title: String!
+  $text: String!
+) {
+  updateSubStory(id: $id, storyId: $storyId, title: $title, text: $text) {
+    error
+    substory {
+      id
+      title
+      text
+      order_index
+    }
+  }
+}

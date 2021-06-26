@@ -1,0 +1,3 @@
+mutation DeleteSubStoryById($id: Int!, $storyId: Int!) {
+  deleteSubStoryById(id: $id, storyId: $storyId)
+}
