@@ -4,15 +4,33 @@ import MDModal from "../../components/Containers/MDModal";
 // import MDEditor from "../../components/Forms/MDEditor";
 import React, { useState } from "react";
 import { useGetIdFromUrl } from "../../utils/hooks";
-import { useGetSubStoriesFromStoryIdQuery } from "../../generated/graphql";
+import {
+  DeleteSubStoryByIdMutation,
+  GetSubStoriesFromStoryIdDocument,
+  GetSubStoriesFromStoryIdQuery,
+  SubStory,
+  useDeleteSubStoryByIdMutation,
+  useGetSubStoriesFromStoryIdQuery,
+} from "../../generated/graphql";
 import ReactMarkdown from "react-markdown";
 import gfm from "remark-gfm";
+import { ApolloCache, ApolloClient } from "@apollo/client";
 
 interface StoryContentProps {}
 
 const StoryContent: NextPage<StoryContentProps> = ({}) => {
   const [isOpen, setIsOpen] = useState(false);
   const storyId = useGetIdFromUrl();
+  const [editSubStory, setEditSubStory] = useState<Pick<
+    SubStory,
+    | "storyId"
+    | "id"
+    | "title"
+    | "text"
+    | "order_index"
+    | "createdAt"
+    | "updatedAt"
+  > | null>(null);
 
   const { data, loading, error } = useGetSubStoriesFromStoryIdQuery({
     skip: storyId < 0,
@@ -20,6 +38,58 @@ const StoryContent: NextPage<StoryContentProps> = ({}) => {
       storyId: storyId,
     },
   });
+
+  const [deleteSubStoryByIdMutation, { loading: deleting }] =
+    useDeleteSubStoryByIdMutation();
+
+  const deleteUpdate = (
+    cache: ApolloCache<DeleteSubStoryByIdMutation>,
+    substoryId: number
+  ) => {
+    if (!storyId) return;
+    cache.modify({
+      id: cache.identify({ __typename: "Query" }),
+      fields: {
+        getSubStoriesFromStoryId: (
+          existing: [
+            Pick<
+              SubStory,
+              | "storyId"
+              | "id"
+              | "title"
+              | "text"
+              | "order_index"
+              | "createdAt"
+              | "updatedAt"
+            >
+          ],
+          { readField }
+        ) => {
+          return existing.filter(
+            (substory) => readField("id", substory) !== substoryId
+          );
+        },
+      },
+    });
+    // const data = cache.readQuery<GetSubStoriesFromStoryIdQuery>({
+    //   query: GetSubStoriesFromStoryIdDocument,
+    //   variables: {
+    //     storyId: storyId,
+    //   },
+    // });
+    // const newData = {
+    //   getSubStoriesFromStoryId: data?.getSubStoriesFromStoryId.filter(
+    //     (sub) => sub.id !== substoryId
+    //   ),
+    // };
+    // cache.writeQuery({
+    //   query: GetSubStoriesFromStoryIdDocument,
+    //   variables: {
+    //     storyId: storyId,
+    //   },
+    //   data: newData,
+    // });
+  };
 
   const scrollToSubStory = (subStoryId: number) => {
     const element = document.getElementById(subStoryId.toString());
@@ -66,18 +136,47 @@ const StoryContent: NextPage<StoryContentProps> = ({}) => {
           </button>
           {data?.getSubStoriesFromStoryId
             ? data.getSubStoriesFromStoryId.map((substory, idx) => (
-                <div
-                  key={`subtitle${idx}`}
-                  className="px-4 py-2 w-full text-lg font-bold hover:shadow cursor-pointer hover:bg-gray-200"
-                  onClick={() => scrollToSubStory(substory.id)}
-                >
-                  {substory.title}
-                </div>
+                <React.Fragment key={`subtitle${idx}`}>
+                  <div
+                    className="px-4 py-2 w-full text-lg font-bold hover:shadow cursor-pointer hover:bg-gray-200"
+                    onClick={() => scrollToSubStory(substory.id)}
+                  >
+                    {substory.title}
+                  </div>
+                  <button
+                    className="w-14 bg-gray-300"
+                    onClick={() => {
+                      setEditSubStory(substory);
+                      setIsOpen(!open);
+                    }}
+                  >
+                    update
+                  </button>
+                  <button
+                    className="w-14 bg-gray-300"
+                    onClick={() => {
+                      deleteSubStoryByIdMutation({
+                        variables: { id: substory.id, storyId: storyId },
+                        update: (cache) => {
+                          deleteUpdate(cache, substory.id);
+                        },
+                      });
+                    }}
+                    disabled={deleting}
+                  >
+                    delete
+                  </button>
+                </React.Fragment>
               ))
             : null}
         </div>
 
-        <MDModal isOpen={isOpen} setIsOpen={setIsOpen} storyId={storyId} />
+        <MDModal
+          isOpen={isOpen}
+          setIsOpen={setIsOpen}
+          storyId={storyId}
+          initial={editSubStory}
+        />
       </div>
     </>
   );

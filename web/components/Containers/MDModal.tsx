@@ -3,6 +3,7 @@ import { Dialog, Transition } from "@headlessui/react";
 import MDEditor from "../Forms/MDEditor";
 import {
   GetSubStoriesFromStoryIdDocument,
+  SubStory,
   useCreateSubStoryMutation,
 } from "../../generated/graphql";
 
@@ -10,9 +11,24 @@ interface ModalProps {
   isOpen: boolean;
   setIsOpen: Function;
   storyId: number;
+  initial: null | Pick<
+    SubStory,
+    | "storyId"
+    | "id"
+    | "title"
+    | "text"
+    | "order_index"
+    | "createdAt"
+    | "updatedAt"
+  >;
 }
 
-const Modal: React.FC<ModalProps> = ({ isOpen, setIsOpen, storyId }) => {
+const Modal: React.FC<ModalProps> = ({
+  isOpen,
+  setIsOpen,
+  storyId,
+  initial,
+}) => {
   const cancelButtonRef = useRef(null);
   const [mdText, setMdText] = useState("");
   const [titleText, setTitleText] = useState("");
