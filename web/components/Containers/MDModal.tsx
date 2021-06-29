@@ -1,10 +1,11 @@
-import { Fragment, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import MDEditor from "../Forms/MDEditor";
 import {
   GetSubStoriesFromStoryIdDocument,
   SubStory,
   useCreateSubStoryMutation,
+  useUpdateSubStoryMutation,
 } from "../../generated/graphql";
 
 interface ModalProps {
@@ -33,6 +34,16 @@ const Modal: React.FC<ModalProps> = ({
   const [mdText, setMdText] = useState("");
   const [titleText, setTitleText] = useState("");
 
+  useEffect(() => {
+    if (initial) {
+      setMdText(initial.text);
+      setTitleText(initial.title);
+    } else {
+      setMdText("");
+      setTitleText("");
+    }
+  }, [initial]);
+
   const [createSubStoryMutation] = useCreateSubStoryMutation({
     update: (cache, { data }) => {
       try {
@@ -57,19 +68,44 @@ const Modal: React.FC<ModalProps> = ({
     },
   });
 
-  const handleCreateSubSection = async () => {
-    if (mdText && titleText) {
-      await createSubStoryMutation({
-        variables: {
-          storyId,
-          storyInput: { text: mdText, title: titleText },
-        },
-      });
+  const [updateSubStoryMutation] = useUpdateSubStoryMutation();
+
+  const handleSubmitSubSection = async () => {
+    if (!initial && mdText && titleText) {
+      // when no initial is provided, create new
+      try {
+        await createSubStoryMutation({
+          variables: {
+            storyId,
+            storyInput: { text: mdText, title: titleText },
+          },
+        });
+      } catch (e) {
+        console.log("create substory error", e);
+      }
 
       setIsOpen(false);
       setMdText("");
       setTitleText("");
+    } else if (initial && mdText && titleText) {
+      // when initial is provided, update existing
+      try {
+        await updateSubStoryMutation({
+          variables: {
+            id: initial.id,
+            storyId: storyId,
+            text: mdText,
+            title: titleText,
+          },
+        });
+      } catch (e) {
+        console.log("update substory error", e);
+      }
+      setIsOpen(false);
+      setMdText("");
+      setTitleText("");
     } else {
+      // when form is incomplete, do nothing
       return;
     }
   };
@@ -136,7 +172,7 @@ const Modal: React.FC<ModalProps> = ({
                   </div>
                   <div className="mt-3 text-center sm:mt-0 sm:mx-4 sm:text-left flex-1">
                     <Dialog.Title className="text-lg leading-6 font-medium text-gray-900">
-                      Add a New Sub-Section
+                      {initial ? "Update" : "Add a New"} Sub-Section
                     </Dialog.Title>
                     <div className="mt-2">
                       <MDEditor
@@ -153,9 +189,9 @@ const Modal: React.FC<ModalProps> = ({
                 <button
                   type="button"
                   className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:ml-3 sm:w-auto sm:text-sm"
-                  onClick={handleCreateSubSection}
+                  onClick={handleSubmitSubSection}
                 >
-                  Add
+                  {initial ? "Update" : "Add"}
                 </button>
                 <button
                   type="button"

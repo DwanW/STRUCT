@@ -71,24 +71,6 @@ const StoryContent: NextPage<StoryContentProps> = ({}) => {
         },
       },
     });
-    // const data = cache.readQuery<GetSubStoriesFromStoryIdQuery>({
-    //   query: GetSubStoriesFromStoryIdDocument,
-    //   variables: {
-    //     storyId: storyId,
-    //   },
-    // });
-    // const newData = {
-    //   getSubStoriesFromStoryId: data?.getSubStoriesFromStoryId.filter(
-    //     (sub) => sub.id !== substoryId
-    //   ),
-    // };
-    // cache.writeQuery({
-    //   query: GetSubStoriesFromStoryIdDocument,
-    //   variables: {
-    //     storyId: storyId,
-    //   },
-    //   data: newData,
-    // });
   };
 
   const scrollToSubStory = (subStoryId: number) => {
@@ -129,7 +111,10 @@ const StoryContent: NextPage<StoryContentProps> = ({}) => {
         </div>
         <div className="w-full sm:w-[300px] border flex flex-col items-center">
           <button
-            onClick={() => setIsOpen(!isOpen)}
+            onClick={() => {
+              setIsOpen(!isOpen);
+              setEditSubStory(null);
+            }}
             className="bg-green-500 w-3/4 text-white text-center font-bold uppercase text-base px-8 py-3 rounded-full shadow-md hover:shadow-lg outline-none focus:outline-none my-4 ease-linear transition-all duration-150"
           >
             Add Sub-Section
@@ -138,34 +123,61 @@ const StoryContent: NextPage<StoryContentProps> = ({}) => {
             ? data.getSubStoriesFromStoryId.map((substory, idx) => (
                 <React.Fragment key={`subtitle${idx}`}>
                   <div
-                    className="px-4 py-2 w-full text-lg font-bold hover:shadow cursor-pointer hover:bg-gray-200"
+                    className="group px-4 py-2 w-full text-lg font-bold hover:shadow cursor-pointer hover:bg-gray-200 relative"
                     onClick={() => scrollToSubStory(substory.id)}
                   >
-                    {substory.title}
+                    <div>{substory.title}</div>
+
+                    <button
+                      className="absolute sm:hidden  bg-gray-100 rounded-full top-2 right-12 cursor-pointer text-gray-400 group-hover:block z-10"
+                      onClick={() => {
+                        setEditSubStory(substory);
+                        setIsOpen(!isOpen);
+                      }}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-6 w-6"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
+                        />
+                      </svg>
+                    </button>
+                    <button
+                      className="absolute sm:hidden bg-gray-100 rounded-full top-2 right-4 cursor-pointer text-red-300 group-hover:block z-10"
+                      onClick={() => {
+                        deleteSubStoryByIdMutation({
+                          variables: { id: substory.id, storyId: storyId },
+                          update: (cache) => {
+                            deleteUpdate(cache, substory.id);
+                          },
+                        });
+                      }}
+                      disabled={deleting}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-6 w-6"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                        />
+                      </svg>
+                    </button>
                   </div>
-                  <button
-                    className="w-14 bg-gray-300"
-                    onClick={() => {
-                      setEditSubStory(substory);
-                      setIsOpen(!open);
-                    }}
-                  >
-                    update
-                  </button>
-                  <button
-                    className="w-14 bg-gray-300"
-                    onClick={() => {
-                      deleteSubStoryByIdMutation({
-                        variables: { id: substory.id, storyId: storyId },
-                        update: (cache) => {
-                          deleteUpdate(cache, substory.id);
-                        },
-                      });
-                    }}
-                    disabled={deleting}
-                  >
-                    delete
-                  </button>
                 </React.Fragment>
               ))
             : null}
