@@ -1,6 +1,8 @@
 import { NextPage } from "next";
-import StoryNavbar from "../../components/Navbars/StoryNavbar";
 import { useGetMyStoriesQuery } from "../../generated/graphql";
+import Card from "../../components/Containers/Card";
+import Link from "next/link";
+import SideNav from "../../components/Navbars/SideNav";
 
 interface storiesProps {}
 
@@ -21,15 +23,18 @@ const Stories: NextPage<storiesProps> = ({}) => {
   }
 
   return (
-    <>
-      <StoryNavbar />
-      <main className="mt-24 container mx-auto p-4">
-        <h4>My stories</h4>
+    <div className="flex flex-row">
+      <SideNav />
+      <main className="profile-page min-h-screen bg-white-100 flex-1">
         {data.getMyStories?.stories.map((story, idx) => (
-          <div key={idx}>{story.title}</div>
-        ))}
+          <Link href={`/story/${encodeURIComponent(story.id)}`} key={idx}>
+            <a className="inline-block relative mx-4 w-48 h-80 hover:bg-blue-100 hover:shadow-md">
+              <Card title={story.title} coverUrl={story.cover_url} />
+            </a>
+          </Link>
+        ))} 
       </main>
-    </>
+    </div>
   );
 };
 

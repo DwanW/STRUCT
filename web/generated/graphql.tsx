@@ -705,6 +705,28 @@ export type GetMyStoriesQuery = (
   )> }
 );
 
+export type GetRecentUserReviewsQueryVariables = Exact<{
+  limit: Scalars['Int'];
+  cursor?: Maybe<Scalars['Float']>;
+  time_range?: Maybe<Scalars['String']>;
+  userId: Scalars['Int'];
+}>;
+
+
+export type GetRecentUserReviewsQuery = (
+  { __typename?: 'Query' }
+  & { getRecentUserReviews: (
+    { __typename?: 'PaginatedReview' }
+    & { reviews: Array<(
+      { __typename?: 'Review' }
+      & Pick<Review, 'id' | 'text' | 'type' | 'helpful_score' | 'funny_score' | 'userId' | 'storyId' | 'reviewVoteStatus' | 'createdAt' | 'updatedAt'>
+    )>, next_cursor?: Maybe<(
+      { __typename?: 'Review' }
+      & Pick<Review, 'id' | 'text' | 'type' | 'helpful_score' | 'funny_score' | 'userId' | 'storyId' | 'reviewVoteStatus' | 'createdAt' | 'updatedAt'>
+    )> }
+  ) }
+);
+
 export type GetStoryByIdQueryVariables = Exact<{
   id: Scalars['Int'];
 }>;
@@ -1647,6 +1669,72 @@ export function useGetMyStoriesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptio
 export type GetMyStoriesQueryHookResult = ReturnType<typeof useGetMyStoriesQuery>;
 export type GetMyStoriesLazyQueryHookResult = ReturnType<typeof useGetMyStoriesLazyQuery>;
 export type GetMyStoriesQueryResult = Apollo.QueryResult<GetMyStoriesQuery, GetMyStoriesQueryVariables>;
+export const GetRecentUserReviewsDocument = gql`
+    query GetRecentUserReviews($limit: Int!, $cursor: Float, $time_range: String, $userId: Int!) {
+  getRecentUserReviews(
+    limit: $limit
+    cursor: $cursor
+    time_range: $time_range
+    userId: $userId
+  ) {
+    reviews {
+      id
+      text
+      type
+      helpful_score
+      funny_score
+      userId
+      storyId
+      reviewVoteStatus
+      createdAt
+      updatedAt
+    }
+    next_cursor {
+      id
+      text
+      type
+      helpful_score
+      funny_score
+      userId
+      storyId
+      reviewVoteStatus
+      createdAt
+      updatedAt
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetRecentUserReviewsQuery__
+ *
+ * To run a query within a React component, call `useGetRecentUserReviewsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetRecentUserReviewsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetRecentUserReviewsQuery({
+ *   variables: {
+ *      limit: // value for 'limit'
+ *      cursor: // value for 'cursor'
+ *      time_range: // value for 'time_range'
+ *      userId: // value for 'userId'
+ *   },
+ * });
+ */
+export function useGetRecentUserReviewsQuery(baseOptions: Apollo.QueryHookOptions<GetRecentUserReviewsQuery, GetRecentUserReviewsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetRecentUserReviewsQuery, GetRecentUserReviewsQueryVariables>(GetRecentUserReviewsDocument, options);
+      }
+export function useGetRecentUserReviewsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetRecentUserReviewsQuery, GetRecentUserReviewsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetRecentUserReviewsQuery, GetRecentUserReviewsQueryVariables>(GetRecentUserReviewsDocument, options);
+        }
+export type GetRecentUserReviewsQueryHookResult = ReturnType<typeof useGetRecentUserReviewsQuery>;
+export type GetRecentUserReviewsLazyQueryHookResult = ReturnType<typeof useGetRecentUserReviewsLazyQuery>;
+export type GetRecentUserReviewsQueryResult = Apollo.QueryResult<GetRecentUserReviewsQuery, GetRecentUserReviewsQueryVariables>;
 export const GetStoryByIdDocument = gql`
     query getStoryById($id: Int!) {
   getStoryById(id: $id) {

@@ -212,7 +212,6 @@ export class ReviewResolver {
     };
   }
 
-  // order by helpful_score first then created date
   @Mutation(() => Review)
   @UseMiddleware(isAuth)
   async updateReview(

@@ -1,0 +1,38 @@
+query GetRecentUserReviews(
+  $limit: Int!
+  $cursor: Float
+  $time_range: String
+  $userId: Int!
+) {
+  getRecentUserReviews(
+    limit: $limit
+    cursor: $cursor
+    time_range: $time_range
+    userId: $userId
+  ) {
+    reviews {
+      id
+      text
+      type
+      helpful_score
+      funny_score
+      userId
+      storyId
+      reviewVoteStatus
+      createdAt
+      updatedAt
+    }
+    next_cursor {
+      id
+      text
+      type
+      helpful_score
+      funny_score
+      userId
+      storyId
+      reviewVoteStatus
+      createdAt
+      updatedAt
+    }
+  }
+}

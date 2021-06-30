@@ -3,24 +3,23 @@ import StoryNavBar from "../../components/Navbars/StoryNavbar";
 import MDModal from "../../components/Containers/MDModal";
 // import MDEditor from "../../components/Forms/MDEditor";
 import React, { useState } from "react";
-import { useGetIdFromUrl } from "../../utils/hooks";
+import { useGetStoryFromUrl } from "../../utils/hooks";
 import {
   DeleteSubStoryByIdMutation,
-  GetSubStoriesFromStoryIdDocument,
-  GetSubStoriesFromStoryIdQuery,
   SubStory,
   useDeleteSubStoryByIdMutation,
   useGetSubStoriesFromStoryIdQuery,
+  useMeQuery,
 } from "../../generated/graphql";
 import ReactMarkdown from "react-markdown";
 import gfm from "remark-gfm";
-import { ApolloCache, ApolloClient } from "@apollo/client";
+import { ApolloCache } from "@apollo/client";
 
 interface StoryContentProps {}
 
 const StoryContent: NextPage<StoryContentProps> = ({}) => {
   const [isOpen, setIsOpen] = useState(false);
-  const storyId = useGetIdFromUrl();
+
   const [editSubStory, setEditSubStory] = useState<Pick<
     SubStory,
     | "storyId"
@@ -32,10 +31,15 @@ const StoryContent: NextPage<StoryContentProps> = ({}) => {
     | "updatedAt"
   > | null>(null);
 
+  const { data: storyData } = useGetStoryFromUrl();
+  const { data: meData } = useMeQuery();
+
   const { data, loading, error } = useGetSubStoriesFromStoryIdQuery({
-    skip: storyId < 0,
+    skip:
+      storyData?.getStoryById?.id === undefined ||
+      storyData?.getStoryById?.id < 0,
     variables: {
-      storyId: storyId,
+      storyId: storyData?.getStoryById?.id as number,
     },
   });
 
@@ -98,6 +102,8 @@ const StoryContent: NextPage<StoryContentProps> = ({}) => {
           </div>
         )
       );
+    } else {
+      return <div>Content are being prepared, comeback later!</div>;
     }
   };
 
@@ -110,15 +116,17 @@ const StoryContent: NextPage<StoryContentProps> = ({}) => {
           {renderMD(data?.getSubStoriesFromStoryId)}
         </div>
         <div className="w-full sm:w-[300px] border flex flex-col items-center">
-          <button
-            onClick={() => {
-              setIsOpen(!isOpen);
-              setEditSubStory(null);
-            }}
-            className="bg-green-500 w-3/4 text-white text-center font-bold uppercase text-base px-8 py-3 rounded-full shadow-md hover:shadow-lg outline-none focus:outline-none my-4 ease-linear transition-all duration-150"
-          >
-            Add Sub-Section
-          </button>
+          {meData?.me?.id === storyData?.getStoryById?.creator.id ? (
+            <button
+              onClick={() => {
+                setIsOpen(!isOpen);
+                setEditSubStory(null);
+              }}
+              className="bg-green-500 w-3/4 text-white text-center font-bold uppercase text-base px-8 py-3 rounded-full shadow-md hover:shadow-lg outline-none focus:outline-none my-4 ease-linear transition-all duration-150"
+            >
+              Add Sub-Section
+            </button>
+          ) : null}
           {data?.getSubStoriesFromStoryId
             ? data.getSubStoriesFromStoryId.map((substory, idx) => (
                 <React.Fragment key={`subtitle${idx}`}>
@@ -129,7 +137,11 @@ const StoryContent: NextPage<StoryContentProps> = ({}) => {
                     <div>{substory.title}</div>
 
                     <button
-                      className="absolute sm:hidden  bg-gray-100 rounded-full top-2 right-12 cursor-pointer text-gray-400 group-hover:block z-10"
+                      className={`bg-gray-100 rounded-full top-2 right-12 cursor-pointer text-gray-400 z-10 ${
+                        meData?.me?.id === storyData?.getStoryById?.creator.id
+                          ? "absolute sm:hidden group-hover:block"
+                          : "hidden"
+                      }`}
                       onClick={() => {
                         setEditSubStory(substory);
                         setIsOpen(!isOpen);
@@ -151,10 +163,17 @@ const StoryContent: NextPage<StoryContentProps> = ({}) => {
                       </svg>
                     </button>
                     <button
-                      className="absolute sm:hidden bg-gray-100 rounded-full top-2 right-4 cursor-pointer text-red-300 group-hover:block z-10"
+                      className={`bg-gray-100 rounded-full top-2 right-4 cursor-pointer text-red-300 z-10 ${
+                        meData?.me?.id === storyData?.getStoryById?.creator.id
+                          ? "absolute sm:hidden group-hover:block"
+                          : "hidden"
+                      }`}
                       onClick={() => {
                         deleteSubStoryByIdMutation({
-                          variables: { id: substory.id, storyId: storyId },
+                          variables: {
+                            id: substory.id,
+                            storyId: storyData?.getStoryById?.id as number,
+                          },
                           update: (cache) => {
                             deleteUpdate(cache, substory.id);
                           },
@@ -186,7 +205,7 @@ const StoryContent: NextPage<StoryContentProps> = ({}) => {
         <MDModal
           isOpen={isOpen}
           setIsOpen={setIsOpen}
-          storyId={storyId}
+          storyId={storyData?.getStoryById?.id as number}
           initial={editSubStory}
         />
       </div>
