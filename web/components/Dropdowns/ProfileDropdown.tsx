@@ -4,6 +4,8 @@ import { createPopper } from "@popperjs/core";
 import Avatar from "../Containers/Avatar";
 import { useLogoutMutation } from "../../generated/graphql";
 import gql from "graphql-tag";
+import { Switch } from "@headlessui/react";
+import useDarkMode from "../../utils/darkMode";
 
 interface ProfileDropdownProps {
   avatarUrl: string;
@@ -11,6 +13,7 @@ interface ProfileDropdownProps {
 
 const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ avatarUrl }) => {
   const [dropdownPopoverShow, setDropdownPopoverShow] = useState(false);
+  const [isDarkMode, toggleDarkMode] = useDarkMode();
   const [logout] = useLogoutMutation({
     update: (cache) => {
       cache.writeQuery({
@@ -119,6 +122,23 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ avatarUrl }) => {
             Switch Account
           </a>
         </Link>
+        <div className="flex justify-between py-2 px-4">
+          <div className="text-xs">Lights off</div>
+          <Switch
+            checked={isDarkMode as boolean}
+            onChange={toggleDarkMode as () => void}
+            className={`${
+              isDarkMode ? "bg-blue-600" : "bg-gray-400"
+            } relative inline-flex items-center h-5 rounded-full w-9 cursor-pointer transition-colors ease-in-out duration-200 focus:outline-none focus-visible:ring-2  focus-visible:ring-white focus-visible:ring-opacity-75`}
+          >
+            <span className="sr-only">Toggle Dark Theme</span>
+            <span
+              className={`${
+                isDarkMode ? "translate-x-5" : "translate-x-1"
+              } inline-block w-3 h-3 transform bg-white rounded-full transition ease-in-out duration-200`}
+            />
+          </Switch>
+        </div>
       </div>
     </>
   );
