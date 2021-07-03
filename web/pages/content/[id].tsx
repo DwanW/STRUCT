@@ -97,7 +97,7 @@ const StoryContent: NextPage<StoryContentProps> = ({}) => {
             <ReactMarkdown
               children={substr.text}
               remarkPlugins={[[gfm, { singleTilde: false }]]}
-              className="px-3 py-2 w-full prose dark:prose-dark mx-auto border-b border-blue-200"
+              className="px-3 py-2 w-full prose dark:prose-light mx-auto border-b border-blue-200"
             />
           </div>
         )
