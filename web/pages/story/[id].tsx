@@ -3,7 +3,7 @@ import React from "react";
 import Avatar from "../../components/Containers/Avatar";
 import Hero from "../../components/Containers/Hero";
 import ReviewList from "../../components/List/ReviewList";
-import AuthNavbar from "../../components/Navbars/AuthNavbar";
+import StoryNavbar from "../../components/Navbars/StoryNavbar";
 import { useMeQuery, useUpdateStoryMutation } from "../../generated/graphql";
 import { useGetStoryFromUrl } from "../../utils/hooks";
 import FormTextArea from "../../components/Forms/FormTextArea";
@@ -40,9 +40,9 @@ const StoryPage: NextPage<StoryProps> = ({}) => {
   };
 
   return (
-    <>
-      <AuthNavbar />
-      <div className="mt-16 container mx-auto">
+    <div className="dark:bg-gray-800 dark:text-white transition-colors ease duration-300">
+      <StoryNavbar />
+      <div className="pt-16 container mx-auto">
         <Hero
           data={storyData}
           updateMutation={updateStoryTitle}
@@ -59,7 +59,7 @@ const StoryPage: NextPage<StoryProps> = ({}) => {
           />
         </section>
         <section className="my-4 mx-auto md:w-10/12 px-5">
-          <h6 className="text-xl font-normal leading-normal mb-2 text-blue-800">
+          <h6 className="text-xl font-normal leading-normal mb-2 text-blue-800 dark:text-blue-200">
             About Author
           </h6>
           <div className="flex">
@@ -87,7 +87,7 @@ const StoryPage: NextPage<StoryProps> = ({}) => {
           </div>
         </section>
         <section className="my-4 mx-auto md:w-10/12 px-5">
-          <h6 className="text-xl font-normal leading-normal mb-2 text-blue-800">
+          <h6 className="text-xl font-normal leading-normal mb-2 text-blue-800 dark:text-blue-200">
             Related News
           </h6>
           <div className="h-56 w-full border border-pink-200">
@@ -95,8 +95,8 @@ const StoryPage: NextPage<StoryProps> = ({}) => {
           </div>
         </section>
 
-        <section className="my-4 mx-auto md:w-10/12 px-5">
-          <h6 className="text-xl font-normal leading-normal mb-2 text-blue-800">
+        <section className="mt-4 pb-4 mx-auto md:w-10/12 px-5">
+          <h6 className="text-xl font-normal leading-normal mb-2 text-blue-800 dark:text-blue-200">
             Reviews
           </h6>
           <ReviewList
@@ -105,7 +105,7 @@ const StoryPage: NextPage<StoryProps> = ({}) => {
           />
         </section>
       </div>
-    </>
+    </div>
   );
 };
 

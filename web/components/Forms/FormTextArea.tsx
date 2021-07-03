@@ -31,14 +31,14 @@ const FormTextArea: React.FC<FormTextAreaProps> = ({
       <div className={className}>
         <div className="flex flex-row justify-between">
           <h4
-            className={`text-left text-lg leading-relaxed text-blue-700 font-bold ${
+            className={`text-left text-lg leading-relaxed text-blue-700 dark:text-blue-200   font-bold ${
               showTitle ? "" : "hidden"
             }`}
           >
             {label}
           </h4>
           <button
-            className={`text-green-600 px-1 rounded-full shadow border hover:border-gray-300 hover:bg-gray-300 ${
+            className={`text-green-600 dark:text-white px-1 rounded-full shadow border hover:border-gray-300 hover:bg-gray-300 dark:border-green-600 dark:hover:bg-green-800 dark:bg-green-600 ${
               enableEdit ? "" : "hidden"
             }`}
             onClick={() => setIsEdit(!isEdit)}

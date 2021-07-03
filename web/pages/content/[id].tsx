@@ -97,7 +97,7 @@ const StoryContent: NextPage<StoryContentProps> = ({}) => {
             <ReactMarkdown
               children={substr.text}
               remarkPlugins={[[gfm, { singleTilde: false }]]}
-              className="px-3 py-2 w-full prose mx-auto border-b border-blue-200"
+              className="px-3 py-2 w-full prose dark:prose-dark mx-auto border-b border-blue-200"
             />
           </div>
         )
@@ -108,10 +108,10 @@ const StoryContent: NextPage<StoryContentProps> = ({}) => {
   };
 
   return (
-    <>
+    <div className="dark:bg-gray-800 dark:text-white transition-colors ease duration-300">
       <StoryNavBar />
       {/* <MDEditor /> */}
-      <div className="mt-24 container mx-auto flex flex-col sm:flex-row ">
+      <div className="pt-24 container mx-auto flex flex-col sm:flex-row ">
         <div className="border p-4 h-screen flex-1 overflow-y-scroll">
           {renderMD(data?.getSubStoriesFromStoryId)}
         </div>
@@ -209,7 +209,7 @@ const StoryContent: NextPage<StoryContentProps> = ({}) => {
           initial={editSubStory}
         />
       </div>
-    </>
+    </div>
   );
 };
 
