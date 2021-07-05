@@ -38,7 +38,13 @@ const Hero: React.FC<HeroProps> = ({
             />
           </h3>
           <div className="mt-4 text-lg">Reviews: descriptive word</div>
-          <div className="mt-4 text-sm">Publish Date: date string</div>
+          <div className="mt-4 text-sm">
+            Publish Date: {new Date(data.getStoryById?.createdAt as string).toLocaleDateString("en", {
+              month: "long",
+              day: "2-digit",
+              year: "numeric",
+            })}
+          </div>
           <div className="mt-4 text-sm">
             Author: {data.getStoryById?.creator.username}
           </div>

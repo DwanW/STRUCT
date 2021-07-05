@@ -98,15 +98,49 @@ export class ReviewResolver {
       };
     }
 
-    const result = await Review.create({
-      text,
-      type,
-      userId: req.session.userId,
-      storyId,
-    }).save();
+    // const result = await Review.create({
+    //   text,
+    //   type,
+    //   userId: req.session.userId,
+    //   storyId,
+    // }).save();
+
+    const voteNumber = type === "positive" ? 1 : type === "negative" ? -1 : 0;
+    const upvoteValue = voteNumber > 0 ? 1 : 0;
+    const downvoteValue = voteNumber < 0 ? 1 : 0;
+
+    const transResult = await getConnection().transaction(
+      async (transManager) => {
+        await transManager.query(
+          `
+        insert into vote ("userId", "storyId", "value")
+        values (${req.session.userId}, ${storyId}, ${voteNumber})
+        `
+        );
+
+        await transManager.query(
+          `
+        update story
+        set up_vote = up_vote + ${upvoteValue}, down_vote = down_vote + ${downvoteValue}
+        where id = ${storyId}
+        `
+        );
+
+        const result = await transManager
+          .create(Review, {
+            text,
+            type,
+            userId: req.session.userId,
+            storyId,
+          })
+          .save();
+
+        return result;
+      }
+    );
 
     return {
-      review: result,
+      review: transResult,
     };
   }
 

@@ -6,6 +6,11 @@ query StoriesTop($limit: Int!, $cursor: TopStoryCursor, $time_range: Int) {
       overview
       createdAt
       cover_url
+      up_vote
+      down_vote
+      creator {
+        username
+      }
     }
     next_cursor {
       id

@@ -69,7 +69,13 @@ export default function Home() {
           {dataNew?.getNewStories.stories.map((story, idx) => (
             <Link href={`/story/${encodeURIComponent(story.id)}`} key={idx}>
               <a className="block relative mx-auto w-48 h-80 bg-white dark:bg-gray-800 hover:bg-blue-100 hover:shadow-md dark:hover:bg-blue-800 transition-colors ease duration-300">
-                <Card title={story.title} coverUrl={story.cover_url} />
+                <Card
+                  title={story.title}
+                  coverUrl={story.cover_url}
+                  author={story.creator.username}
+                  upvote={story.up_vote}
+                  downvote={story.down_vote}
+                />
               </a>
             </Link>
           ))}
@@ -84,7 +90,13 @@ export default function Home() {
           {dataNew?.getNewStories.stories.map((story, idx) => (
             <Link href={`/story/${encodeURIComponent(story.id)}`} key={idx}>
               <a className="block relative mx-auto w-48 h-80 bg-white dark:bg-gray-800 hover:bg-blue-100 hover:shadow-md dark:hover:bg-blue-800 transition-colors ease duration-300">
-                <Card title={story.title} coverUrl={story.cover_url} />
+                <Card
+                  title={story.title}
+                  coverUrl={story.cover_url}
+                  author={story.creator.username}
+                  upvote={story.up_vote}
+                  downvote={story.down_vote}
+                />
               </a>
             </Link>
           ))}
@@ -99,7 +111,13 @@ export default function Home() {
           {dataTop?.getTopStories.stories.map((story, idx) => (
             <Link href={`/story/${encodeURIComponent(story.id)}`} key={idx}>
               <a className="block relative mx-auto w-48 h-80 bg-white dark:bg-gray-800 hover:bg-blue-100 hover:shadow-md dark:hover:bg-blue-800 transition-colors ease duration-300">
-                <Card title={story.title} coverUrl={story.cover_url} />
+                <Card
+                  title={story.title}
+                  coverUrl={story.cover_url}
+                  author={story.creator.username}
+                  upvote={story.up_vote}
+                  downvote={story.down_vote}
+                />
               </a>
             </Link>
           ))}

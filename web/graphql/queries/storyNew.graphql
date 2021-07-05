@@ -6,6 +6,11 @@ query StoriesNew($limit: Int!, $cursor: Int) {
       overview
       cover_url
       createdAt
+      up_vote
+      down_vote
+      creator {
+        username
+      }
     }
     next_cursor {
       id

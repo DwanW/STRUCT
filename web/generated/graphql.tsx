@@ -793,7 +793,11 @@ export type StoriesNewQuery = (
     { __typename?: 'PaginatedStory' }
     & { stories: Array<(
       { __typename?: 'Story' }
-      & Pick<Story, 'id' | 'title' | 'overview' | 'cover_url' | 'createdAt'>
+      & Pick<Story, 'id' | 'title' | 'overview' | 'cover_url' | 'createdAt' | 'up_vote' | 'down_vote'>
+      & { creator: (
+        { __typename?: 'User' }
+        & Pick<User, 'username'>
+      ) }
     )>, next_cursor?: Maybe<(
       { __typename?: 'Story' }
       & Pick<Story, 'id'>
@@ -814,7 +818,11 @@ export type StoriesTopQuery = (
     { __typename?: 'PaginatedStory' }
     & { stories: Array<(
       { __typename?: 'Story' }
-      & Pick<Story, 'id' | 'title' | 'overview' | 'createdAt' | 'cover_url'>
+      & Pick<Story, 'id' | 'title' | 'overview' | 'createdAt' | 'cover_url' | 'up_vote' | 'down_vote'>
+      & { creator: (
+        { __typename?: 'User' }
+        & Pick<User, 'username'>
+      ) }
     )>, next_cursor?: Maybe<(
       { __typename?: 'Story' }
       & Pick<Story, 'id' | 'up_vote' | 'down_vote'>
@@ -1913,6 +1921,11 @@ export const StoriesNewDocument = gql`
       overview
       cover_url
       createdAt
+      up_vote
+      down_vote
+      creator {
+        username
+      }
     }
     next_cursor {
       id
@@ -1958,6 +1971,11 @@ export const StoriesTopDocument = gql`
       overview
       createdAt
       cover_url
+      up_vote
+      down_vote
+      creator {
+        username
+      }
     }
     next_cursor {
       id
