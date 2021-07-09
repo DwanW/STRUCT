@@ -33,7 +33,7 @@ const SIDE_BAR_NAV = [
 interface SideNavProps {}
 
 const SideNav: React.FC<SideNavProps> = () => {
-  const [isExpanded, setIsExpanded] = useState(true);
+  const [isExpanded, setIsExpanded] = useState(false);
 
   const renderNav = () => {
     return SIDE_BAR_NAV.map((item, idx) => (
@@ -48,19 +48,21 @@ const SideNav: React.FC<SideNavProps> = () => {
   };
   return (
     <div
-      className={`${isExpanded ? "w-60" : "w-16"} transition-all flex flex-col`}
+      className={`${
+        isExpanded ? "w-60" : "w-16"
+      } transition-all flex flex-col text-gray-700 dark:text-gray-200 bg-blue-100 dark:bg-blue-700`}
     >
       <Link href="/">
         <a className="font-extralight text-center w-full pt-4">STRUCT</a>
       </Link>{" "}
       {renderNav()}
       <button
-        className="p-4 shadow-inner rounded-full border focus:outline-none focus:border-blue-300"
+        className="p-4 shadow-inner rounded-full border focus:outline-none focus:border-blue-300 dark:border-blue-700 dark:focus:border-blue-100"
         onClick={() => setIsExpanded(!isExpanded)}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          className={`h-6 w-6 text-blue-400 ml-auto transform transition-all ${
+          className={`h-6 w-6 text-blue-400 dark:text-white ml-auto transform transition-all ${
             isExpanded ? "mr-2" : "rotate-180"
           } `}
           viewBox="0 0 20 20"

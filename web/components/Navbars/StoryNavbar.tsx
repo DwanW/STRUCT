@@ -22,7 +22,7 @@ const StoryNavbar: React.FC<StoryNavbarProps> = ({}) => {
           <Link href="/">
             <a
               href="/"
-              className="text-black text-sm font-bold leading-relaxed inline-flex mr-4 py-2 whitespace-nowrap uppercase"
+              className="text-black dark:text-white text-sm font-bold leading-relaxed inline-flex mr-4 py-2 whitespace-nowrap uppercase"
             >
               STRUCT
             </a>
@@ -64,10 +64,10 @@ const StoryNavbar: React.FC<StoryNavbarProps> = ({}) => {
           <div
             className={`${
               mobileSearchOpen ? "absolute" : "hidden"
-            } w-full h-full border bg-white flex items-center sm:hidden`}
+            } w-full h-full bg-white dark:bg-gray-800 flex items-center sm:hidden`}
           >
             <button
-              className="z-10 h-full leading-snug flex font-normal text-center absolute bg-transparent rounded-tr rounded-br text-base items-center justify-center w-12 border-l-2 border-gray-200 px-3 py-2 outline-none focus:outline-none"
+              className="z-10 h-full leading-snug flex font-normal text-center absolute bg-transparent rounded-tr rounded-br text-base items-center justify-center w-12 px-3 py-2 outline-none focus:outline-none"
               type="button"
               onClick={() => setMobileSearchOpen(!mobileSearchOpen)}
             >
@@ -90,7 +90,7 @@ const StoryNavbar: React.FC<StoryNavbarProps> = ({}) => {
               <input
                 type="text"
                 placeholder="Search"
-                className="border-0 px-4 py-3 placeholder-gray-400 text-gray-600 relative bg-white rounded text-sm shadow outline-none focus:outline-none focus:ring w-full pl-12"
+                className="border-0 px-4 py-3 placeholder-gray-400 text-gray-600 relative bg-white dark:bg-gray-700 rounded text-sm shadow outline-none focus:outline-none focus:ring w-full pl-12"
                 value={searchValue}
                 onChange={(e: any) => setSearchValue(e.target.value)}
               />
@@ -105,12 +105,12 @@ const StoryNavbar: React.FC<StoryNavbarProps> = ({}) => {
                 <input
                   type="text"
                   placeholder="Search"
-                  className="border-0 px-4 py-3 placeholder-gray-400 text-gray-600 relative bg-white rounded text-sm shadow outline-none focus:outline-none focus:ring w-full pr-11"
+                  className="border-0 px-4 py-3 placeholder-gray-400 text-gray-600 dark:text-white relative bg-white dark:bg-gray-700 rounded text-sm shadow outline-none focus:outline-none focus:ring w-full pr-11"
                   value={searchValue}
                   onChange={(e: any) => setSearchValue(e.target.value)}
                 />
                 <button
-                  className="z-10 right-0 h-full leading-snug font-normal text-center text-blue-500 absolute bg-transparent rounded-tr rounded-br text-base items-center justify-center w-12 border-l-2 border-gray-200 px-3 py-3 outline-none focus:outline-none focus:ring"
+                  className="z-10 right-0 h-full leading-snug font-normal text-center text-blue-500 absolute bg-transparent rounded-tr rounded-br text-base items-center justify-center w-12 border-l-2 border-gray-200 dark:border-gray-700 px-3 py-3 outline-none focus:outline-none focus:ring"
                   type="submit"
                 >
                   <svg

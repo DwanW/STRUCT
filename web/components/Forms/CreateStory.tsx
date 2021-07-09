@@ -32,14 +32,14 @@ const CreateStory: React.FC<CreateStoryProps> = () => {
   return (
     <form onSubmit={handleSubmit} className="">
       <div className="flex flex-col">
-        <h4 className="text-left text-sm leading-relaxed text-gray-600">
+        <h4 className="text-left text-sm leading-relaxed text-gray-600 dark:text-gray-300">
           Write a Story
         </h4>
         <div className="mt-2">
           <span>Title</span>
           <input
             type="text"
-            className="form-text block w-full"
+            className="form-text block w-full text-black bg-white dark:text-white dark:bg-gray-700"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
           />
@@ -47,7 +47,7 @@ const CreateStory: React.FC<CreateStoryProps> = () => {
         <div className="mt-2">
           <span>Overview</span>
           <textarea
-            className="h-40 p-4 form-textarea block w-full"
+            className="h-40 p-4 form-textarea block w-full text-black bg-white dark:text-white dark:bg-gray-700"
             value={overview}
             onChange={(e) => setOverview(e.target.value)}
           />
