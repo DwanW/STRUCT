@@ -48,73 +48,45 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ avatarUrl }) => {
         leaveFrom="transform opacity-100 scale-100"
         leaveTo="transform opacity-0 scale-95"
       >
-        <Menu.Items className="absolute right-0 w-56 mt-2 origin-top-right bg-blue-50 dark:bg-gray-700 text-gray-800 dark:text-white divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+        <Menu.Items className="absolute right-0 w-56 mt-2 origin-top-right bg-blue-50 dark:bg-gray-700 text-gray-800 dark:text-white divide-y divide-gray-300 dark:divide-gray-600 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
           <div className="px-1 py-1">
             <Menu.Item>
-              {({ active }) => (
-                <Link href="/myaccount/profile">
-                  <a
-                    href="#"
-                    className={`${
-                      active ? "bg-violet-500 text-white" : "text-gray-900"
-                    } group flex rounded-md items-center w-full px-2 py-2 text-sm`}
-                  >
-                    Profile
-                  </a>
-                </Link>
-              )}
-            </Menu.Item>
-          </div>
-          <div className="px-1 py-1">
-            <Menu.Item>
-              {({ active }) => (
-                <Link href="/write">
-                  <a
-                    href="#"
-                    className={`${
-                      active ? "bg-violet-500 text-white" : "text-gray-900"
-                    } group flex rounded-md items-center w-full px-2 py-2 text-sm`}
-                  >
-                    Write A Story
-                  </a>
-                </Link>
-              )}
-            </Menu.Item>
-          </div>
-          <div className="px-1 py-1">
-            <Menu.Item>
-              {({ active }) => (
-                <button
-                  className={`${
-                    active ? "bg-violet-500 text-white" : "text-gray-900"
-                  } group flex rounded-md items-center w-full px-2 py-2 text-sm`}
-                  onClick={() => logout()}
+              <Link href="/myaccount/profile">
+                <a
+                  href="#"
+                  className="text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-900 group flex rounded-md items-center w-full px-2 py-2 text-sm"
                 >
-                  Logout
-                </button>
-              )}
+                  Profile
+                </a>
+              </Link>
             </Menu.Item>
           </div>
           <div className="px-1 py-1">
             <Menu.Item>
-              {({ active }) => (
-                <Link href="/auth/register">
-                  <a
-                    href="#"
-                    className={`${
-                      active ? "bg-violet-500 text-white" : "text-gray-900"
-                    } group flex rounded-md items-center w-full px-2 py-2 text-sm`}
-                  >
-                    Switch Account
-                  </a>
-                </Link>
-              )}
+              <Link href="/write">
+                <a
+                  href="#"
+                  className="text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-900 group flex rounded-md items-center w-full px-2 py-2 text-sm"
+                >
+                  Write A Story
+                </a>
+              </Link>
             </Menu.Item>
           </div>
           <div className="px-1 py-1">
-            <div
-              className={`group flex rounded-md justify-between items-center w-full px-2 py-2 text-sm`}
-            >
+            <Menu.Item>
+              <Link href="/auth/register">
+                <a
+                  href="#"
+                  className="text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-900 group flex rounded-md items-center w-full px-2 py-2 text-sm"
+                >
+                  Switch Account
+                </a>
+              </Link>
+            </Menu.Item>
+          </div>
+          <div className="px-1 py-1">
+            <div className="text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-900 group flex rounded-md justify-between items-center w-full px-2 py-2 text-sm">
               <span>Lights off</span>
               <Switch
                 checked={isDarkMode as boolean}
@@ -131,6 +103,16 @@ const ProfileDropdown: React.FC<ProfileDropdownProps> = ({ avatarUrl }) => {
                 />
               </Switch>
             </div>
+          </div>
+          <div className="px-1 py-1">
+            <Menu.Item>
+              <button
+                className="text-gray-800 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-900 group flex rounded-md items-center w-full px-2 py-2 text-sm"
+                onClick={() => logout()}
+              >
+                Logout
+              </button>
+            </Menu.Item>
           </div>
         </Menu.Items>
       </Transition>

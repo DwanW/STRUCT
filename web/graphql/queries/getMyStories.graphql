@@ -6,6 +6,11 @@ query GetMyStories($limit: Int!, $cursor: Int) {
       overview
       createdAt
       cover_url
+      up_vote
+      down_vote
+      creator {
+        username
+      }
     }
     next_cursor {
       id

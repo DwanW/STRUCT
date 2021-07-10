@@ -31,7 +31,7 @@ const Reviews: NextPage<reviewsProps> = ({}) => {
   return (
     <div className="flex flex-row">
       <SideNav />
-      <main className="profile-page min-h-screen bg-white-100 flex-1">
+      <main className="profile-page min-h-screen bg-blue-100 dark:bg-gray-800 flex-1">
         {data.getRecentUserReviews?.reviews.map((review, idx) => (
           <div key={idx}>
             {review.id} {review.type} {review.text}

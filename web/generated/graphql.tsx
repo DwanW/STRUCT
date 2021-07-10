@@ -697,7 +697,11 @@ export type GetMyStoriesQuery = (
     { __typename?: 'PaginatedStory' }
     & { stories: Array<(
       { __typename?: 'Story' }
-      & Pick<Story, 'id' | 'title' | 'overview' | 'createdAt' | 'cover_url'>
+      & Pick<Story, 'id' | 'title' | 'overview' | 'createdAt' | 'cover_url' | 'up_vote' | 'down_vote'>
+      & { creator: (
+        { __typename?: 'User' }
+        & Pick<User, 'username'>
+      ) }
     )>, next_cursor?: Maybe<(
       { __typename?: 'Story' }
       & Pick<Story, 'id'>
@@ -1641,6 +1645,11 @@ export const GetMyStoriesDocument = gql`
       overview
       createdAt
       cover_url
+      up_vote
+      down_vote
+      creator {
+        username
+      }
     }
     next_cursor {
       id

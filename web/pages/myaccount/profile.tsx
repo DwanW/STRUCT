@@ -35,7 +35,7 @@ const ProfilePage: NextPage<ProfilePageProps> = ({}) => {
   return (
     <div className="flex flex-row">
       <SideNav />
-      <main className="profile-page min-h-screen bg-blue-100 flex-1">
+      <main className="profile-page min-h-screen flex-1 bg-blue-100 dark:bg-gray-800">
         <section className="relative block h-96">
           <div
             className="absolute top-0 w-full h-full bg-center bg-cover"
@@ -46,12 +46,11 @@ const ProfilePage: NextPage<ProfilePageProps> = ({}) => {
           >
             <span
               id="blackOverlay"
-              className="w-full h-full absolute opacity-50 bg-black"
+              className="w-full h-full absolute opacity-50 bg-black dark:opacity-70 "
             ></span>
           </div>
           <div
             className="top-auto bottom-0 left-0 right-0 w-full absolute pointer-events-none overflow-hidden h-16"
-            style={{ transform: "translateZ(0)" }}
           >
             <svg
               className="absolute bottom-0 overflow-hidden"
@@ -63,15 +62,15 @@ const ProfilePage: NextPage<ProfilePageProps> = ({}) => {
               y="0"
             >
               <polygon
-                className="text-blue-100 fill-current"
+                className="text-blue-100 dark:text-gray-800 fill-current"
                 points="2560 0 2560 100 0 100"
               ></polygon>
             </svg>
           </div>
         </section>
-        <section className="relative py-16 bg-blue-100">
+        <section className="relative py-16 bg-blue-100 dark:bg-gray-800">
           <div className="container mx-auto px-4">
-            <div className="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg -mt-64">
+            <div className="relative flex flex-col min-w-0 break-words bg-white dark:bg-gray-700 w-full mb-6 shadow-xl rounded-lg -mt-64">
               <div className="px-6">
                 <div className="flex flex-wrap justify-center">
                   <div className="w-full lg:w-3/12 px-4 lg:order-2 flex justify-center">
@@ -85,7 +84,7 @@ const ProfilePage: NextPage<ProfilePageProps> = ({}) => {
                         }
                         height={144}
                         width={144}
-                        className="shadow-xl rounded-full align-middle border-none bg-white"
+                        className="shadow-xl rounded-full align-middle border-none bg-white dark:bg-gray-600"
                       />
                     </div>
                   </div>
@@ -102,33 +101,33 @@ const ProfilePage: NextPage<ProfilePageProps> = ({}) => {
                   <div className="w-full lg:w-4/12 px-4 lg:order-1">
                     <div className="flex justify-center lg:pt-4">
                       <div className="mr-4 p-3 text-center">
-                        <span className="text-xl font-bold block uppercase tracking-wide text-blue-600">
+                        <span className="text-xl font-bold block uppercase tracking-wide text-blue-600 dark:text-white">
                           22
                         </span>
-                        <span className="text-sm text-blue-400">Stories</span>
+                        <span className="text-sm text-blue-400 dark:text-blue-200">Stories</span>
                       </div>
                       <div className="mr-4 p-3 text-center">
-                        <span className="text-xl font-bold block uppercase tracking-wide text-blue-600">
+                        <span className="text-xl font-bold block uppercase tracking-wide text-blue-600 dark:text-white">
                           10
                         </span>
-                        <span className="text-sm text-blue-400">
+                        <span className="text-sm text-blue-400 dark:text-blue-200">
                           Endorsement
                         </span>
                       </div>
                       <div className="lg:mr-4 p-3 text-center">
-                        <span className="text-xl font-bold block uppercase tracking-wide text-blue-600">
+                        <span className="text-xl font-bold block uppercase tracking-wide text-blue-600 dark:text-white">
                           89
                         </span>
-                        <span className="text-sm text-blue-400">Award</span>
+                        <span className="text-sm text-blue-400 dark:text-blue-200">Award</span>
                       </div>
                     </div>
                   </div>
                 </div>
                 <div className="text-center mt-12">
-                  <h3 className="text-4xl font-semibold leading-normal mb-2 text-blue-700">
+                  <h3 className="text-4xl font-semibold leading-normal mb-2 text-blue-700 dark:text-white">
                     {data.me.username}
                   </h3>
-                  <div className="text-sm leading-normal mt-0 mb-2 text-blue-400 font-bold uppercase">
+                  <div className="text-sm leading-normal mt-0 mb-2 text-blue-400 dark:text-blue-200 font-bold uppercase">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       className="h-6 w-6 mr-2 inline text-lg"
@@ -158,7 +157,7 @@ const ProfilePage: NextPage<ProfilePageProps> = ({}) => {
                       />
                       <a
                         href="#pablo"
-                        className="font-normal text-blue-500"
+                        className="font-normal text-blue-500 dark:text-blue-100"
                         onClick={(e) => e.preventDefault()}
                       >
                         View All Stories By {data.me.username}

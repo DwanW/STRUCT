@@ -25,14 +25,20 @@ const Stories: NextPage<storiesProps> = ({}) => {
   return (
     <div className="flex flex-row">
       <SideNav />
-      <main className="profile-page min-h-screen bg-white-100 flex-1">
+      <main className="profile-page min-h-screen bg-blue-100 dark:bg-gray-800 flex-1">
         {data.getMyStories?.stories.map((story, idx) => (
           <Link href={`/story/${encodeURIComponent(story.id)}`} key={idx}>
-            <a className="inline-block relative mx-4 w-48 h-80 hover:bg-blue-100 hover:shadow-md">
-              <Card title={story.title} coverUrl={story.cover_url} />
+            <a className="inline-block relative mx-4 w-48 h-80 bg-white dark:bg-gray-800 hover:bg-blue-100 hover:shadow-md dark:hover:bg-blue-800 transition-colors ease duration-300">
+              <Card
+                title={story.title}
+                coverUrl={story.cover_url}
+                author={story.creator.username}
+                upvote={story.up_vote}
+                downvote={story.down_vote}
+              />
             </a>
           </Link>
-        ))} 
+        ))}
       </main>
     </div>
   );

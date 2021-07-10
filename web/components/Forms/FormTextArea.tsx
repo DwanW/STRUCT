@@ -31,7 +31,7 @@ const FormTextArea: React.FC<FormTextAreaProps> = ({
       <div className={className}>
         <div className="flex flex-row justify-between">
           <h4
-            className={`text-left text-lg leading-relaxed text-blue-700 dark:text-blue-200   font-bold ${
+            className={`text-left text-lg leading-relaxed text-blue-700 dark:text-blue-200 font-bold ${
               showTitle ? "" : "hidden"
             }`}
           >
@@ -59,7 +59,7 @@ const FormTextArea: React.FC<FormTextAreaProps> = ({
             </svg>
           </button>
         </div>
-        <div className="text-left">{value}</div>
+        <div className="text-left dark:text-white">{value}</div>
       </div>
     );
   }
@@ -67,11 +67,11 @@ const FormTextArea: React.FC<FormTextAreaProps> = ({
   return (
     <form onSubmit={handleSubmit} className={className}>
       <div className="flex flex-col">
-        <h4 className="text-left text-lg leading-relaxed text-blue-700 font-bold">
+        <h4 className="text-left text-lg leading-relaxed text-blue-700 dark:text-blue-200 font-bold">
           Edit {label}
         </h4>
         <textarea
-          className="h-40 p-4 focus:outline-none border border-transparent focus:border-gray-400"
+          className="h-40 p-4 focus:outline-none border border-transparent focus:border-gray-400 dark:bg-gray-600 dark:text-white"
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
         />

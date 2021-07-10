@@ -25,11 +25,13 @@ const Card: React.FC<CardProps> = ({
         />
       </div>
       <div className="w-full p-2">
-        <div className="font-semibold capitalize">{title}</div>
+        <div className="font-semibold capitalize text-gray-800 dark:text-white">
+          {title}
+        </div>
         <div className="text-sm pt-2 text-gray-600 dark:text-gray-300">
           {author}
         </div>
-        <div className="text-sm pt-2">
+        <div className="text-sm pt-2 text-gray-800 dark:text-white">
           Rating: {defineRating(upvote, downvote)}
         </div>
       </div>
