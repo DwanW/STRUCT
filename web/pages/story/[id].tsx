@@ -19,12 +19,14 @@ const StoryPage: NextPage<StoryProps> = ({}) => {
     return <div>loading page...</div>;
   }
 
+  // refactor
   const updateStoryTitle = async (title: string) => {
     await updateStoryMutation({
       variables: {
         id: storyData.getStoryById?.id as number,
         title: title,
         overview: storyData.getStoryById?.overview as string,
+        tags: storyData.getStoryById?.tags as string,
       },
     });
   };
@@ -35,6 +37,18 @@ const StoryPage: NextPage<StoryProps> = ({}) => {
         id: storyData.getStoryById?.id as number,
         title: storyData.getStoryById?.title as string,
         overview: overview,
+        tags: storyData.getStoryById?.tags as string,
+      },
+    });
+  };
+
+  const updateStoryTags = async (tags: string) => {
+    await updateStoryMutation({
+      variables: {
+        id: storyData.getStoryById?.id as number,
+        title: storyData.getStoryById?.title as string,
+        overview: storyData.getStoryById?.overview as string,
+        tags: tags,
       },
     });
   };
@@ -45,7 +59,8 @@ const StoryPage: NextPage<StoryProps> = ({}) => {
       <div className="pt-16 container mx-auto">
         <Hero
           data={storyData}
-          updateMutation={updateStoryTitle}
+          updateTitleMutation={updateStoryTitle}
+          updateTagsMutation={updateStoryTags}
           enableEdit={storyData.getStoryById?.creator.id === meData?.me?.id}
           storyLink={`/content/${storyData.getStoryById?.id}`}
         />
@@ -69,19 +84,7 @@ const StoryPage: NextPage<StoryProps> = ({}) => {
                 {storyData.getStoryById?.creator.username}
               </div>
               <p className="mt-1 text-base">
-                Donec et vestibulum mi. Morbi nec purus accumsan, porttitor
-                risus id, viverra lectus. Nunc arcu augue, malesuada at lacinia
-                id, feugiat vitae neque. Maecenas malesuada vestibulum mauris,
-                in fermentum augue tincidunt vel. Proin tristique erat a tempor
-                bibendum. Nunc lobortis ex orci, et commodo dui rhoncus vel. In
-                non nunc fermentum, cursus nulla id, semper sapien. Quisque
-                sodales purus non sapien egestas rhoncus. Mauris sed est sed
-                tortor fermentum ullamcorper vitae ac libero. Morbi quis mauris
-                tempus, gravida lacus a, mollis eros. Praesent ultricies lacus
-                ut elit cursus vulputate. Phasellus tincidunt tellus libero, in
-                tincidunt magna pretium quis. Morbi vulputate elementum nisl
-                quis varius. Fusce at sapien non magna aliquet ullamcorper vel
-                non dolor.
+                {storyData.getStoryById?.creator.about}
               </p>
             </div>
           </div>

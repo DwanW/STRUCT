@@ -7,12 +7,14 @@ query getStoryById($id: Int!) {
     down_vote
     cover_url
     status
+    tags
     createdAt
     creator {
       id
       username
       avatar_url
       endorsed
+      about
     }
   }
 }

@@ -108,6 +108,7 @@ export type MutationCreateStoryArgs = {
 
 
 export type MutationUpdateStoryArgs = {
+  tags: Scalars['String'];
   overview: Scalars['String'];
   title: Scalars['String'];
   id: Scalars['Int'];
@@ -210,6 +211,7 @@ export type Query = {
   me?: Maybe<User>;
   getUserById?: Maybe<User>;
   getStoryById?: Maybe<Story>;
+  searchStory?: Maybe<PaginatedStory>;
   getMyStories?: Maybe<PaginatedStory>;
   getNewStories: PaginatedStory;
   getTopStories: PaginatedStory;
@@ -229,6 +231,13 @@ export type QueryGetUserByIdArgs = {
 
 export type QueryGetStoryByIdArgs = {
   id: Scalars['Int'];
+};
+
+
+export type QuerySearchStoryArgs = {
+  cursor?: Maybe<Scalars['Int']>;
+  limit: Scalars['Int'];
+  title: Scalars['String'];
 };
 
 
@@ -334,6 +343,7 @@ export type Story = {
   up_vote: Scalars['Float'];
   down_vote: Scalars['Float'];
   status: Scalars['String'];
+  tags: Scalars['String'];
   creatorId: Scalars['Float'];
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
@@ -423,7 +433,7 @@ export type CreateStoryMutation = (
   { __typename?: 'Mutation' }
   & { createStory: (
     { __typename?: 'Story' }
-    & Pick<Story, 'id' | 'title' | 'overview' | 'cover_url' | 'up_vote' | 'down_vote' | 'status' | 'creatorId' | 'createdAt'>
+    & Pick<Story, 'id' | 'title' | 'overview' | 'cover_url' | 'up_vote' | 'down_vote' | 'status' | 'tags' | 'creatorId' | 'createdAt'>
     & { creator: (
       { __typename?: 'User' }
       & Pick<User, 'id' | 'username'>
@@ -563,6 +573,7 @@ export type UpdateStoryMutationVariables = Exact<{
   id: Scalars['Int'];
   title: Scalars['String'];
   overview: Scalars['String'];
+  tags: Scalars['String'];
 }>;
 
 
@@ -570,7 +581,7 @@ export type UpdateStoryMutation = (
   { __typename?: 'Mutation' }
   & { updateStory: (
     { __typename?: 'Story' }
-    & Pick<Story, 'id' | 'title' | 'overview' | 'updatedAt' | 'createdAt'>
+    & Pick<Story, 'id' | 'title' | 'overview' | 'tags' | 'updatedAt' | 'createdAt'>
   ) }
 );
 
@@ -697,7 +708,7 @@ export type GetMyStoriesQuery = (
     { __typename?: 'PaginatedStory' }
     & { stories: Array<(
       { __typename?: 'Story' }
-      & Pick<Story, 'id' | 'title' | 'overview' | 'createdAt' | 'cover_url' | 'up_vote' | 'down_vote'>
+      & Pick<Story, 'id' | 'title' | 'overview' | 'createdAt' | 'cover_url' | 'up_vote' | 'down_vote' | 'tags'>
       & { creator: (
         { __typename?: 'User' }
         & Pick<User, 'username'>
@@ -740,10 +751,10 @@ export type GetStoryByIdQuery = (
   { __typename?: 'Query' }
   & { getStoryById?: Maybe<(
     { __typename?: 'Story' }
-    & Pick<Story, 'id' | 'title' | 'overview' | 'up_vote' | 'down_vote' | 'cover_url' | 'status' | 'createdAt'>
+    & Pick<Story, 'id' | 'title' | 'overview' | 'up_vote' | 'down_vote' | 'cover_url' | 'status' | 'tags' | 'createdAt'>
     & { creator: (
       { __typename?: 'User' }
-      & Pick<User, 'id' | 'username' | 'avatar_url' | 'endorsed'>
+      & Pick<User, 'id' | 'username' | 'avatar_url' | 'endorsed' | 'about'>
     ) }
   )> }
 );
@@ -797,7 +808,7 @@ export type StoriesNewQuery = (
     { __typename?: 'PaginatedStory' }
     & { stories: Array<(
       { __typename?: 'Story' }
-      & Pick<Story, 'id' | 'title' | 'overview' | 'cover_url' | 'createdAt' | 'up_vote' | 'down_vote'>
+      & Pick<Story, 'id' | 'title' | 'overview' | 'cover_url' | 'createdAt' | 'up_vote' | 'down_vote' | 'tags'>
       & { creator: (
         { __typename?: 'User' }
         & Pick<User, 'username'>
@@ -822,7 +833,7 @@ export type StoriesTopQuery = (
     { __typename?: 'PaginatedStory' }
     & { stories: Array<(
       { __typename?: 'Story' }
-      & Pick<Story, 'id' | 'title' | 'overview' | 'createdAt' | 'cover_url' | 'up_vote' | 'down_vote'>
+      & Pick<Story, 'id' | 'title' | 'overview' | 'createdAt' | 'cover_url' | 'up_vote' | 'down_vote' | 'tags'>
       & { creator: (
         { __typename?: 'User' }
         & Pick<User, 'username'>
@@ -930,6 +941,7 @@ export const CreateStoryDocument = gql`
     up_vote
     down_vote
     status
+    tags
     creator {
       id
       username
@@ -1313,11 +1325,12 @@ export type SignS3UserAvatarMutationHookResult = ReturnType<typeof useSignS3User
 export type SignS3UserAvatarMutationResult = Apollo.MutationResult<SignS3UserAvatarMutation>;
 export type SignS3UserAvatarMutationOptions = Apollo.BaseMutationOptions<SignS3UserAvatarMutation, SignS3UserAvatarMutationVariables>;
 export const UpdateStoryDocument = gql`
-    mutation UpdateStory($id: Int!, $title: String!, $overview: String!) {
-  updateStory(id: $id, title: $title, overview: $overview) {
+    mutation UpdateStory($id: Int!, $title: String!, $overview: String!, $tags: String!) {
+  updateStory(id: $id, title: $title, overview: $overview, tags: $tags) {
     id
     title
     overview
+    tags
     updatedAt
     createdAt
   }
@@ -1341,6 +1354,7 @@ export type UpdateStoryMutationFn = Apollo.MutationFunction<UpdateStoryMutation,
  *      id: // value for 'id'
  *      title: // value for 'title'
  *      overview: // value for 'overview'
+ *      tags: // value for 'tags'
  *   },
  * });
  */
@@ -1647,6 +1661,7 @@ export const GetMyStoriesDocument = gql`
       cover_url
       up_vote
       down_vote
+      tags
       creator {
         username
       }
@@ -1762,12 +1777,14 @@ export const GetStoryByIdDocument = gql`
     down_vote
     cover_url
     status
+    tags
     createdAt
     creator {
       id
       username
       avatar_url
       endorsed
+      about
     }
   }
 }
@@ -1932,6 +1949,7 @@ export const StoriesNewDocument = gql`
       createdAt
       up_vote
       down_vote
+      tags
       creator {
         username
       }
@@ -1982,6 +2000,7 @@ export const StoriesTopDocument = gql`
       cover_url
       up_vote
       down_vote
+      tags
       creator {
         username
       }

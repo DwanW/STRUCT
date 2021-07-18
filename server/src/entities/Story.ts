@@ -48,6 +48,10 @@ export class Story extends BaseEntity {
   status: string;
 
   @Field()
+  @Column({ default: "" })
+  tags: string;
+
+  @Field()
   @Column()
   creatorId: number;
 

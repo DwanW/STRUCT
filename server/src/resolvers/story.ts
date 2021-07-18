@@ -200,12 +200,14 @@ export class StoryResolver {
     @Arg("id", () => Int) id: number,
     @Arg("title") title: string,
     @Arg("overview") overview: string,
-    @Ctx() { req }: MyContext
+    @Arg("tags") tags: string,
+    @Ctx()
+    { req }: MyContext
   ): Promise<Story | null> {
     const result = await getConnection()
       .createQueryBuilder()
       .update(Story)
-      .set({ title, overview })
+      .set({ title, overview, tags })
       .where('id = :id and "creatorId" = :creatorId', {
         id,
         creatorId: req.session.userId,

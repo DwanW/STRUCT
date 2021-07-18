@@ -1,8 +1,14 @@
-mutation UpdateStory($id: Int!, $title: String!, $overview: String!) {
-  updateStory(id: $id, title: $title, overview: $overview) {
+mutation UpdateStory(
+  $id: Int!
+  $title: String!
+  $overview: String!
+  $tags: String!
+) {
+  updateStory(id: $id, title: $title, overview: $overview, tags: $tags) {
     id
     title
     overview
+    tags
     updatedAt
     createdAt
   }

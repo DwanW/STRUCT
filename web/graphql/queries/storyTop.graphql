@@ -8,6 +8,7 @@ query StoriesTop($limit: Int!, $cursor: TopStoryCursor, $time_range: Int) {
       cover_url
       up_vote
       down_vote
+      tags
       creator {
         username
       }
