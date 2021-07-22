@@ -1,0 +1,19 @@
+query SearchStory($title: String!, $tags: String, $limit: Int!, $cursor: Int) {
+  searchStory(title: $title, tags: $tags, limit: $limit, cursor: $cursor) {
+    stories {
+      id
+      title
+      overview
+      cover_url
+      up_vote
+      down_vote
+      tags
+      creator {
+        username
+      }
+    }
+    next_cursor {
+      id
+    }
+  }
+}

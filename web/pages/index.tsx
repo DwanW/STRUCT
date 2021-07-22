@@ -123,10 +123,6 @@ export default function Home() {
           ))}
         </StoryCarousel>
       </div>
-
-      {/* <div className="container mx-auto mt-10">
-        <StoryCoverUpload storyId={3} />
-      </div> */}
     </div>
   );
 }

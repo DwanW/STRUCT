@@ -68,6 +68,7 @@ export class StoryResolver {
   @Query(() => PaginatedStory, { nullable: true })
   async searchStory(
     @Arg("title", () => String) title: string,
+    @Arg("tags", () => String, { nullable: true }) tags: string,
     @Arg("limit", () => Int) limit: number,
     @Arg("cursor", () => Int, { nullable: true }) cursor: number
   ): Promise<PaginatedStory> {
@@ -79,10 +80,23 @@ export class StoryResolver {
       sqlVariables.push(cursor);
     }
 
+    let tagSql = "";
+
+    if (tags) {
+      let tagsArr = tags.split(",");
+
+      tagsArr.forEach((tag) => {
+        if (tag) {
+          tagSql += ` and ( story."tags" like '${tag},%' or story."tags" like '%,${tag},%' )`;
+        }
+      });
+    }
+
     const result = await getConnection().query(
       `
       select * from story
       where story."title" like $2 ${cursor ? "and story.id <= $3" : ""}
+      ${tagSql}
       order by story.id DESC
       limit $1
       `,

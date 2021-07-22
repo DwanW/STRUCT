@@ -237,6 +237,7 @@ export type QueryGetStoryByIdArgs = {
 export type QuerySearchStoryArgs = {
   cursor?: Maybe<Scalars['Int']>;
   limit: Scalars['Int'];
+  tags?: Maybe<Scalars['String']>;
   title: Scalars['String'];
 };
 
@@ -793,6 +794,32 @@ export type MeQuery = (
   & { me?: Maybe<(
     { __typename?: 'User' }
     & Pick<User, 'id' | 'username' | 'email' | 'avatar_url' | 'about' | 'createdAt' | 'endorsed'>
+  )> }
+);
+
+export type SearchStoryQueryVariables = Exact<{
+  title: Scalars['String'];
+  tags?: Maybe<Scalars['String']>;
+  limit: Scalars['Int'];
+  cursor?: Maybe<Scalars['Int']>;
+}>;
+
+
+export type SearchStoryQuery = (
+  { __typename?: 'Query' }
+  & { searchStory?: Maybe<(
+    { __typename?: 'PaginatedStory' }
+    & { stories: Array<(
+      { __typename?: 'Story' }
+      & Pick<Story, 'id' | 'title' | 'overview' | 'cover_url' | 'up_vote' | 'down_vote' | 'tags'>
+      & { creator: (
+        { __typename?: 'User' }
+        & Pick<User, 'username'>
+      ) }
+    )>, next_cursor?: Maybe<(
+      { __typename?: 'Story' }
+      & Pick<Story, 'id'>
+    )> }
   )> }
 );
 
@@ -1938,6 +1965,58 @@ export function useMeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MeQuery
 export type MeQueryHookResult = ReturnType<typeof useMeQuery>;
 export type MeLazyQueryHookResult = ReturnType<typeof useMeLazyQuery>;
 export type MeQueryResult = Apollo.QueryResult<MeQuery, MeQueryVariables>;
+export const SearchStoryDocument = gql`
+    query SearchStory($title: String!, $tags: String, $limit: Int!, $cursor: Int) {
+  searchStory(title: $title, tags: $tags, limit: $limit, cursor: $cursor) {
+    stories {
+      id
+      title
+      overview
+      cover_url
+      up_vote
+      down_vote
+      tags
+      creator {
+        username
+      }
+    }
+    next_cursor {
+      id
+    }
+  }
+}
+    `;
+
+/**
+ * __useSearchStoryQuery__
+ *
+ * To run a query within a React component, call `useSearchStoryQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSearchStoryQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useSearchStoryQuery({
+ *   variables: {
+ *      title: // value for 'title'
+ *      tags: // value for 'tags'
+ *      limit: // value for 'limit'
+ *      cursor: // value for 'cursor'
+ *   },
+ * });
+ */
+export function useSearchStoryQuery(baseOptions: Apollo.QueryHookOptions<SearchStoryQuery, SearchStoryQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<SearchStoryQuery, SearchStoryQueryVariables>(SearchStoryDocument, options);
+      }
+export function useSearchStoryLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SearchStoryQuery, SearchStoryQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<SearchStoryQuery, SearchStoryQueryVariables>(SearchStoryDocument, options);
+        }
+export type SearchStoryQueryHookResult = ReturnType<typeof useSearchStoryQuery>;
+export type SearchStoryLazyQueryHookResult = ReturnType<typeof useSearchStoryLazyQuery>;
+export type SearchStoryQueryResult = Apollo.QueryResult<SearchStoryQuery, SearchStoryQueryVariables>;
 export const StoriesNewDocument = gql`
     query StoriesNew($limit: Int!, $cursor: Int) {
   getNewStories(limit: $limit, cursor: $cursor) {

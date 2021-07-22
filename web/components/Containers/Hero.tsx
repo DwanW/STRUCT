@@ -3,6 +3,7 @@ import { GetStoryByIdQuery } from "../../generated/graphql";
 import FormTextArea from "../Forms/FormTextArea";
 import Link from "next/link";
 import FormTag from "../Forms/FormTag";
+import StoryCoverUpload from "../Uploads/StoryCoverUpload";
 
 interface HeroProps {
   data: GetStoryByIdQuery;
@@ -21,12 +22,15 @@ const Hero: React.FC<HeroProps> = ({
 }) => {
   return (
     <div className="flex flex-wrap items-center">
-      <div className="w-full h-96 mx-auto md:w-4/12 px-4">
+      <div className="relative group w-full h-96 mx-auto md:w-4/12 px-4">
         <img
           alt="story cover"
           className="w-full h-full rounded-lg shadow-lg object-cover"
           src={data.getStoryById?.cover_url || "/img/story-default.svg"}
         />
+        <div className="absolute opacity-0 top-0 left-0 rounded-lg group-hover:opacity-100 w-full h-full">
+          <StoryCoverUpload storyId={data.getStoryById?.id as number} />
+        </div>
       </div>
       <div className="w-full md:w-5/12 mx-auto px-4">
         <div className="px-1 md:pr-12">

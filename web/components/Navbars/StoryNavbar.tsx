@@ -1,6 +1,9 @@
 import Link from "next/link";
 import React, { useState } from "react";
-import { useMeQuery } from "../../generated/graphql";
+import {
+  useMeQuery,
+  // useSearchStoryLazyQuery,
+} from "../../generated/graphql";
 import ProfileDropdown from "../Dropdowns/ProfileDropdown";
 
 interface StoryNavbarProps {}
@@ -9,6 +12,7 @@ const StoryNavbar: React.FC<StoryNavbarProps> = ({}) => {
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   const [searchValue, setSearchValue] = useState("");
 
+  // const [useSearchStory] = useSearchStoryLazyQuery();
   const { data } = useMeQuery();
 
   const handleSearchSubmit = (e: any) => {
