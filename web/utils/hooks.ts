@@ -32,3 +32,10 @@ export const useGetUserFromUrl = () => {
     },
   });
 };
+
+export const useGetSearchInputFromUrl = () => {
+  const router = useRouter();
+  const searchValue = router.query.param as string | undefined;
+  const searchTag = router.query.tag as string | undefined;
+  return [searchValue, searchTag];
+};

@@ -1,9 +1,7 @@
 import Link from "next/link";
 import React, { useState } from "react";
-import {
-  useMeQuery,
-  // useSearchStoryLazyQuery,
-} from "../../generated/graphql";
+import { useRouter } from "next/router";
+import { useMeQuery } from "../../generated/graphql";
 import ProfileDropdown from "../Dropdowns/ProfileDropdown";
 
 interface StoryNavbarProps {}
@@ -11,13 +9,18 @@ interface StoryNavbarProps {}
 const StoryNavbar: React.FC<StoryNavbarProps> = ({}) => {
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   const [searchValue, setSearchValue] = useState("");
-
-  // const [useSearchStory] = useSearchStoryLazyQuery();
+  const router = useRouter();
   const { data } = useMeQuery();
 
   const handleSearchSubmit = (e: any) => {
     e.preventDefault();
-    console.log(searchValue);
+    router.push({
+      pathname: "/search",
+      query: {
+        param: searchValue,
+        tag: null,
+      },
+    });
   };
   return (
     <nav className="top-0 fixed z-50 w-full flex flex-wrap items-center justify-between px-2 py-2 backdrop-filter backdrop-blur-md backdrop-contrast-100">
