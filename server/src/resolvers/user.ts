@@ -257,16 +257,21 @@ export class UserResolver {
   @Mutation(() => User, { nullable: true })
   async updateUserAvatar(
     @Arg("avatar_url", () => String) avatar_url: string,
+    @Arg("id", () => Int) id: number,
     @Ctx() { req }: MyContext
   ): Promise<User | null> {
     if (!req.session.userId) {
       return null;
     }
+    let user;
+    if (id === req.session.userId) {
+      user = await User.findOne(req.session.userId);
+    }
 
-    const user = await User.findOne(req.session.userId);
     if (!user) {
       return null;
     }
+    
     user.avatar_url = avatar_url;
     const result = await user.save();
     return result;

@@ -50,7 +50,7 @@ const StoryContent: NextPage<StoryContentProps> = ({}) => {
     cache: ApolloCache<DeleteSubStoryByIdMutation>,
     substoryId: number
   ) => {
-    if (!storyId) return;
+    if (!substoryId) return;
     cache.modify({
       id: cache.identify({ __typename: "Query" }),
       fields: {
@@ -131,13 +131,13 @@ const StoryContent: NextPage<StoryContentProps> = ({}) => {
             ? data.getSubStoriesFromStoryId.map((substory, idx) => (
                 <React.Fragment key={`subtitle${idx}`}>
                   <div
-                    className="group px-4 py-2 w-full text-lg font-bold hover:shadow cursor-pointer hover:bg-gray-200 relative"
+                    className="group px-4 py-2 w-full text-lg font-bold hover:shadow cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-700 relative"
                     onClick={() => scrollToSubStory(substory.id)}
                   >
                     <div>{substory.title}</div>
 
                     <button
-                      className={`bg-gray-100 rounded-full top-2 right-12 cursor-pointer text-gray-400 z-10 ${
+                      className={`bg-gray-200 dark:bg-gray-700 rounded-full top-2 right-12 cursor-pointer text-gray-400 z-10 ${
                         meData?.me?.id === storyData?.getStoryById?.creator.id
                           ? "absolute sm:hidden group-hover:block"
                           : "hidden"
@@ -163,7 +163,7 @@ const StoryContent: NextPage<StoryContentProps> = ({}) => {
                       </svg>
                     </button>
                     <button
-                      className={`bg-gray-100 rounded-full top-2 right-4 cursor-pointer text-red-300 z-10 ${
+                      className={`bg-gray-200 dark:bg-gray-700 rounded-full top-2 right-4 cursor-pointer text-red-300 z-10 ${
                         meData?.me?.id === storyData?.getStoryById?.creator.id
                           ? "absolute sm:hidden group-hover:block"
                           : "hidden"

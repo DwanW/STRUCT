@@ -1,5 +1,5 @@
-mutation UpdateUserAvatar($avatar_url: String!) {
-  updateUserAvatar(avatar_url: $avatar_url){
+mutation UpdateUserAvatar($avatar_url: String!, $id: Int!) {
+  updateUserAvatar(avatar_url: $avatar_url, id: $id) {
     id
     avatar_url
   }

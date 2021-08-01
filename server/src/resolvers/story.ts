@@ -174,7 +174,7 @@ export class StoryResolver {
   async getTopStories(
     @Arg("limit", () => Int) limit: number,
     @Arg("cursor", { nullable: true }) cursor: TopStoryCursor,
-    @Arg("time_range", () => Int, { defaultValue: 30, nullable: true })
+    @Arg("time_range", () => Int, { defaultValue: 180, nullable: true })
     time_range: number //# number of days in string
   ) {
     const fetchLimit = Math.min(20, limit);

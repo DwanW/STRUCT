@@ -1,5 +1,5 @@
 import { NextPage } from "next";
-import React, { useState } from "react";
+import React from "react";
 import {
   useMeQuery,
   useUpdateUserAboutMutation,
@@ -8,6 +8,7 @@ import { useRouter } from "next/router";
 import SideNav from "../../components/Navbars/SideNav";
 import Image from "next/image";
 import FormTextArea from "../../components/Forms/FormTextArea";
+import UserAvatarUpload from "../../components/Uploads/UserAvatarUpload";
 
 interface ProfilePageProps {}
 
@@ -49,9 +50,7 @@ const ProfilePage: NextPage<ProfilePageProps> = ({}) => {
               className="w-full h-full absolute opacity-50 bg-black dark:opacity-70 "
             ></span>
           </div>
-          <div
-            className="top-auto bottom-0 left-0 right-0 w-full absolute pointer-events-none overflow-hidden h-16"
-          >
+          <div className="top-auto bottom-0 left-0 right-0 w-full absolute pointer-events-none overflow-hidden h-16">
             <svg
               className="absolute bottom-0 overflow-hidden"
               xmlns="http://www.w3.org/2000/svg"
@@ -73,8 +72,8 @@ const ProfilePage: NextPage<ProfilePageProps> = ({}) => {
             <div className="relative flex flex-col min-w-0 break-words bg-white dark:bg-gray-700 w-full mb-6 shadow-xl rounded-lg -mt-64">
               <div className="px-6">
                 <div className="flex flex-wrap justify-center">
-                  <div className="w-full lg:w-3/12 px-4 lg:order-2 flex justify-center">
-                    <div className="relative w-full flex flex-row justify-center items-start -mt-20">
+                  <div className="w-full lg:w-3/12 lg:order-2 flex justify-center">
+                    <div className="relative group w-full flex flex-row justify-center items-start -mt-20">
                       <Image
                         alt="..."
                         src={
@@ -86,39 +85,8 @@ const ProfilePage: NextPage<ProfilePageProps> = ({}) => {
                         width={144}
                         className="shadow-xl rounded-full align-middle border-none bg-white dark:bg-gray-600"
                       />
-                    </div>
-                  </div>
-                  <div className="w-full lg:w-4/12 px-4 lg:order-3 text-center lg:text-right lg:self-center">
-                    <div className="py-6 px-3 mt-0">
-                      <button
-                        className="bg-blue-700 active:bg-blue-600 uppercase text-white font-bold hover:shadow-md shadow text-xs px-4 py-2 rounded outline-none focus:outline-none sm:mr-2 mb-1 ease-linear transition-all duration-150"
-                        type="button"
-                      >
-                        endorse
-                      </button>
-                    </div>
-                  </div>
-                  <div className="w-full lg:w-4/12 px-4 lg:order-1">
-                    <div className="flex justify-center lg:pt-4">
-                      <div className="mr-4 p-3 text-center">
-                        <span className="text-xl font-bold block uppercase tracking-wide text-blue-600 dark:text-white">
-                          22
-                        </span>
-                        <span className="text-sm text-blue-400 dark:text-blue-200">Stories</span>
-                      </div>
-                      <div className="mr-4 p-3 text-center">
-                        <span className="text-xl font-bold block uppercase tracking-wide text-blue-600 dark:text-white">
-                          10
-                        </span>
-                        <span className="text-sm text-blue-400 dark:text-blue-200">
-                          Endorsement
-                        </span>
-                      </div>
-                      <div className="lg:mr-4 p-3 text-center">
-                        <span className="text-xl font-bold block uppercase tracking-wide text-blue-600 dark:text-white">
-                          89
-                        </span>
-                        <span className="text-sm text-blue-400 dark:text-blue-200">Award</span>
+                      <div className="absolute opacity-0 top-0 mx-auto rounded-full group-hover:opacity-100 w-36 h-36">
+                        <UserAvatarUpload userId={data.me?.id} />
                       </div>
                     </div>
                   </div>
@@ -155,13 +123,6 @@ const ProfilePage: NextPage<ProfilePageProps> = ({}) => {
                         enableEdit={true}
                         className="mb-4"
                       />
-                      <a
-                        href="#pablo"
-                        className="font-normal text-blue-500 dark:text-blue-100"
-                        onClick={(e) => e.preventDefault()}
-                      >
-                        View All Stories By {data.me.username}
-                      </a>
                     </div>
                   </div>
                 </div>

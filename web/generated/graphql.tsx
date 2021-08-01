@@ -98,6 +98,7 @@ export type MutationSignS3UserAvatarArgs = {
 
 
 export type MutationUpdateUserAvatarArgs = {
+  id: Scalars['Int'];
   avatar_url: Scalars['String'];
 };
 
@@ -635,6 +636,7 @@ export type UpdateUserAboutMutation = (
 
 export type UpdateUserAvatarMutationVariables = Exact<{
   avatar_url: Scalars['String'];
+  id: Scalars['Int'];
 }>;
 
 
@@ -1509,8 +1511,8 @@ export type UpdateUserAboutMutationHookResult = ReturnType<typeof useUpdateUserA
 export type UpdateUserAboutMutationResult = Apollo.MutationResult<UpdateUserAboutMutation>;
 export type UpdateUserAboutMutationOptions = Apollo.BaseMutationOptions<UpdateUserAboutMutation, UpdateUserAboutMutationVariables>;
 export const UpdateUserAvatarDocument = gql`
-    mutation UpdateUserAvatar($avatar_url: String!) {
-  updateUserAvatar(avatar_url: $avatar_url) {
+    mutation UpdateUserAvatar($avatar_url: String!, $id: Int!) {
+  updateUserAvatar(avatar_url: $avatar_url, id: $id) {
     id
     avatar_url
   }
@@ -1532,6 +1534,7 @@ export type UpdateUserAvatarMutationFn = Apollo.MutationFunction<UpdateUserAvata
  * const [updateUserAvatarMutation, { data, loading, error }] = useUpdateUserAvatarMutation({
  *   variables: {
  *      avatar_url: // value for 'avatar_url'
+ *      id: // value for 'id'
  *   },
  * });
  */

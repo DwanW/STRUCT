@@ -3,15 +3,24 @@ import {
   useSignS3UserAvatarMutation,
   useUpdateUserAvatarMutation,
   useMeQuery,
+  MeDocument,
 } from "../../generated/graphql";
 
-interface UserAvatarUploadProps {}
+interface UserAvatarUploadProps {
+  userId: number;
+}
 
-const UserAvatarUpload: React.FC<UserAvatarUploadProps> = () => {
+const UserAvatarUpload: React.FC<UserAvatarUploadProps> = ({ userId }) => {
   const [fileState, setFileState] = useState<FileList | null>(null);
   const { data } = useMeQuery();
   const [signS3UserAvatarMutation] = useSignS3UserAvatarMutation();
-  const [updateUserAvatarMutation] = useUpdateUserAvatarMutation();
+  const [updateUserAvatarMutation] = useUpdateUserAvatarMutation({
+    refetchQueries: [
+      {
+        query: MeDocument,
+      },
+    ],
+  });
 
   const handleUploadSubmit = async (e: any) => {
     e.preventDefault();
@@ -36,6 +45,7 @@ const UserAvatarUpload: React.FC<UserAvatarUploadProps> = () => {
                 "https",
                 "https:"
               ),
+              id: userId,
             },
           });
           setFileState(null);
@@ -46,9 +56,39 @@ const UserAvatarUpload: React.FC<UserAvatarUploadProps> = () => {
     }
   };
   return (
-    <form onSubmit={handleUploadSubmit}>
-      <input type="file" onChange={(e) => setFileState(e.target.files)} />
-      <button type="submit">Upload</button>
+    <form
+      onSubmit={handleUploadSubmit}
+      className="h-full rounded-full bg-opacity-50 text-white bg-gray-700 flex flex-col items-center justify-center"
+    >
+      <div className="text-center">
+        <label htmlFor="upload" className="cursor-pointer">
+          Select
+          <input
+            className="hidden"
+            id="upload"
+            type="file"
+            accept="image/*"
+            onChange={(e) => setFileState(e.target.files)}
+          />
+        </label>
+        {fileState?.length && <div>{fileState[0].name}</div>}
+      </div>
+      <div>
+        <button type="submit" className="mt-4 p-2 border border-white rounded">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-6 w-6"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+          >
+            <path
+              fillRule="evenodd"
+              d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z"
+              clipRule="evenodd"
+            />
+          </svg>
+        </button>
+      </div>
     </form>
   );
 };

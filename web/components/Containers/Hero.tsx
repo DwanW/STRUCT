@@ -28,7 +28,11 @@ const Hero: React.FC<HeroProps> = ({
           className="w-full h-full rounded-lg shadow-lg object-cover"
           src={data.getStoryById?.cover_url || "/img/story-default.svg"}
         />
-        <div className="absolute opacity-0 top-0 left-0 rounded-lg group-hover:opacity-100 w-full h-full">
+        <div
+          className={`absolute opacity-0 top-0 left-0 rounded-lg ${
+            enableEdit ? "group-hover:opacity-100" : ""
+          } w-full h-full`}
+        >
           <StoryCoverUpload storyId={data.getStoryById?.id as number} />
         </div>
       </div>
