@@ -5,6 +5,7 @@ import {
   useMeQuery,
   MeDocument,
 } from "../../generated/graphql";
+import { useRouter } from "next/router";
 
 interface UserAvatarUploadProps {
   userId: number;
@@ -13,6 +14,8 @@ interface UserAvatarUploadProps {
 const UserAvatarUpload: React.FC<UserAvatarUploadProps> = ({ userId }) => {
   const [fileState, setFileState] = useState<FileList | null>(null);
   const { data } = useMeQuery();
+  const router = useRouter();
+
   const [signS3UserAvatarMutation] = useSignS3UserAvatarMutation();
   const [updateUserAvatarMutation] = useUpdateUserAvatarMutation({
     refetchQueries: [
@@ -20,6 +23,9 @@ const UserAvatarUpload: React.FC<UserAvatarUploadProps> = ({ userId }) => {
         query: MeDocument,
       },
     ],
+    onCompleted: () => {
+      router.reload();
+    },
   });
 
   const handleUploadSubmit = async (e: any) => {
