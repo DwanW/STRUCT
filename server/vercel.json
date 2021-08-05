@@ -1,20 +1,8 @@
 {
-    "version": 2,
-    "builds": [
+    "redirects": [
         {
-            "src": "public/dist/index.js",
-            "use": "@vercel/node",
-            "config": {
-                "includeFiles": [
-                    "public/dist/**"
-                ]
-            }
-        }
-    ],
-    "routes": [
-        {
-            "src": "/(.*)",
-            "dest": "public/dist/index.js"
+            "source": "/(.*)",
+            "destination": "public/dist/index.js"
         }
     ]
 }
