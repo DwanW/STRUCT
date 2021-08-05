@@ -1,8 +1,8 @@
 {
     "routes": [
         {
-            "source": "/(.*)",
-            "destination": "/public/dist/index.js"
+            "src": "/(.*)",
+            "dest": "/public/dist/index.js"
         }
     ]
 }
