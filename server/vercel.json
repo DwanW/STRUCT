@@ -2,7 +2,7 @@
     "routes": [
         {
             "src": "/(.*)",
-            "dest": "/public/dist/index.js"
+            "dest": "public/dist/index.js"
         }
     ]
 }
