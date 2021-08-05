@@ -4,7 +4,7 @@ import {
   createCreatorLoader,
   createStoryLoader,
   createReviewVoteLoader,
-} from "./utils/Loaders";
+} from "./utils/loaders";
 
 export type MyContext = {
   req: Request;
