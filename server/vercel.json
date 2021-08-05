@@ -1,8 +1,8 @@
 {
-    "redirects": [
+    "routes": [
         {
-            "source": "/",
-            "destination": "/graphql"
+            "source": "/(.*)",
+            "destination": "/public/dist/index.js"
         }
     ]
 }
