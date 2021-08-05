@@ -1,4 +1,15 @@
 {
+    "builds": [
+        {
+            "src": "public/dist/index.js",
+            "use": "@vercel/node",
+            "config": {
+                "includeFiles": [
+                    "public/dist/**"
+                ]
+            }
+        }
+    ],
     "routes": [
         {
             "src": "/(.*)",
