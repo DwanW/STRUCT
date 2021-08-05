@@ -106,7 +106,7 @@ const main = async () => {
   });
 
   app.get("/", (_, res) => {
-    res.send("server is running on path: /graphql ");
+    res.json({ message: "server is running on path: /graphql " });
   });
 
   apolloServer.applyMiddleware({ path: "/graphql", app });
