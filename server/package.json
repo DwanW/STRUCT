@@ -5,9 +5,9 @@
   "main": "index.js",
   "scripts": {
     "watch": "tsc -w",
-    "dev": "nodemon dist/index.js",
+    "dev": "nodemon public/dist/index.js",
     "build": "tsc",
-    "start": "node dist/index.js",
+    "start": "node public/dist/index.js",
     "gen-env": "npx gen-env-types .env -o src/env.d.ts -e ."
   },
   "keywords": [],
