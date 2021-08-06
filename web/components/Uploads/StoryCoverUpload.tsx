@@ -64,7 +64,7 @@ const StoryCoverUpload: React.FC<StoryCoverUploadProps> = ({ storyId }) => {
             className="hidden"
             id="upload"
             type="file"
-            accept="image/*"
+            accept="image/jpeg"
             onChange={(e) => setFileState(e.target.files)}
           />
         </label>

@@ -5,7 +5,6 @@ import {
   useMeQuery,
   MeDocument,
 } from "../../generated/graphql";
-import { useRouter } from "next/router";
 
 interface UserAvatarUploadProps {
   userId: number;
@@ -14,26 +13,17 @@ interface UserAvatarUploadProps {
 const UserAvatarUpload: React.FC<UserAvatarUploadProps> = ({ userId }) => {
   const [fileState, setFileState] = useState<FileList | null>(null);
   const { data } = useMeQuery();
-  const router = useRouter();
 
   const [signS3UserAvatarMutation] = useSignS3UserAvatarMutation();
-  const [updateUserAvatarMutation] = useUpdateUserAvatarMutation({
-    refetchQueries: [
-      {
-        query: MeDocument,
-      },
-    ],
-    onCompleted: () => {
-      router.reload();
-    },
-  });
+  const [updateUserAvatarMutation] = useUpdateUserAvatarMutation();
 
   const handleUploadSubmit = async (e: any) => {
     e.preventDefault();
     if (fileState?.length) {
+      const suffix = Date.now();
       const { type } = fileState[0];
       const response = await signS3UserAvatarMutation({
-        variables: { filename: `${data?.me?.id}.jpg`, filetype: type },
+        variables: { filename: `${data?.me?.id}-${suffix}.jpg`, filetype: type },
       });
 
       if (
@@ -73,7 +63,7 @@ const UserAvatarUpload: React.FC<UserAvatarUploadProps> = ({ userId }) => {
             className="hidden"
             id="upload"
             type="file"
-            accept="image/*"
+            accept="image/jpeg"
             onChange={(e) => setFileState(e.target.files)}
           />
         </label>
