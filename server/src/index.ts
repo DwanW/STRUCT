@@ -41,6 +41,9 @@ const main = async () => {
     url: process.env.DATABASE_URL,
     //   synchronize: true,
     logging: true,
+    ssl: {
+      rejectUnauthorized: false,
+    },
     migrations: [path.join(__dirname, "./migrations/*")],
   });
 
@@ -68,7 +71,7 @@ const main = async () => {
         disableTTL: true,
       }),
       cookie: {
-        maxAge: 1000 * 3600,
+        maxAge: 1000 * 3600 * 24,
         httpOnly: true,
         sameSite: "lax",
         secure: __prod__,
