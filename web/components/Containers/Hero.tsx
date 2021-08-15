@@ -4,6 +4,7 @@ import FormTextArea from "../Forms/FormTextArea";
 import Link from "next/link";
 import FormTag from "../Forms/FormTag";
 import StoryCoverUpload from "../Uploads/StoryCoverUpload";
+import defineRating from "../../utils/defineRating";
 
 interface HeroProps {
   data: GetStoryByIdQuery;
@@ -48,7 +49,13 @@ const Hero: React.FC<HeroProps> = ({
               enableEdit={enableEdit}
             />
           </h3>
-          <div className="mt-4 text-lg">Reviews: descriptive word</div>
+          <div className="mt-4 text-lg">
+            Reviews:{" "}
+            {defineRating(
+              data.getStoryById?.up_vote,
+              data.getStoryById?.down_vote
+            )}
+          </div>
           <div className="mt-4 text-sm">
             Publish Date:{" "}
             {new Date(
