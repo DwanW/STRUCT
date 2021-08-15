@@ -52,8 +52,8 @@ const Hero: React.FC<HeroProps> = ({
           <div className="mt-4 text-lg">
             Reviews:{" "}
             {defineRating(
-              data.getStoryById?.up_vote,
-              data.getStoryById?.down_vote
+              data.getStoryById?.up_vote as number,
+              data.getStoryById?.down_vote as number
             )}
           </div>
           <div className="mt-4 text-sm">
